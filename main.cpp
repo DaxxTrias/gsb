@@ -33,6 +33,8 @@ int main()
 	initGameHooks();
 	initDxHooks2();
 
+	fprintf(Con::fpout, "unpausing threads\n");
+
 	pauseAllThreads(false);
 
 	fprintf(Con::fpout, "load cfg\n");

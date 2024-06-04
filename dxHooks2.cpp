@@ -41,6 +41,7 @@ static ID3D11DepthStencilState* DepthStencilState_ORIG = NULL; //depth on
 
 static void InitImGuiD3D11()
 {
+	fprintf(Con::fpout, "initimguid3d11\n");
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
@@ -242,8 +243,7 @@ HRESULT STDMETHODCALLTYPE CreateSwapChainForHwnd_hook(IDXGIFactory2* This, _In_ 
 }
 
 void initDxHooks2() {
-	fprintf(Con::fpout, "init dxhook\n");
-	HMODULE gameOverlayRenderer = LoadLibraryA("GameOverlayRenderer64.dll");
+	HMODULE gameOverlayRenderer = LoadLibraryA("GameOverlayRenderer64.dll"); // +0x8CEC0 (jun-4-2024)
 	const char* CreateSwapChainForHwnd_pattern = "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 41 56 48 83 EC 40 48 8B F1 49 8B D9 48 8D 0D ? ? ? ? 49 8B F8 4C 8B F2 E8 ? ? ? ? 48 8B 44 24";
 	CreateSwapChainForHwnd_or = findSignature<CreateSwapChainForHwnd_type>((unsigned char*)gameOverlayRenderer, CreateSwapChainForHwnd_pattern);
 	placeHook("CreateSwapChainForHwnd", CreateSwapChainForHwnd_or, CreateSwapChainForHwnd_hook);
