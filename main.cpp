@@ -29,13 +29,18 @@ int main()
 	Con::enableStdout(true);
 	pauseAllThreads(true);
 
+	fprintf(Con::fpout, "init MH\n");
 	MH_Initialize();
-	initGameHooks();
+	//fprintf(Con::fpout, "init GH\n");
+	//initGameHooks();
+	fprintf(Con::fpout, "DXH\n");
 	initDxHooks2();
 
 	pauseAllThreads(false);
 
-	loadConfig("gsb.cfg");
+	fprintf(Con::fpout, "load cfg\n");
+
+	//loadConfig("gsb.cfg");
 
 	while (true) {
 		char buff[4096];
@@ -53,7 +58,7 @@ BOOL APIENTRY DllMain(HINSTANCE hinstDLL,
 	{
 	case DLL_PROCESS_ATTACH:
 		CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)main, NULL, 0, NULL);
-		CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)updatePhysicsThread, NULL, 0, NULL);
+		//CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)updatePhysicsThread, NULL, 0, NULL);
 	}
 	return TRUE;
 }
