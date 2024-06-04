@@ -29,11 +29,9 @@ int main()
 	Con::enableStdout(true);
 	pauseAllThreads(true);
 
-	fprintf(Con::fpout, "init MH\n");
 	MH_Initialize();
-	//fprintf(Con::fpout, "init GH\n");
-	//initGameHooks();
-	fprintf(Con::fpout, "DXH\n");
+	fprintf(Con::fpout, "init GH\n");
+	initGameHooks();
 	initDxHooks2();
 
 	pauseAllThreads(false);
