@@ -45,9 +45,11 @@ std::vector<bodyData> generateBodyData() {
 }
 
 bodyData getPlyByMass(std::vector<bodyData>& bodys) {
-	for (bodyData body : bodys) {
-		if (cmpf(body.mass, 2.287f, 0.01f)) {
-			return body;
-		}
-	}
+    for (bodyData body : bodys) {
+        if (cmpf(body.mass, 2.287f, 0.01f)) {
+            return body;
+        }
+    }
+    // Add a default return statement in case no matching body is found
+    return {};
 }

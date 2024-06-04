@@ -8,20 +8,23 @@ FILE* Con::fpin;
 
 void Con::init() {
 	int hConHandle;
-	long lStdHandle;
+	intptr_t lStdHandle;
 
 	AllocConsole();
 
-	lStdHandle = (long)GetStdHandle(STD_INPUT_HANDLE);
-	hConHandle = _open_osfhandle(lStdHandle, _O_TEXT);
+	lStdHandle = reinterpret_cast<intptr_t>(GetStdHandle(STD_INPUT_HANDLE));
+	hConHandle = _open_osfhandle(static_cast<long>(lStdHandle), _O_TEXT);
 	fpin = _fdopen(hConHandle, "r");
 
-	lStdHandle = (long)GetStdHandle(STD_OUTPUT_HANDLE);
-	hConHandle = _open_osfhandle(lStdHandle, _O_TEXT);
+	lStdHandle = reinterpret_cast<intptr_t>(GetStdHandle(STD_OUTPUT_HANDLE));
+	hConHandle = _open_osfhandle(static_cast<long>(lStdHandle), _O_TEXT);
 	fpout = _fdopen(hConHandle, "w");
 }
 
 void Con::enableStdout(bool state) {
 	const char* pipe = state ? "CONOUT$" : "NUL:";
-	freopen(pipe, "w", stdout);
+	FILE* newStdout = freopen(pipe, "w", stdout);
+	if (newStdout == nullptr) {
+		// handle error
+	}
 }

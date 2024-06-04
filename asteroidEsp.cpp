@@ -155,7 +155,7 @@ void drawAsteroidESP(bodyData ply) {
 		drawAsteroid(objectPos, buff, maxDist, renderSettings, io);
 
 		AsteroidCache cache;
-		cache.ind = i;
+        cache.ind = static_cast<uint32_t>(i);
 		cache.pos = objectPos;
 		cache.dist = maxDist;
 		strcpy(cache.type, object->type);

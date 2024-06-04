@@ -74,7 +74,7 @@ void ShaderHook(ID3D11Device* device, const char* type, const void** bytecode, S
 			wsprintfW(txt, L"%s\\%S_%016I64x.hlsl.txt", d3d11_shaders, type, id);
 
 			const void* error_data = (DWORD*)error->GetBufferPointer();
-			DWORD error_size = error->GetBufferSize();
+            DWORD error_size = static_cast<DWORD>(error->GetBufferSize());
 
 			HANDLE f = CreateFileW(txt, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 			if (f != INVALID_HANDLE_VALUE){
