@@ -10,6 +10,7 @@
 #include <fstream>
 #include <streambuf>
 #include <variant>
+#include "console.h"
 
 #include <iostream>
 #include <filesystem>
@@ -133,6 +134,7 @@ void drawMenu() {
 	const ImGuiColorEditFlags colorEditFlags = ImGuiColorEditFlags_AlphaPreview | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_NoLabel;
 
 	if (GetAsyncKeyState(VK_INSERT) & 1) {
+		fprintf(Con::fpout, "insert detected\n");
 		showmenu = !showmenu;
 	}
 

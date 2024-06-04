@@ -30,7 +30,6 @@ int main()
 	pauseAllThreads(true);
 
 	MH_Initialize();
-	fprintf(Con::fpout, "init GH\n");
 	initGameHooks();
 	initDxHooks2();
 

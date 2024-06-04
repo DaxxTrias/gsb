@@ -62,6 +62,7 @@ static LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPAR
 HRESULT __stdcall hookD3D11Present1(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT Flags, const DXGI_PRESENT_PARAMETERS* pPresentParameters) {
 	if (!initonce)
 	{
+		fprintf(Con::fpout, "hooking d3d11present1\n");
 		if (SUCCEEDED(pSwapChain->GetDevice(__uuidof(ID3D11Device), (void**)&pDevice)))
 		{
 			pDevice->GetImmediateContext(&pContext);
@@ -110,6 +111,8 @@ HRESULT __stdcall hookD3D11Present1(IDXGISwapChain* pSwapChain, UINT SyncInterva
 		pDevice->CreateRenderTargetView(pBackBuffer, NULL, &mainRenderTargetViewD3D11);
 		pBackBuffer->Release();
 	}
+
+	fprintf(Con::fpout, "loading imgui\n");
 	
 	ImGuiIO io = ImGui::GetIO();
 	setDisplaySize(io.DisplaySize.x, io.DisplaySize.y);
@@ -121,6 +124,7 @@ HRESULT __stdcall hookD3D11Present1(IDXGISwapChain* pSwapChain, UINT SyncInterva
 	drawMenu();
 
 	if (initonce) {
+		fprintf(Con::fpout, "init imgui\n");
 		std::vector<bodyData> bodys = generateBodyData();
 		bodyData ply = getPlyByMass(bodys);
 		setCamPos(ply.pos);
@@ -139,6 +143,8 @@ HRESULT __stdcall hookD3D11Present1(IDXGISwapChain* pSwapChain, UINT SyncInterva
 	pContext->OMSetRenderTargets(1, &mainRenderTargetViewD3D11, NULL);
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
+	fprintf(Con::fpout, "return present hook\n");
+
 	return phookD3D11Present1(pSwapChain, SyncInterval, Flags, pPresentParameters);
 }
 
@@ -148,6 +154,8 @@ void __stdcall hookD3D11Draw(ID3D11DeviceContext* pContext, UINT VertexCount, UI
 	UINT Stride;
 	UINT veBufferOffset;
 	D3D11_BUFFER_DESC veDesc;
+
+	fprintf(Con::fpout, "hookd3d11draw\n");
 
 	//get models
 	pContext->IAGetVertexBuffers(0, 1, &veBuffer, &Stride, &veBufferOffset);
@@ -189,10 +197,15 @@ void __stdcall hookD3D11Draw(ID3D11DeviceContext* pContext, UINT VertexCount, UI
 		updateWorldViewProj();
 	}
 
+	fprintf(Con::fpout, "returning d3d11draw\n");
+
 	return phookD3D11Draw(pContext, VertexCount, StartVertexLocation);
 }
 
 HRESULT STDMETHODCALLTYPE CreateSwapChainForHwnd_hook(IDXGIFactory2* This, _In_  ID3D11Device* pDevice, _In_  HWND hWnd, _In_ const DXGI_SWAP_CHAIN_DESC1* pDesc, _In_opt_  const DXGI_SWAP_CHAIN_FULLSCREEN_DESC* pFullscreenDesc, _In_opt_  IDXGIOutput* pRestrictToOutput, _COM_Outptr_  IDXGISwapChain1** ppSwapChain) {
+	
+	fprintf(Con::fpout, "creating swapchain\n");
+
 	HRESULT result = FnCast("CreateSwapChainForHwnd", CreateSwapChainForHwnd_or)(This, pDevice, hWnd, pDesc, pFullscreenDesc, pRestrictToOutput, ppSwapChain);
 
 	pSwapChainVtable = (DWORD_PTR*)dynamic_cast<IDXGISwapChain*>(*ppSwapChain);
@@ -205,7 +218,9 @@ HRESULT STDMETHODCALLTYPE CreateSwapChainForHwnd_hook(IDXGIFactory2* This, _In_ 
 	pDeviceVTable = (DWORD_PTR*)pDeviceVTable[0];
 	//pDevice->shader
 
-	MH_Initialize();
+	fprintf(Con::fpout, "init more d3d hooks\n");
+
+	MH_Initialize(); //we should only be running init once? but this is 2nd?
 	if (MH_CreateHook((DWORD_PTR*)pSwapChainVtable[22], hookD3D11Present1, reinterpret_cast<void**>(&phookD3D11Present1)) != MH_OK) { MessageBoxA(nullptr, "hookD3D11Present1", "hookD3D11Present1", MB_OK); }
 	if (MH_EnableHook((DWORD_PTR*)pSwapChainVtable[22]) != MH_OK) { MessageBoxA(nullptr, "hookD3D11Present1", "hookD3D11Present1", MB_OK); }
 
@@ -220,13 +235,15 @@ HRESULT STDMETHODCALLTYPE CreateSwapChainForHwnd_hook(IDXGIFactory2* This, _In_ 
 	fprintf(Con::fpout, "CreateSwapChainForHwnd_hook work\n");
 	fflush(Con::fpout);
 
+	fprintf(Con::fpout, "returning from createswapchain\n");
+
 	return result;
 
 }
 
 void initDxHooks2() {
+	fprintf(Con::fpout, "init dxhook\n");
 	HMODULE gameOverlayRenderer = LoadLibraryA("GameOverlayRenderer64.dll");
-
 	const char* CreateSwapChainForHwnd_pattern = "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 41 56 48 83 EC 40 48 8B F1 49 8B D9 48 8D 0D ? ? ? ? 49 8B F8 4C 8B F2 E8 ? ? ? ? 48 8B 44 24";
 	CreateSwapChainForHwnd_or = findSignature<CreateSwapChainForHwnd_type>((unsigned char*)gameOverlayRenderer, CreateSwapChainForHwnd_pattern);
 	placeHook("CreateSwapChainForHwnd", CreateSwapChainForHwnd_or, CreateSwapChainForHwnd_hook);
