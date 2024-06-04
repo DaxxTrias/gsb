@@ -23,17 +23,24 @@
 #include "physics.h"
 #include "dxHooks2.h"
 
+static bool minHookInitialized = false;
+
 int main()
 {
 	Con::init();
 	Con::enableStdout(true);
 	pauseAllThreads(true);
 
-	MH_Initialize();
+	if (!minHookInitialized) {
+		if (MH_Initialize() != MH_OK) {
+			MessageBoxA(nullptr, "Failed to init MH", "Error", MB_OK);
+			return E_FAIL;
+		}
+		minHookInitialized = true;
+	}
+
 	initGameHooks();
 	initDxHooks2();
-
-	fprintf(Con::fpout, "unpausing threads\n");
 
 	pauseAllThreads(false);
 
