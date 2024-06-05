@@ -122,7 +122,9 @@ void* somePxStuff_hook(uint64_t a1) {
 }
 
 __int64 getPxActorFromList_hook(__int64 list, int id) {
+	fprintf(Con::fpout, "getPxActorFromList %llx %d\n", list, id);
 	physList = *(PhysListArray**)(list + 320);
+    fprintf(Con::fpout, "physList %p\n", physList);
 	return FnCast("getPxActorFromList", or_getPxActorFromList)(list, id);
 }
 
@@ -157,10 +159,10 @@ __int64 createClassInstance_hook(__int64 a1, unsigned int a2, char** a3, __int64
 asteroidStruct* __fastcall someGetObjectOrAsteroid_hook(__int64 a1, __int64 id) {
 	objectManager = a1;
 	asteroidStruct *asteroid = FnCast("someGetObjectOrAsteroid", someGetObjectOrAsteroid_or)(a1, id);
-	/*if (strstr(asteroid->type, "ore")) {
-		fprintf(Con::fpout, "asteroid %d - %llx [%.2f %.2f %.2f] %s\n", id, asteroid, asteroid->x, asteroid->y, asteroid->z, asteroid->type);
+	if (strstr(asteroid->type, "ore")) {
+        fprintf(Con::fpout, "asteroid %lld - %p [%.2f %.2f %.2f] %s\n", id, (void*)asteroid, asteroid->x, asteroid->y, asteroid->z, asteroid->type);
 		fflush(Con::fpout);
-	}*/
+	}
 	return asteroid;
 }
 
@@ -210,7 +212,7 @@ void initGameHooks() {
 	//MessageBoxA(nullptr, "test", "test", MB_OK);
 
 	someGetObjectOrAsteroid_or = findSignature<someGetObjectOrAsteroid_type>(getStarbaseExe(), someGetObjectOrAsteroid_pattern);
-	placeHook("someGetObjectOrAsteroid", someGetObjectOrAsteroid_or, someGetObjectOrAsteroid_hook);
+	//placeHook("someGetObjectOrAsteroid", someGetObjectOrAsteroid_or, someGetObjectOrAsteroid_hook);
 
 	//uint64_t preSetupC = findSignature<uint64_t>(getStarbaseExe(), setupGameConfig_pattern) + 0x144;
 	//or_setupGameConfig = (setupGameConfig_type)(preSetupC + 5 + (*(int*)(preSetupC + 1)));
