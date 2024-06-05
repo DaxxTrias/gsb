@@ -46,7 +46,7 @@ int main()
 
 	fprintf(Con::fpout, "load cfg\n");
 
-	//loadConfig("gsb.cfg");
+	loadConfig("gsb.cfg");
 
 	while (true) {
 		char buff[4096];
