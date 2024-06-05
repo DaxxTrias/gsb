@@ -27,6 +27,8 @@ static bool minHookInitialized = false;
 
 int main()
 {
+	//todo: we need to create our own launcher tool, or find one with the right specs
+	// ie: auto inject super early, or suspend process so we can do it ourselves
 	Con::init();
 	Con::enableStdout(true);
 	pauseAllThreads(true);
