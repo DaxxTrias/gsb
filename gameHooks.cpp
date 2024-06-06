@@ -122,7 +122,7 @@ void* somePxStuff_hook(uint64_t a1) {
 }
 
 __int64 getPxActorFromList_hook(__int64 list, int id) {
-	fprintf(Con::fpout, "getPxActorFromList: %llx id: %d\n", list, id);
+	//fprintf(Con::fpout, "getPxActorFromList: %llx id: %d\n", list, id);
 	physList = *(PhysListArray**)(list + 0x140);
     //fprintf(Con::fpout, "physList %p\n", physList);
 	return FnCast("getPxActorFromList", or_getPxActorFromList)(list, id);

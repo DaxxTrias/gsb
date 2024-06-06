@@ -324,9 +324,6 @@ struct asteroidStruct
     __int64 field_118;
 };
 
-
-
-
 typedef void(*setDevConsoleState_type)(__int64 a1, unsigned __int8 a2);
 typedef __int64(*addFuncToLuaClass_type)(__int64 L, const char* name, void* func, unsigned int type, void* callHandler, void* luaClass);
 typedef char(*GetOptionFloat_type)(DWORD* a1, float* a2, char* a3);
