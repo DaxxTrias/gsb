@@ -26,14 +26,19 @@ CachedPoseData getCachedPose(physx::PxRigidActor* rigid, int index) {
         return poseCache[index];
     }
 
-    CachedPoseData data;
+    CachedPoseData data = {};
     try {
         if (rigid == nullptr) {
             // lua GC constantly shuffles memory around, we should expect a certain amount of nulls when using this particular method
             //todo: ie look for alternate player positioning coords (playerEnt maybe?)
+            data.isValid = false;
             throw std::runtime_error("rigid pointer is null");
         }
-        physx::PxTransform pose = rigid->getGlobalPose();
+        physx::PxTransform pose = {};
+        if (data.isValid)
+        {
+            pose = rigid->getGlobalPose();
+        }
         if (!pose.isValid()) {
             data.isValid = false;
             return data;
@@ -71,7 +76,7 @@ int updatePhysicsThread() {
                     continue;
                 }
 
-                physx::PxRigidActor* rigid = actor->is<physx::PxRigidActor>();
+                physx::PxRigidActor* rigid = actor->is<physx::PxRigidActor>(); // now this is getting an access violation. null deref?
                 if (rigid == nullptr || (uint64_t)rigid > 0xFFFF'FFFF'FFFF'0000) {
                     continue;
                 }
