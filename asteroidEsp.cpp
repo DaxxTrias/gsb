@@ -40,8 +40,10 @@ static float calculateDistance(const physx::PxVec3& pos1, const physx::PxVec3& p
 }
 
 static void drawAsteroid(const physx::PxVec3& plyPos, const physx::PxVec3& asteroidPos, const char* type, float farDist, const AsteroidRenderingSettings& settings, const ImGuiIO& io) {
+	//todo: W2S doesnt seem to properly take into account FOV (such as when zooming)
+	
 	float dist = calculateDistance(plyPos, asteroidPos);
-	std::string buff = std::string(type) + " " + std::to_string(static_cast<int>(farDist)) + " " + std::to_string(static_cast<int>(dist));
+	std::string buff = std::string(type) + " " + std::to_string(static_cast<int>(dist));
 
 	if (dist > settings.farDistance) {
 		if (settings.drawFar) {
