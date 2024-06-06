@@ -169,9 +169,13 @@ asteroidStruct* __fastcall someGetObjectOrAsteroid_hook(__int64 a1, __int64 id) 
 /*
 __int64 __fastcall someGetObjectOrAsteroid_hook(__int64 a1, __int64 id) {
 	
-	fprintf(Con::fpout, "someGetObjectOrAsteroid %llx %llx\n", a1, id);
+	//fprintf(Con::fpout, "someGetObjectOrAsteroid %llx %llx\n", a1, id);
 
-	return FnCast("someGetObjectOrAsteroid", someGetObjectOrAsteroid_or)(a1, id);
+	__int64 smreturn = FnCast("someGetObjectOrAsteroid", someGetObjectOrAsteroid_or)(a1, id);
+
+	fprintf(Con::fpout, "someGetObjectOrAsteroid %llx\n", smreturn);
+
+	return smreturn;
 }
 */
 
