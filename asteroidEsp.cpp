@@ -46,19 +46,24 @@ static void drawAsteroid(const physx::PxVec3& plyPos, const physx::PxVec3& aster
 	if (dist > settings.farDistance) {
 		if (settings.drawFar) {
 			physx::PxVec2 screenPos = worldToScreen(asteroidPos);
-			if (screenPos.x > 0 && screenPos.y > 0) {
-				ImGui::GetWindowDrawList()->AddText(ImGui::GetFont(), ImGui::GetFontSize(), ImVec2(screenPos.x, screenPos.y), settings.farColor, buff.c_str());
+
+			//todo: this is a bad hardwire. we should use the player resolution to clamp rendering angles
+			if (screenPos.x > 0 && screenPos.y > 0 && screenPos.x < 1950 && screenPos.y < 1100) {
+				ImGui::GetWindowDrawList()->AddText(
+					ImGui::GetFont(), ImGui::GetFontSize(), ImVec2(screenPos.x, screenPos.y), settings.farColor, buff.c_str());
 			}
 			if (settings.drawLine) {
 				physx::PxVec2 linePos = worldToScreenIgnoreDirection(asteroidPos);
-				ImGui::GetWindowDrawList()->AddLine(ImVec2(linePos.x, linePos.y), ImVec2(io.DisplaySize.x / 2, io.DisplaySize.y / 2), settings.lineFarColor);
+				ImGui::GetWindowDrawList()->AddLine(
+					ImVec2(linePos.x, linePos.y), ImVec2(io.DisplaySize.x / 2, io.DisplaySize.y / 2), settings.lineFarColor);
 			}
 		}
 	}
 	else if (settings.drawNear) {
 		physx::PxVec2 screenPos = worldToScreen(asteroidPos);
 		if (screenPos.x > 0 && screenPos.y > 0) {
-			ImGui::GetWindowDrawList()->AddText(ImGui::GetFont(), ImGui::GetFontSize(), ImVec2(screenPos.x, screenPos.y), settings.nearColor, buff.c_str());
+			ImGui::GetWindowDrawList()->AddText(
+				ImGui::GetFont(), ImGui::GetFontSize(), ImVec2(screenPos.x, screenPos.y), settings.nearColor, buff.c_str());
 		}
 	}
 }
