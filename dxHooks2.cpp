@@ -131,7 +131,7 @@ HRESULT __stdcall hookD3D11Present1(IDXGISwapChain* pSwapChain, UINT SyncInterva
 		ImGui::SetWindowPos(ImVec2(0, 0), ImGuiCond_Always);
 		ImGui::SetWindowSize(ImVec2(io.DisplaySize.x, io.DisplaySize.y), ImGuiCond_Always);
 
-		//drawAsteroidESP(ply);
+		drawAsteroidESP(ply);
 		drawPhysicsESP(bodys, ply);
 
 		ImGui::End();
