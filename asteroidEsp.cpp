@@ -95,7 +95,7 @@ static bool testObjectPtr(asteroidStruct* object) {
 	return skip;
 }
 
-void drawAsteroidESP(bodyData ply) {
+void drawAsteroidESP(bodyData& ply) {
 	//todo: drawLine appears to not be working
 	//todo: filter needs more options (i think i saw charodium once?)
 	//todo: distance filter is inverse. its behaving like a minimum instead of a maximum
