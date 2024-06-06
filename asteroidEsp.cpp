@@ -71,17 +71,21 @@ static AsteroidRenderingSettings loadRenderingSettings() {
 	return settings;
 }
 
-static void drawAsteroidsFromCache(bodyData& ply) {
-	ImGuiIO io = ImGui::GetIO();
-	AsteroidRenderingSettings settings = loadRenderingSettings();
+static float calculateDistance(const physx::PxVec3& pos1, const physx::PxVec3& pos2) {
+    physx::PxVec3 diff = pos1 - pos2;
+    return sqrtf(diff.x * diff.x + diff.y * diff.y + diff.z * diff.z);
+}
 
-	for (auto &asteroid : asteroidsCache) {
-		physx::PxVec3 localPos = ply.pos - asteroid.pos;
-		float dist = sqrtf((localPos.x * localPos.x) + (localPos.y * localPos.y) + (localPos.z * localPos.z));
-		char buff[256];
-		sprintf(buff, "%s %.0f %0.f", asteroid.type, asteroid.dist, dist);
-		drawAsteroid(asteroid.pos, buff, asteroid.dist, settings, io);
-	}
+static void drawAsteroidsFromCache(const bodyData& ply) {
+    ImGuiIO& io = ImGui::GetIO();
+    AsteroidRenderingSettings settings = loadRenderingSettings();
+
+    for (const auto& asteroid : asteroidsCache) {
+        float dist = calculateDistance(ply.pos, asteroid.pos);
+        std::string buff =
+            std::string(asteroid.type) + " " + std::to_string(static_cast<int>(asteroid.dist)) + " " + std::to_string(static_cast<int>(dist));
+        drawAsteroid(asteroid.pos, buff.c_str(), asteroid.dist, settings, io);
+    }
 }
 
 static bool testObjectPtr(asteroidStruct* object) {
@@ -97,17 +101,16 @@ static bool testObjectPtr(asteroidStruct* object) {
 	return skip;
 }
 
-void drawAsteroidESP(bodyData& ply) {
-	//todo: drawLine appears to not be working
-	//todo: filter needs more options (i think i saw charodium once?)
-	//todo: distance filter is inverse. its behaving like a minimum instead of a maximum
+void drawAsteroidESP(const bodyData& ply) {
+	//todo: drawLine works now but its contingent on far asteroids, instead of working for either near or far
 	//todo: even when esp disabled we still parse all the asteroids. maybe we could optimize for perf
 	bool asteroidEspEnabled = getOption<bool>("asteroidEspEnabled");
-	if (!asteroidEspEnabled) return;
-
-	if (objectManager == 0) {
+	if (!asteroidEspEnabled) 
 		return;
-	}
+
+	if (objectManager == 0)
+		return;
+
 	static uint32_t updateCounter = 0;
 	updateCounter++;
 
@@ -122,47 +125,42 @@ void drawAsteroidESP(bodyData& ply) {
 
 	ImGuiIO io = ImGui::GetIO();
 	bool checkOre = getOption<bool>("asteroidOreCheck");
-	const char* filterOre = getOption<std::string>("asteroidFilter").c_str();
+	std::string filterOre = getOption<std::string>("asteroidFilter");
 	AsteroidRenderingSettings renderSettings = loadRenderingSettings();
 
 	for (uint64_t i = 0; i < maxObjects; i++) {
 		asteroidStruct* object = (asteroidStruct*)((*(uint64_t*)(objectManager + 0x60060) & 0xFFFFFFFFFFFFFFFCui64) + (0x150 * i));
-		if (testObjectPtr(object)) {
+		if (testObjectPtr(object))
 			continue;
-		}
 
-		if (checkOre && !strstr(object->type, "ore")) {
+		if (checkOre && !strstr(object->type, "ore"))
 			continue;
-		}
 
-		if (!strstr(object->type, filterOre)) {
+		if (!strstr(object->type, filterOre.c_str()))
 			continue;
-		}
 
 		physx::PxVec3 objectPos{ object->x, object->y, object->z };
-		physx::PxVec3 localPos = ply.pos - objectPos;
-		float dist = sqrtf((localPos.x * localPos.x) + (localPos.y * localPos.y) + (localPos.z * localPos.z));
+		float dist = calculateDistance(ply.pos, objectPos);
 
 		if (asteroidsSubData.size() <= i) {
 			asteroidsSubData.resize(uint64_t((i+1) * 1.2));
 		}
 
 		if (dist > 600) {
-			AsteroidSubData& subData = asteroidsSubData[i];
+			AsteroidSubData &subData = asteroidsSubData[i];
 			if (subData.ptr != object || subData.subPtr != (void*)object->ptr0) {
 				subData.ptr = object;
 				subData.maxDist = dist;
 				subData.subPtr = (void*)object->ptr0;
 			}
-			else if (subData.maxDist < dist) {
+			else if (subData.maxDist < dist)
 				subData.maxDist = dist;
-			}
 		}
 
 		float maxDist = (asteroidsSubData[i].ptr == object) ? asteroidsSubData[i].maxDist : 0;
-		char buff[256];
-		sprintf(buff, "%s %.0f %0.f", object->type, asteroidsSubData[i].maxDist, dist);
-		drawAsteroid(objectPos, buff, maxDist, renderSettings, io);
+		std::string buff = 
+			std::string(object->type) + " " + std::to_string(static_cast<int>(asteroidsSubData[i].maxDist)) + " " + std::to_string(static_cast<int>(dist));
+		drawAsteroid(objectPos, buff.c_str(), maxDist, renderSettings, io);
 
 		AsteroidCache cache;
         cache.ind = static_cast<uint32_t>(i);
