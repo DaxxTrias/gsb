@@ -24,17 +24,17 @@ void placeHook(string name, void* original, void* hook) {
 	hookData->original = original;
 	hookData->tramp = 0;
 	if (MH_CreateHook(original, hook, reinterpret_cast<void**>(&(hookData->tramp))) != MH_OK) {
-		fprintf(Con::fpout, "error on hook placing %s\n", name.c_str());
+		fprintf(Con::fpout, "error on placing hook %s\n", name.c_str());
 		fflush(Con::fpout);
 	}
 	if (MH_EnableHook(original) != MH_OK) {
-		fprintf(Con::fpout, "error on hook enabling %s\n", name.c_str());
+		fprintf(Con::fpout, "error on enabling hook%s\n", name.c_str());
 		fflush(Con::fpout);
 	}
 
 	hooks[name] = hookData;
 
-	fprintf(Con::fpout, "place hook %s\n", name.c_str());
+	fprintf(Con::fpout, "(MH) placed hook %s\n", name.c_str());
 	fflush(Con::fpout);
 }
 
