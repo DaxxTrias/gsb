@@ -34,26 +34,31 @@ struct AsteroidRenderingSettings {
 static std::vector<AsteroidSubData> asteroidsSubData;
 static std::vector<AsteroidCache> asteroidsCache;
 
-static void drawAsteroid(const physx::PxVec3& pos, const char* text, float dist, const AsteroidRenderingSettings& settings, const ImGuiIO& io) {
+static float calculateDistance(const physx::PxVec3& pos1, const physx::PxVec3& pos2) {
+	physx::PxVec3 diff = pos1 - pos2;
+	return sqrtf(diff.x * diff.x + diff.y * diff.y + diff.z * diff.z);
+}
+
+static void drawAsteroid(const physx::PxVec3& plyPos, const physx::PxVec3& asteroidPos, const char* type, float farDist, const AsteroidRenderingSettings& settings, const ImGuiIO& io) {
+	float dist = calculateDistance(plyPos, asteroidPos);
+	std::string buff = std::string(type) + " " + std::to_string(static_cast<int>(farDist)) + " " + std::to_string(static_cast<int>(dist));
+
 	if (dist > settings.farDistance) {
 		if (settings.drawFar) {
-			physx::PxVec2 screenPos = worldToScreen(pos);
+			physx::PxVec2 screenPos = worldToScreen(asteroidPos);
 			if (screenPos.x > 0 && screenPos.y > 0) {
-				ImGui::GetWindowDrawList()->AddText(
-					ImGui::GetFont(), ImGui::GetFontSize(), ImVec2(screenPos.x, screenPos.y), settings.farColor, text);
+				ImGui::GetWindowDrawList()->AddText(ImGui::GetFont(), ImGui::GetFontSize(), ImVec2(screenPos.x, screenPos.y), settings.farColor, buff.c_str());
 			}
 			if (settings.drawLine) {
-				physx::PxVec2 linePos = worldToScreenIgnoreDirection(pos);
-				ImGui::GetWindowDrawList()->AddLine(
-					ImVec2(linePos.x, linePos.y), ImVec2(io.DisplaySize.x / 2, io.DisplaySize.y / 2), settings.lineFarColor);
+				physx::PxVec2 linePos = worldToScreenIgnoreDirection(asteroidPos);
+				ImGui::GetWindowDrawList()->AddLine(ImVec2(linePos.x, linePos.y), ImVec2(io.DisplaySize.x / 2, io.DisplaySize.y / 2), settings.lineFarColor);
 			}
 		}
 	}
 	else if (settings.drawNear) {
-		physx::PxVec2 screenPos = worldToScreen(pos);
+		physx::PxVec2 screenPos = worldToScreen(asteroidPos);
 		if (screenPos.x > 0 && screenPos.y > 0) {
-			ImGui::GetWindowDrawList()->AddText(
-				ImGui::GetFont(), ImGui::GetFontSize(), ImVec2(screenPos.x, screenPos.y), settings.nearColor, text);
+			ImGui::GetWindowDrawList()->AddText(ImGui::GetFont(), ImGui::GetFontSize(), ImVec2(screenPos.x, screenPos.y), settings.nearColor, buff.c_str());
 		}
 	}
 }
@@ -71,19 +76,12 @@ static AsteroidRenderingSettings loadRenderingSettings() {
 	return settings;
 }
 
-static float calculateDistance(const physx::PxVec3& pos1, const physx::PxVec3& pos2) {
-    physx::PxVec3 diff = pos1 - pos2;
-    return sqrtf(diff.x * diff.x + diff.y * diff.y + diff.z * diff.z);
-}
-
 static void drawAsteroidsFromCache(const bodyData& ply) {
 	ImGuiIO& io = ImGui::GetIO();
 	AsteroidRenderingSettings settings = loadRenderingSettings();
 
 	for (const auto& asteroid : asteroidsCache) {
-		float dist = calculateDistance(ply.pos, asteroid.pos);
-		std::string buff = std::string(asteroid.type) + " " + std::to_string(static_cast<int>(asteroid.dist)) + " " + std::to_string(static_cast<int>(dist));
-		drawAsteroid(asteroid.pos, buff.c_str(), asteroid.dist, settings, io);
+		drawAsteroid(ply.pos, asteroid.pos, asteroid.type, asteroid.dist, settings, io);
 	}
 }
 
@@ -162,8 +160,7 @@ void drawAsteroidESP(const bodyData& ply) {
 		}
 
 		float maxDist = (subData.ptr == object) ? subData.maxDist : 0;
-		std::string buff = std::string(object->type) + " " + std::to_string(static_cast<int>(subData.maxDist)) + " " + std::to_string(static_cast<int>(dist));
-		drawAsteroid(objectPos, buff.c_str(), maxDist, renderSettings, io);
+		drawAsteroid(ply.pos, objectPos, object->type, maxDist, renderSettings, io);
 
 		AsteroidCache cache;
 		cache.ind = static_cast<uint32_t>(i);
