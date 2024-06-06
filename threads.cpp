@@ -20,19 +20,19 @@ void pauseAllThreads(bool paused) {
                     if (th != NULL) {
                         if (paused) {
                             if (Wow64SuspendThread(th) == -1) {
-                                fprintf(Con::fpout, "Failed to suspend thread\n");
+                                fprintf(Con::fpout, "Failed to suspend thread widh ID: %lu\n", te.th32ThreadID);
                             }
                         }
                         else {
                             if (ResumeThread(th) == -1) {
-                                fprintf(Con::fpout, "Failed to resume thread\n");
+                                fprintf(Con::fpout, "Failed to resume thread with ID: %lu\n", te.th32ThreadID);
                             }
                         }
                         CloseHandle(th);
                     }
                     else {
                         // Handle failure to open thread handle
-                        fprintf(Con::fpout, "Failed to open thread handle\n");
+                        fprintf(Con::fpout, "WARNING: Failed to open thread for handle ID %lu\n", te.th32ThreadID);
                         // Additional error handling code here
                     }
                 }
@@ -40,11 +40,14 @@ void pauseAllThreads(bool paused) {
             } 
             while (Thread32Next(h, &te));
         }
+		else {
+			// Handle failure to iterate over threads
+			fprintf(Con::fpout, "Failed to get first thread\n");
+		}
         CloseHandle(h);
     }
     else {
         // Handle failure to create snapshot handle
         fprintf(Con::fpout, "Failed to create snapshot handle\n");
-        // Additional error handling code here
     }
 }

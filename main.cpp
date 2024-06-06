@@ -12,7 +12,6 @@
 #include <PxAggregate.h>
 #include <PxRigidBody.h>
 #include <PxRigidStatic.h>
-
 #include "threads.h"
 #include "console.h"
 #include "luaHooks.h"
@@ -33,6 +32,9 @@ int main()
 	Con::init();
 	Con::enableStdout(true);
 	pauseAllThreads(true);
+
+	//todo: we should probably do a check for other overlays. for example nvidia's OpenAutomate wrapper. 
+	// When it fails to hook/detour it doesnt detach gracefully
 
 	if (!minHookInitialized) {
 		if (MH_Initialize() != MH_OK) {
