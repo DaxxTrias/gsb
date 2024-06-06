@@ -116,7 +116,7 @@ void drawAsteroidESP(bodyData ply) {
 	AsteroidRenderingSettings renderSettings = loadRenderingSettings();
 
 	for (uint64_t i = 0; i < maxObjects; i++) {
-		asteroidStruct* object = (asteroidStruct*)((*(uint64_t*)(objectManager + 0x60060) & 0xFFFFFFFFFFFFFFFCui64) + (0x120 * i));
+		asteroidStruct* object = (asteroidStruct*)((*(uint64_t*)(objectManager + 0x60060) & 0xFFFFFFFFFFFFFFFCui64) + (0x150 * i));
 		if (testObjectPtr(object)) {
 			continue;
 		}

@@ -271,57 +271,63 @@ struct SceneRoot
 
 struct asteroidStruct
 {
-    __int64 ptr0;
-    int ptr_data_0_0;
-    int ptr_data_0_1;
-    __int64 ptr1;
-    int ptr_data_1_0;
-    int ptr_data_1_1;
-    __int64 ptr2;
-    int ptr_data_2_0;
-    int ptr_data_2_1;
-    __int64 ptr3;
-    int ptr_data_3_0;
-    int ptr_data_3_1;
-    __int64 ptr4;
-    int ptr_data_4_0;
-    int ptr_data_4_1;
-    __int64 ptr5;
-    int ptr_data_5_0;
-    int ptr_data_5_1;
-    __int64 ptr6;
-    int ptr_data_6_0;
-    int ptr_data_6_1;
-    __int64 ptr7;
-    int ptr_data_7_0;
-    int ptr_data_7_1;
-    __int64 ptr8;
-    int ptr_data_8_0;
-    int ptr_data_8_1;
-    __int64 ptr9;
-    int ptr_data_9_0;
-    int ptr_data_9_1;
-    __int64 ptr10;
-    int ptr_data_10_0;
-    int ptr_data_10_1;
-    float x;
-    float y;
-    float z;
-    int gapBC;
-    __int64 field_C0;
-    __int64 field_C8;
-    int field_D0;
-    unsigned int field_D4;
-    __int64 field_D8;
-    __int64 field_E0;
-    __int64 field_E8;
-    __int64 field_F0;
-    __int64 field_F8;
-    char* type;
-    __int64 field_108;
-    int field_110;
-    int someFlag;
-    __int64 field_118;
+    __int64 ptr0;       //0x00
+    int ptr_data_0_0;   //0x08
+    int ptr_data_0_1;   //0x0C
+    __int64 ptr1;       //0x10
+    int ptr_data_1_0;   //0x18
+    int ptr_data_1_1;   //0x1C
+    __int64 ptr2;	    //0x20
+    int ptr_data_2_0;   //0x28
+    int ptr_data_2_1;   //0x2C
+    __int64 ptr3;	    //0x30
+    int ptr_data_3_0;   //0x38
+    int ptr_data_3_1;   //0x3C
+    __int64 ptr4;	    //0x40
+    int ptr_data_4_0;   //0x48
+    int ptr_data_4_1;   //0x4C
+    __int64 ptr5;	    //0x50
+    int ptr_data_5_0;   //0x58
+    int ptr_data_5_1;   //0x5C
+    __int64 ptr6;	    //0x60
+    int ptr_data_6_0;   //0x68
+    int ptr_data_6_1;   //0x6C
+    __int64 ptr7;	    //0x70
+    int ptr_data_7_0;   //0x78
+    int ptr_data_7_1;   //0x7C
+    __int64 ptr8;	    //0x80
+    int ptr_data_8_0;   //0x88
+    int ptr_data_8_1;   //0x8C
+    __int64 ptr9;	    //0x90
+    int ptr_data_9_0;   //0x98
+    int ptr_data_9_1;   //0x9C
+    __int64 ptr10;	    //0xA0
+    int ptr_data_10_0;  //0xA8
+    int ptr_data_10_1;  //0xAC
+    float x;            //0xB0
+    float y;            //0xB4
+    float z;            //0xB8
+    int gapBC;          //0xBC
+    __int64 field_C0;   //0xC0
+    __int64 field_C8;   //0xC8
+    int field_D0;       //0xD0
+    unsigned int field_D4;//0xD4
+    __int64 field_D8;   //0xD8
+    __int64 field_E0;   //0xE0
+    __int64 field_E8;   //0xE8
+    __int64 field_F0;   //0xF0
+    __int64 field_F8;   //0xF8
+    __int64 field_100;  //0x100
+    __int64 field_108;  //0x108
+    __int64 field_110;  //0x110
+    __int64 field_118;  //0x118
+    __int64 field_120;  //0x120
+    __int64 field_128;  //0x128
+    char* type;         //0x130
+    __int64 field_138;  //0x138
+    int field_140;	    //0x140
+    int someFlag;       //0x144
+    __int64 field_148;  //0x148
 };
 
 typedef void(*setDevConsoleState_type)(__int64 a1, unsigned __int8 a2);
