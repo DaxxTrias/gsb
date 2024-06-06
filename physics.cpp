@@ -8,9 +8,43 @@
 #include <thread>
 #include <atomic>
 #include <iostream>
+#include <unordered_map>
 
+struct CachedPoseData {
+    physx::PxVec3 pos;
+    float mass;
+    bool isValid;
+};
+
+std::unordered_map<int, CachedPoseData> poseCache;
 std::shared_ptr<std::vector<bodyData>> bodys = std::make_shared<std::vector<bodyData>>();
 std::atomic<bool> keepRunning(true);
+
+CachedPoseData getCachedPose(physx::PxRigidActor* rigid, int index) {
+    if (poseCache.find(index) != poseCache.end()) {
+        return poseCache[index];
+    }
+
+    CachedPoseData data;
+    try {
+        physx::PxTransform pose = rigid->getGlobalPose();
+        if (!pose.isValid()) {
+            data.isValid = false;
+            return data;
+        }
+        data.pos = pose.p;
+        physx::PxRigidBody* body = rigid->is<physx::PxRigidBody>();
+        data.mass = (body != nullptr) ? body->getMass() : -1;
+        data.isValid = true;
+    }
+    catch (const std::exception& e) {
+        std::cerr << "Exception caught while processing rigid actor: " << e.what() << std::endl;
+        data.isValid = false;
+    }
+
+    poseCache[index] = data;
+    return data;
+}
 
 int updatePhysicsThread() {
     while (keepRunning) {
@@ -36,29 +70,12 @@ int updatePhysicsThread() {
                     continue;
                 }
 
-                try {
-                    physx::PxTransform pose = rigid->getGlobalPose();
-                    if (!pose.isValid()) {
-                        continue;
-                    }
-                    physx::PxVec3 pos = pose.p;
-
-                    bool isBody = actor->is<physx::PxRigidBody>() != nullptr;
-                    bool isStatic = actor->is<physx::PxRigidStatic>() != nullptr;
-                    float mass = -1;
-
-                    if (isBody) {
-                        physx::PxRigidBody* body = actor->is<physx::PxRigidBody>();
-                        if (body != nullptr) {
-                            mass = body->getMass();
-                            updating->push_back({ pos, mass });
-                        }
-                    }
-                }
-                catch (const std::exception& e) {
-                    std::cerr << "Exception caught while processing rigid actor: " << e.what() << std::endl;
+                CachedPoseData cachedPose = getCachedPose(rigid, i);
+                if (!cachedPose.isValid) {
                     continue;
                 }
+
+                updating->push_back({ cachedPose.pos, cachedPose.mass });
             }
             else {
                 if ((physList[i].id & 0xFFFFFF) != (i & 0xFFFFFF)) {
@@ -72,6 +89,9 @@ int updatePhysicsThread() {
             //std::lock_guard<std::mutex> lock(bodys_mutex);
             bodys = updating;
         }
+
+        // Clear the cache for the next iteration
+        poseCache.clear();
     }
 
     return 0;
