@@ -61,7 +61,7 @@ static void drawAsteroid(const physx::PxVec3& plyPos, const physx::PxVec3& aster
 			}
 		}
 	}
-	else if (settings.drawNear) {
+	else if (dist < settings.farDistance && settings.drawNear) {
 		physx::PxVec2 screenPos = worldToScreen(asteroidPos);
 		if (screenPos.x > 0 && screenPos.y > 0) {
 			ImGui::GetWindowDrawList()->AddText(

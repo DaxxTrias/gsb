@@ -28,6 +28,9 @@ std::vector<bodyData> generateBodyData() {
                 }
 
                 physx::PxVec3 pos;
+                if (rigid == nullptr)
+                    continue;
+
                 if (rigid->getGlobalPose().isValid()) {
                     pos = rigid->getGlobalPose().p;
                 }
