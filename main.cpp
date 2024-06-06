@@ -29,6 +29,7 @@ int main()
 {
 	//todo: we need to create our own launcher tool, or find one with the right specs
 	// ie: auto inject super early, or suspend process so we can do it ourselves
+	//todo: if we inject to soon we may try to hook functions not yet available due to not loading in yet. should sleep it a bit in this case
 	Con::init();
 	Con::enableStdout(true);
 	pauseAllThreads(true);
