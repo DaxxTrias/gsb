@@ -69,7 +69,7 @@ static AsteroidRenderingSettings loadRenderingSettings() {
 	return settings;
 }
 
-static void drawAsteroidsFromCache(bodyData ply) {
+static void drawAsteroidsFromCache(bodyData& ply) {
 	ImGuiIO io = ImGui::GetIO();
 	AsteroidRenderingSettings settings = loadRenderingSettings();
 
@@ -96,6 +96,10 @@ static bool testObjectPtr(asteroidStruct* object) {
 }
 
 void drawAsteroidESP(bodyData ply) {
+	//todo: drawLine appears to not be working
+	//todo: filter needs more options (i think i saw charodium once?)
+	//todo: distance filter is inverse. its behaving like a minimum instead of a maximum
+	//todo: even when esp disabled we still parse all the asteroids. maybe we could optimize for perf
 	bool asteroidEspEnabled = getOption<bool>("asteroidEspEnabled");
 	if (!asteroidEspEnabled) return;
 

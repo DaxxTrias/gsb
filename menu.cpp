@@ -148,6 +148,7 @@ void drawMenu() {
 			if (ImGui::Button("ice ore")) { strcpy(asteroidFilter, "ice"); }
 			if (ImGui::Button("ajatitite ore")) { strcpy(asteroidFilter, "ajat"); }
 			if (ImGui::Button("valkite ore")) { strcpy(asteroidFilter, "valki"); }
+			if (ImGui::Button("charodium ore")) { strcpy(asteroidFilter, "charo"); }
 			ImGui::TreePop();
 		}
 
