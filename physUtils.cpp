@@ -23,7 +23,13 @@ std::vector<bodyData> generateBodyData() {
 				if (rigid == nullptr || (uint64_t)rigid > 0xFFFF'FFFF'FFFF'0000) {
 					continue;
 				}
-				physx::PxVec3 pos = rigid->getGlobalPose().p;
+				physx::PxVec3 pos;
+				if (rigid->getGlobalPose().isValid()) {
+					pos = rigid->getGlobalPose().p;
+				}
+				else {
+					continue;
+				}
 				bool isBody = actor->is<physx::PxRigidBody>() != nullptr;
 				bool isStatic = actor->is<physx::PxRigidBody>() != nullptr;
 				float mass = -1;
