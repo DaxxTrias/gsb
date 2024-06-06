@@ -38,16 +38,20 @@ static void drawAsteroid(physx::PxVec3 &pos, char* text, float dist, AsteroidRen
 	if (dist > settings.farDistance && settings.drawFar) {
 		physx::PxVec2 screenPos = worldToScreen(pos);
 		if (screenPos.x > 0 && screenPos.y > 0) {
-			ImGui::GetWindowDrawList()->AddText(ImGui::GetFont(), ImGui::GetFontSize(), ImVec2(screenPos.x, screenPos.y), settings.farColor, text, 0, 0.0f, 0);
+			ImGui::GetWindowDrawList()->AddText(
+				ImGui::GetFont(), ImGui::GetFontSize(), ImVec2(screenPos.x, screenPos.y), settings.farColor, text, 0, 0.0f, 0);
 		}
 		if (settings.drawLine) {
 			physx::PxVec2 linePos = worldToScreenIgnoreDirection(pos);
-			ImGui::GetWindowDrawList()->AddLine(ImVec2(linePos.x, linePos.y), ImVec2(io.DisplaySize.x / 2, io.DisplaySize.y / 2), settings.lineFarColor);
+			ImGui::GetWindowDrawList()->AddLine(
+				ImVec2(linePos.x, linePos.y), ImVec2(io.DisplaySize.x / 2, io.DisplaySize.y / 2), settings.lineFarColor);
 		}
 	} else if (settings.drawNear) {
+		
 		physx::PxVec2 screenPos = worldToScreen(pos);
 		if (screenPos.x > 0 && screenPos.y > 0) {
-			ImGui::GetWindowDrawList()->AddText(ImGui::GetFont(), ImGui::GetFontSize(), ImVec2(screenPos.x, screenPos.y), settings.nearColor, text, 0, 0.0f, 0);
+			ImGui::GetWindowDrawList()->AddText(
+				ImGui::GetFont(), ImGui::GetFontSize(), ImVec2(screenPos.x, screenPos.y), settings.nearColor, text, 0, 0.0f, 0);
 		}
 	}
 }
