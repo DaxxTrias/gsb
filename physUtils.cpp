@@ -2,6 +2,7 @@
 #include "gameHooks.h"
 #include <PxActor.h>
 #include <PxRigidBody.h>
+#include <PxRigidBody.h>
 
 inline bool cmpf(float A, float B, float epsilon = 0.005f) {
 	return (fabs(A - B) < epsilon);
@@ -34,7 +35,7 @@ std::vector<bodyData> generateBodyData() {
                     continue;
                 }
 
-                bool isStatic = actor->is<physx::PxRigidBody>() != nullptr;
+                bool isStatic = actor->is<physx::PxRigidStatic>() != nullptr;
                 bool isBody = actor->is<physx::PxRigidBody>() != nullptr;
                 if (isBody) {
                     physx::PxRigidBody* body = actor->is<physx::PxRigidBody>();
