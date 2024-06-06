@@ -40,14 +40,18 @@ int main()
 			return E_FAIL;
 		}
 		minHookInitialized = true;
+		fprintf(Con::fpout, "MH Init\n");
 	}
 
 	initGameHooks();
+	fprintf(Con::fpout, "game functions hooked\n");
+
 	initDxHooks2();
+	fprintf(Con::fpout, "D3D11.1 hooked\n");
 
 	pauseAllThreads(false);
 
-	fprintf(Con::fpout, "load cfg\n");
+	fprintf(Con::fpout, "cfg loaded\n");
 
 	loadConfig("gsb.cfg");
 
