@@ -7,7 +7,7 @@
 #include <PxRigidStatic.h>
 #include <thread>
 #include <atomic>
-//#include <mutex>
+#include <iostream>
 
 std::shared_ptr<std::vector<bodyData>> bodys = std::make_shared<std::vector<bodyData>>();
 std::atomic<bool> keepRunning(true);
@@ -18,14 +18,14 @@ int updatePhysicsThread() {
             Sleep(1);
             continue;
         }
-        
+
         std::shared_ptr<std::vector<bodyData>> updating = std::make_shared<std::vector<bodyData>>();
 
         for (int i = 0; i < 0xFFFFFF; i++) {
             if (physList[i].entry != nullptr
                 && (physList[i].id & 0xFFFFFF) == i
                 && ((physList[i].entry->id & 0xFFFFFF) == (physList[i].id & 0xFFFFFF))) {
-                
+
                 physx::PxActor* actor = physList[i].entry->actor;
                 if (actor == nullptr) {
                     continue;
@@ -36,25 +36,28 @@ int updatePhysicsThread() {
                     continue;
                 }
 
-                physx::PxVec3 pos;
-                if (rigid->getGlobalPose().isValid())
-                {
-                    pos = rigid->getGlobalPose().p;
-                }
-                else
-                {
-                    // Handle invalid pose
-                    continue;
-                }
+                try {
+                    physx::PxTransform pose = rigid->getGlobalPose();
+                    if (!pose.isValid()) {
+                        continue;
+                    }
+                    physx::PxVec3 pos = pose.p;
 
-                bool isBody = actor->is<physx::PxRigidBody>() != nullptr;
-                bool isStatic = actor->is<physx::PxRigidStatic>() != nullptr;
-                float mass = -1;
-                
-                if (isBody) {
-                    physx::PxRigidBody* body = actor->is<physx::PxRigidBody>();
-                    mass = body->getMass();
-                    updating->push_back({pos, mass});
+                    bool isBody = actor->is<physx::PxRigidBody>() != nullptr;
+                    bool isStatic = actor->is<physx::PxRigidStatic>() != nullptr;
+                    float mass = -1;
+
+                    if (isBody) {
+                        physx::PxRigidBody* body = actor->is<physx::PxRigidBody>();
+                        if (body != nullptr) {
+                            mass = body->getMass();
+                            updating->push_back({ pos, mass });
+                        }
+                    }
+                }
+                catch (const std::exception& e) {
+                    std::cerr << "Exception caught while processing rigid actor: " << e.what() << std::endl;
+                    continue;
                 }
             }
             else {
