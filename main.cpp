@@ -48,6 +48,8 @@ int main()
 	initGameHooks();
 	fprintf(Con::fpout, "game functions hooked\n");
 
+	//todo: we should check if device is already created (does present or draw have a device?) if so detach gracefully.
+	// since we dont yet know a way to force a new DXGI::Create
 	initDxHooks2();
 	fprintf(Con::fpout, "D3D11.1 hooked\n");
 
