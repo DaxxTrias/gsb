@@ -137,6 +137,8 @@ void drawMenu() {
 		showmenu = !showmenu;
 	}
 
+
+	//todo: add a waypoint system. (Similar to navgrid. and always show these positions on the W2S regardless of distance if enabled
 	if (showmenu) {
 		ImGui::Begin("Menu");
 

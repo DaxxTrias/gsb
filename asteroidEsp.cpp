@@ -106,7 +106,7 @@ static bool testObjectPtr(asteroidStruct* object) {
 }
 
 void drawAsteroidESP(const bodyData& ply) {
-	//todo: when approaching a random space station all results vanish temporarily? only occured once but keep eye out for repeat
+	//todo: when approaching a space station all results vanish temporarily?
 	//todo: drawLine works now but its contingent on far asteroids, instead of working for either near or far
 	//todo: even when esp disabled we still parse all the asteroids. we could optimize for perf in this scenario.
 	//todo: use player resolution to clamp rendering angles. we did good to prevent negative XY, now lets present stuff from the other side

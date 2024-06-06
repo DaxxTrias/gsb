@@ -76,17 +76,23 @@ int updatePhysicsThread() {
                     continue;
                 }
 
-                physx::PxRigidActor* rigid = actor->is<physx::PxRigidActor>(); // now this is getting an access violation. null deref?
-                if (rigid == nullptr || (uint64_t)rigid > 0xFFFF'FFFF'FFFF'0000) {
+                try {
+                    physx::PxRigidActor* rigid = actor->is<physx::PxRigidActor>();
+                    if (rigid == nullptr || (uint64_t)rigid > 0xFFFF'FFFF'FFFF'0000) {
+                        continue;
+                    }
+
+                    CachedPoseData cachedPose = getCachedPose(rigid, i);
+                    if (!cachedPose.isValid) {
+                        continue;
+                    }
+
+                    updating->push_back({ cachedPose.pos, cachedPose.mass });
+                }
+                catch (const std::exception& e) {
+                    std::cerr << "Exception caught while processing actor: " << e.what() << std::endl;
                     continue;
                 }
-
-                CachedPoseData cachedPose = getCachedPose(rigid, i);
-                if (!cachedPose.isValid) {
-                    continue;
-                }
-
-                updating->push_back({ cachedPose.pos, cachedPose.mass });
             }
             else {
                 if ((physList[i].id & 0xFFFFFF) != (i & 0xFFFFFF)) {
