@@ -339,6 +339,7 @@ typedef __int64 (*getPxActorFromList_type)(__int64 list, int id);
 typedef __int64 (*setupGameConfig_type)(__int64 a1, unsigned int a2, __int64* preHashName, __int64 a4, __int64 a5, float value, int a7, __int64* a8, __int64* a9);
 typedef __int64 (*createClassInstance_type)(__int64 a1, unsigned int a2, char** a3, __int64 a4, char a5);
 typedef asteroidStruct* (*someGetObjectOrAsteroid_type)(__int64 a1, __int64 id);
+//typedef __int64 (*someGetObjectOrAsteroid_type)(__int64 a1, __int64 id);
 
 extern std::unordered_map<int, SceneInstanceManager*> sceneInstances;
 extern std::vector<SceneRoot*> sceneRoots;

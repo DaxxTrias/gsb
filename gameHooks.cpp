@@ -166,6 +166,15 @@ asteroidStruct* __fastcall someGetObjectOrAsteroid_hook(__int64 a1, __int64 id) 
 	return asteroid;
 }
 
+/*
+__int64 __fastcall someGetObjectOrAsteroid_hook(__int64 a1, __int64 id) {
+	
+	fprintf(Con::fpout, "someGetObjectOrAsteroid %llx %llx\n", a1, id);
+
+	return FnCast("someGetObjectOrAsteroid", someGetObjectOrAsteroid_or)(a1, id);
+}
+*/
+
 void initGameHooks() {
 	or_setDevConsoleState = findSignature<setDevConsoleState_type>(getStarbaseExe(), setDevConsoleState_pattern);
 	//placeHook("setDevConsoleState", or_setDevConsoleState, setDevConsoleState_hook);
@@ -212,7 +221,7 @@ void initGameHooks() {
 	//MessageBoxA(nullptr, "test", "test", MB_OK);
 
 	someGetObjectOrAsteroid_or = findSignature<someGetObjectOrAsteroid_type>(getStarbaseExe(), someGetObjectOrAsteroid_pattern);
-	//placeHook("someGetObjectOrAsteroid", someGetObjectOrAsteroid_or, someGetObjectOrAsteroid_hook);
+	placeHook("someGetObjectOrAsteroid", someGetObjectOrAsteroid_or, someGetObjectOrAsteroid_hook);
 
 	//uint64_t preSetupC = findSignature<uint64_t>(getStarbaseExe(), setupGameConfig_pattern) + 0x144;
 	//or_setupGameConfig = (setupGameConfig_type)(preSetupC + 5 + (*(int*)(preSetupC + 1)));
