@@ -9,6 +9,7 @@
 #include <atomic>
 #include <iostream>
 #include <unordered_map>
+#include <exception>
 
 struct CachedPoseData {
     physx::PxVec3 pos;
@@ -27,6 +28,11 @@ CachedPoseData getCachedPose(physx::PxRigidActor* rigid, int index) {
 
     CachedPoseData data;
     try {
+        if (rigid == nullptr) {
+            // lua GC constantly shuffles memory around, we should expect a certain amount of nulls when using this particular method
+            //todo: ie look for alternate player positioning coords (playerEnt maybe?)
+            throw std::runtime_error("rigid pointer is null");
+        }
         physx::PxTransform pose = rigid->getGlobalPose();
         if (!pose.isValid()) {
             data.isValid = false;

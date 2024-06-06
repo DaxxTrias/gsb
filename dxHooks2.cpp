@@ -194,7 +194,7 @@ void __stdcall hookD3D11Draw(ID3D11DeviceContext* pContext, UINT VertexCount, UI
 	return phookD3D11Draw(pContext, VertexCount, StartVertexLocation);
 }
 
-HRESULT STDMETHODCALLTYPE CreateSwapChainForHwnd_hook(IDXGIFactory2* This, _In_  ID3D11Device* pDevice, 
+static HRESULT STDMETHODCALLTYPE CreateSwapChainForHwnd_hook(IDXGIFactory2* This, _In_  ID3D11Device* pDevice, 
 	_In_  HWND hWnd, _In_ const DXGI_SWAP_CHAIN_DESC1* pDesc, _In_opt_  const DXGI_SWAP_CHAIN_FULLSCREEN_DESC* pFullscreenDesc, 
 	_In_opt_  IDXGIOutput* pRestrictToOutput, _COM_Outptr_  IDXGISwapChain1** ppSwapChain) {
 
@@ -269,6 +269,8 @@ void initDxHooks2() {
 		MessageBoxA(nullptr, "GameOverlayRenderer64.dll not found", "Error", MB_OK);
 		return;
 	}
+	//todo: if we investigate steam overlay i bet we can find the area where it hooks the swapchain if it beats us to it
+	// maybe we could just grab it from there? which would let us defeat the need to inject super early
 	const char* CreateSwapChainForHwnd_pattern =
 		"48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 41 56 48 83 EC 40 48 8B F1 49 8B D9 48 8D 0D ? ? ? ? 49 8B F8 4C 8B F2 E8 ? ? ? ? 48 8B 44 24";
 	CreateSwapChainForHwnd_or = findSignature<CreateSwapChainForHwnd_type>((unsigned char*)gameOverlayRenderer, CreateSwapChainForHwnd_pattern);
