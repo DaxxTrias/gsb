@@ -11,14 +11,81 @@
 #include <streambuf>
 #include <variant>
 #include "console.h"
-
 #include <iostream>
 #include <filesystem>
+#include <unordered_set>
+#include <string>
 
 using nlohmann::json;
 
 static bool showmenu = false;
 static std::unordered_map<std::string, SettingsMeta> options;
+
+// To keep track of toggled filter states
+struct FilterState {
+	std::unordered_map<std::string, bool> filters = {
+		{"ice", false},
+		{"ajatite", false},
+		{"valkite", false},
+		{"bastium", false},
+		{"charodium", true},
+		{"vokarium", false},
+		{"nhurgite", false},
+		{"surtrite", false},
+		{"karnite", false},
+		{"aegisium", true},
+		{"kutonium", true},
+		{"targium", true},
+		{"arkanium", true},
+		{"lukium", true},
+		{"ilmatrium", true},
+		{"ymirium", true},
+		{"xhalium", true},
+		{"daltium", true},
+		{"haderite", true},
+		{"merkerium", true}
+	};
+};
+
+FilterState filterState;
+
+// Function to get active filters
+std::unordered_set<std::string> getActiveFilters() {
+	std::unordered_set<std::string> activeFilters;
+	for (const auto& [filter, isActive] : filterState.filters) {
+		if (isActive) {
+			activeFilters.insert(filter);
+		}
+	}
+	return activeFilters;
+}
+
+// Cached active filters to avoid recalculating them multiple times
+std::unordered_set<std::string> activeFiltersCache;
+bool cacheValid = false;
+
+void updateCache() {
+	activeFiltersCache = getActiveFilters();
+	cacheValid = true;
+}
+
+// Function to compare a parsed string against active filters
+bool isInFilter(const std::string& parsedString) {
+	if (!cacheValid) {
+		updateCache();
+	}
+	return activeFiltersCache.find(parsedString) != activeFiltersCache.end();
+}
+
+// Example of parsing function using the new system
+void parseAsteroids(const std::vector<std::string>& asteroids) {
+	for (const std::string& asteroid : asteroids) {
+		if (isInFilter(asteroid)) {
+			// Do something with the matched asteroid
+			printf("Matched asteroid: %s\n", asteroid.c_str());
+		}
+	}
+}
 
 SettingsMap *getSettingsMap() {
 	return &options;
@@ -130,7 +197,6 @@ inline void ImGuiSettingSlider(const char* name) {
 	ImGui::SliderFloat(name, getOptionPtr<float>(name),300.0f,9999.0f);
 }
 
-
 void drawMenu() {
 	const ImGuiColorEditFlags colorEditFlags = 
 		ImGuiColorEditFlags_AlphaPreview | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_NoLabel;
@@ -138,6 +204,7 @@ void drawMenu() {
 	if (GetAsyncKeyState(VK_INSERT) & 1) {
 		showmenu = !showmenu;
 	}
+
 	/*if (GetAsyncKeyState(VK_F3) & 1) {
 		kilLSwitch = !killSwitch;
 	}*/
@@ -149,41 +216,14 @@ void drawMenu() {
 
 		ImGui::Checkbox("asteroidEspEnabled", getOptionPtr<bool>("asteroidEspEnabled"));
 
-		static char asteroidFilterLQ[256] = "valki";
-		if (ImGui::TreeNode("asteroidFilterLQ")) {
-			ImGui::InputText("asteroidFilterLQ", asteroidFilterLQ, 255);
-			if (ImGui::Button("all ore")) { strcpy(asteroidFilterLQ, ""); }
-			if (ImGui::Button("ice ore")) { strcpy(asteroidFilterLQ, "ice"); }
-			if (ImGui::Button("ajatitite ore")) { strcpy(asteroidFilterLQ, "ajat"); }
-			if (ImGui::Button("valkite ore")) { strcpy(asteroidFilterLQ, "valki"); }
-			if (ImGui::Button("bastium ore")) { strcpy(asteroidFilterLQ, "bastiu"); }
-			if (ImGui::Button("charodium ore")) { strcpy(asteroidFilterLQ, "charo"); }
-			if (ImGui::Button("vokarium ore")) { strcpy(asteroidFilterLQ, "vokar"); }
-			if (ImGui::Button("nhurgite ore")) { strcpy(asteroidFilterLQ, "nhurg"); }
-			if (ImGui::Button("surtrite ore")) { strcpy(asteroidFilterLQ, "surtri"); }
-			if (ImGui::Button("karnite ore")) { strcpy(asteroidFilterLQ, "karnit"); }
+		if (ImGui::TreeNode("Asteroid Filters")) {
+			for (auto& [filter, isActive] : filterState.filters) {
+				if (ImGui::Checkbox(filter.c_str(), &isActive)) {
+					cacheValid = false;  // Invalidate cache when any filter changes
+				}
+			}
 			ImGui::TreePop();
 		}
-
-		static char asteroidFilterHQ[256] = "exor";
-		if (ImGui::TreeNode("asteroidFilterHQ")) {
-			ImGui::InputText("asteroidFilterHQ", asteroidFilterHQ, 255);
-			if (ImGui::Button("aegisium ore")) { strcpy(asteroidFilterHQ, "aegis"); }
-			if (ImGui::Button("kutonium ore")) { strcpy(asteroidFilterHQ, "kuton"); }
-			if (ImGui::Button("targium ore")) { strcpy(asteroidFilterHQ, "targiu"); }
-			if (ImGui::Button("arkanium ore")) { strcpy(asteroidFilterHQ, "arkan"); }
-			if (ImGui::Button("lukium ore")) { strcpy(asteroidFilterHQ, "lukiu"); }
-			if (ImGui::Button("ilmatrium ore")) { strcpy(asteroidFilterHQ, "ilmat"); }
-			if (ImGui::Button("ymirium ore")) { strcpy(asteroidFilterHQ, "ymiri"); }
-			if (ImGui::Button("xhalium ore")) { strcpy(asteroidFilterHQ, "xhali"); }
-			if (ImGui::Button("daltium ore")) { strcpy(asteroidFilterHQ, "dalti"); }
-			if (ImGui::Button("haderite ore")) { strcpy(asteroidFilterHQ, "hader"); }
-			ImGui::TreePop();
-		}
-
-		*getOptionPtr<std::string>("asteroidFilterLQ") = asteroidFilterLQ;
-
-		*getOptionPtr<std::string>("asteroidFilterHQ") = asteroidFilterHQ;
 
 		ImGuiSettingCheckBox("asteroidOreCheck");
 

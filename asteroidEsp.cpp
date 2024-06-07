@@ -139,8 +139,6 @@ void drawAsteroidESP(const bodyData& ply) {
 
 	ImGuiIO& io = ImGui::GetIO();
 	bool checkOre = getOption<bool>("asteroidOreCheck");
-	std::string filterOreLQ = getOption<std::string>("asteroidFilterLQ");
-	std::string filterOreHQ = getOption<std::string>("asteroidFilterHQ");
 	AsteroidRenderingSettings renderSettings = loadRenderingSettings();
 
 	for (uint64_t i = 0; i < maxObjects; i++) {
@@ -153,12 +151,8 @@ void drawAsteroidESP(const bodyData& ply) {
 			continue;
 		}
 
-		if (!strstr(object->type, filterOreLQ.c_str())) {
-			//todo: why does it lag and not show filtered results with 'ore' as filter, but it lags less & it shows everything with a blank filter?
-			continue;
-		}
-		if (!strstr(object->type, filterOreHQ.c_str())) {
-			//todo: why does it lag and not show filtered results with 'ore' as filter, but it lags less & it shows everything with a blank filter?
+
+		if (!strstr(object->type, filterOre.c_str())) {
 			continue;
 		}
 
