@@ -62,7 +62,7 @@ CachedPoseData getCachedPose(physx::PxRigidActor* rigid, int index) {
 int updatePhysicsThread() {
     while (keepRunning) {
         if (physList == nullptr) {
-            Sleep(1);
+            Sleep(20000); // if we try to get velocity characteristics before everythings loaded we can crash
             continue;
         }
 
@@ -94,7 +94,7 @@ int updatePhysicsThread() {
                 }
                 catch (const std::exception& e) {
                     std::cerr << "Exception caught while processing actor: " << e.what() << std::endl;
-                    continue;
+                    break;
                 }
             }
             else {

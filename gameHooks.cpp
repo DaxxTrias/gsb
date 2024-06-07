@@ -162,7 +162,7 @@ __int64 createClassInstance_hook(__int64 a1, unsigned int a2, char** a3, __int64
 
 asteroidStruct* __fastcall someGetObjectOrAsteroid_hook(__int64 a1, __int64 id) {
 	objectManager = a1;
-	asteroidStruct *asteroid = FnCast("someGetObjectOrAsteroid", someGetObjectOrAsteroid_or)(a1, id);
+	asteroidStruct *asteroid = FnCast("getObject", someGetObjectOrAsteroid_or)(a1, id);
 
 	if (getOption<bool>("debugMode")) {
 		if (strstr(asteroid->type, "ore")) {
