@@ -77,8 +77,8 @@ int updatePhysicsThread() {
                 }
 
                 try {
-                    physx::PxRigidActor* rigid = actor->is<physx::PxRigidActor>();
-                    if (rigid == nullptr || (uint64_t)rigid > 0xFFFF'FFFF'FFFF'0000) {
+                    physx::PxRigidActor* rigid = dynamic_cast<physx::PxRigidActor*>(actor);
+                    if (rigid == nullptr) {
                         continue;
                     }
 

@@ -131,9 +131,13 @@ HRESULT __stdcall hookD3D11Present1(IDXGISwapChain* pSwapChain, UINT SyncInterva
 		ImGui::SetWindowPos(ImVec2(0, 0), ImGuiCond_Always);
 		ImGui::SetWindowSize(ImVec2(io.DisplaySize.x, io.DisplaySize.y), ImGuiCond_Always);
 
-		drawAsteroidESP(ply);
-		drawPhysicsESP(bodys, ply);
-		//todo: drawStats (fps, velocity, XYZ, etc)
+		if (bool asteroidEspEnabled = getOption<bool>("asteroidEspEnabled"))
+		{
+			//todo: can probably check if localEnt initialized, and if not assume on main menu and sleep the render/processing loop?
+			drawAsteroidESP(ply);
+			drawPhysicsESP(bodys, ply);
+			//todo: drawStats (fps, velocity, XYZ, etc)
+		}
 
 		ImGui::End();
 	}
