@@ -187,6 +187,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="asteroidFiltering.cpp" />
     <ClCompile Include="console.cpp" />
     <ClCompile Include="drawStats.cpp" />
     <ClCompile Include="dxHooks2.cpp">
@@ -261,6 +262,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="asteroidFiltering.h" />
     <ClInclude Include="colors.h" />
     <ClInclude Include="console.h" />
     <ClInclude Include="drawStats.h" />

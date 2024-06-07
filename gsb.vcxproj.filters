@@ -199,6 +199,9 @@
     <ClCompile Include="drawStats.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="asteroidFiltering.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\lua-5.3.5\lualib.h">
@@ -379,6 +382,9 @@
       <Filter>Header Files\lua</Filter>
     </ClInclude>
     <ClInclude Include="drawStats.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="asteroidFiltering.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

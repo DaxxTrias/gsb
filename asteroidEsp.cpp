@@ -6,6 +6,8 @@
 #include <imgui_impl_win32.h>
 #include <imgui_impl_dx11.h>
 #include "menu.h"
+#include "asteroidFiltering.h"
+#include <vector>
 
 
 struct AsteroidSubData {
@@ -151,10 +153,8 @@ void drawAsteroidESP(const bodyData& ply) {
 			continue;
 		}
 
-
-		if (!strstr(object->type, filterOre.c_str())) {
-			continue;
-		}
+		std::vector<const char*> asteroid = { object->type };
+		parseAsteroids(asteroid);
 
 		physx::PxVec3 objectPos{ object->x, object->y, object->z };
 		float dist = calculateDistance(ply.pos, objectPos);

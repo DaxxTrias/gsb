@@ -15,77 +15,12 @@
 #include <filesystem>
 #include <unordered_set>
 #include <string>
+#include "asteroidFiltering.h"
 
 using nlohmann::json;
 
 static bool showmenu = false;
 static std::unordered_map<std::string, SettingsMeta> options;
-
-// To keep track of toggled filter states
-struct FilterState {
-	std::unordered_map<std::string, bool> filters = {
-		{"ice", false},
-		{"ajatite", false},
-		{"valkite", false},
-		{"bastium", false},
-		{"charodium", true},
-		{"vokarium", false},
-		{"nhurgite", false},
-		{"surtrite", false},
-		{"karnite", false},
-		{"aegisium", true},
-		{"kutonium", true},
-		{"targium", true},
-		{"arkanium", true},
-		{"lukium", true},
-		{"ilmatrium", true},
-		{"ymirium", true},
-		{"xhalium", true},
-		{"daltium", true},
-		{"haderite", true},
-		{"merkerium", true}
-	};
-};
-
-FilterState filterState;
-
-// Function to get active filters
-std::unordered_set<std::string> getActiveFilters() {
-	std::unordered_set<std::string> activeFilters;
-	for (const auto& [filter, isActive] : filterState.filters) {
-		if (isActive) {
-			activeFilters.insert(filter);
-		}
-	}
-	return activeFilters;
-}
-
-// Cached active filters to avoid recalculating them multiple times
-std::unordered_set<std::string> activeFiltersCache;
-bool cacheValid = false;
-
-void updateCache() {
-	activeFiltersCache = getActiveFilters();
-	cacheValid = true;
-}
-
-// Function to compare a parsed string against active filters
-bool isInFilter(const std::string& parsedString) {
-	if (!cacheValid) {
-		updateCache();
-	}
-	return activeFiltersCache.find(parsedString) != activeFiltersCache.end();
-}
-
-// Example of parsing function using the new system
-void parseAsteroids(const std::vector<std::string>& asteroids) {
-	for (const std::string& asteroid : asteroids) {
-		if (isInFilter(asteroid)) {
-			// Do something with the matched asteroid
-			printf("Matched asteroid: %s\n", asteroid.c_str());
-		}
-	}
-}
 
 SettingsMap *getSettingsMap() {
 	return &options;
