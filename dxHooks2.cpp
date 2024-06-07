@@ -135,7 +135,7 @@ HRESULT __stdcall hookD3D11Present1(IDXGISwapChain* pSwapChain, UINT SyncInterva
 		//todo: drawStats (fps, velocity, XYZ, etc)
 		if (getOption<bool>("asteroidEspEnabled"))
 			drawAsteroidESP(ply);
-		if (getOption<bool>("minPhysMass"))
+		if (getOption<bool>("drawPhysMass"))
 			drawPhysicsESP(bodys, ply);
 		//if (getOption<bool>("statsMode"))
 			//drawStats();
