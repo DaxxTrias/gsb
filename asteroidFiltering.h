@@ -7,7 +7,7 @@
 #include <unordered_map>
 
 // Function declarations
-void parseAsteroids(const std::vector<const char*>& asteroids);
+bool parseAsteroids(const std::vector<const char*>& asteroids);
 bool isInFilter(const char* parsedString);
 std::unordered_set<std::string> getActiveFilters();
 void updateCache();

@@ -29,7 +29,6 @@ struct FilterState {
 };
 
 FilterState filterState;
-
 std::unordered_set<std::string> activeFiltersCache;
 
 std::unordered_set<std::string> getActiveFilters() {
@@ -61,11 +60,13 @@ bool isInFilter(const char* parsedString) {
     return false;
 }
 
-void parseAsteroids(const std::vector<const char*>& asteroids) {
+bool parseAsteroids(const std::vector<const char*>& asteroids) {
     for (const char* asteroid : asteroids) {
         if (isInFilter(asteroid)) {
             // Do something with the matched asteroid
             //printf("Matched asteroid: %s\n", asteroid);
+            return true;
         }
     }
+    return false;
 }

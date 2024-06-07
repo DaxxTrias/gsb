@@ -154,7 +154,8 @@ void drawAsteroidESP(const bodyData& ply) {
 		}
 
 		std::vector<const char*> asteroid = { object->type };
-		parseAsteroids(asteroid);
+		if (!parseAsteroids(asteroid))
+			continue;
 
 		physx::PxVec3 objectPos{ object->x, object->y, object->z };
 		float dist = calculateDistance(ply.pos, objectPos);
