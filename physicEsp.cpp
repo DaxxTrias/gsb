@@ -16,7 +16,7 @@ void drawPhysicsESP(std::vector<bodyData>& bodys, bodyData ply) {
 
 	for (bodyData body : bodys) {
 
-		if (body.mass < getOption<bool>("minPhysMass")) {
+		if (body.mass < getOption<float>("minPhysMass")) {
 			continue;
 		}
 		sprintf(buff, "%f", body.mass);

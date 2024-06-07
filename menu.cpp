@@ -126,7 +126,7 @@ inline void ImGuiSettingCheckBox(const char* name) {
 }
 //SliderFloat(const char* label, float* v, float v_min, float v_max, const char* format, float power)
 inline void ImGuiSettingSlider(const char* name) {
-	ImGui::SliderFloat(name, getOptionPtr<float>(name),600.0f,9999.0f);
+	ImGui::SliderFloat(name, getOptionPtr<float>(name),300.0f,9999.0f);
 }
 
 

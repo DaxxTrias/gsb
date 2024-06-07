@@ -26,6 +26,8 @@ struct AsteroidRenderingSettings {
 	bool drawNear;
 	bool drawFar;
 	float farDistance;
+	float minPhysMass;
+	bool debugMode;
 	ImColor farColor;
 	ImColor lineFarColor;
 	ImColor nearColor;
@@ -77,6 +79,8 @@ static AsteroidRenderingSettings loadRenderingSettings() {
 	settings.drawFar = getOption<bool>("drawFarAsteroid");
 	settings.drawNear = getOption<bool>("drawNearAsteroid");
 	settings.farDistance = getOption<float>("farAsteroidDistance");
+	settings.minPhysMass = getOption<float>("minPhysMass");
+	settings.debugMode = getOption<bool>("debugMode");
 	settings.farColor = getOption<ImColor>("farAsteroidColor");
 	settings.nearColor = getOption<ImColor>("nearAstreoidColor");
 	settings.lineFarColor = getOption<ImColor>("lineAsteroidColor");
