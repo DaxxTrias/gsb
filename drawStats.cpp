@@ -7,7 +7,7 @@
 #include <imgui_impl_dx11.h>
 #include "menu.h"
 
-void drawStats()
+static void drawStats()
 {
 
 }

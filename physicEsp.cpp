@@ -19,7 +19,7 @@ void drawPhysicsESP(std::vector<bodyData>& bodys, bodyData ply) {
 		if (body.mass < getOption<float>("minPhysMass")) {
 			continue;
 		}
-		sprintf(buff, "%f", body.mass);
+		sprintf(buff, "%.0f", body.mass);
 		
 		physx::PxVec2 screenPos = worldToScreen(body.pos);
 

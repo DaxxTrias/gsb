@@ -138,7 +138,7 @@ HRESULT __stdcall hookD3D11Present1(IDXGISwapChain* pSwapChain, UINT SyncInterva
 		if (getOption<bool>("minPhysMass"))
 			drawPhysicsESP(bodys, ply);
 		if (getOption<bool>("statsMode"))
-			drawStats();
+			//drawStats();
 
 		ImGui::End();
 	}
