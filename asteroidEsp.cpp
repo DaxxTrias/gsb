@@ -62,6 +62,7 @@ static void drawAsteroid(const physx::PxVec3& plyPos, const physx::PxVec3& aster
 		}
 	}
 	else if (dist < settings.farDistance && settings.drawNear) {
+		//todo: scale font size the closer the distance is
 		physx::PxVec2 screenPos = worldToScreen(asteroidPos);
 		if (screenPos.x > 0 && screenPos.y > 0) {
 			ImGui::GetWindowDrawList()->AddText(
@@ -107,11 +108,12 @@ static bool testObjectPtr(asteroidStruct* object) {
 
 void drawAsteroidESP(const bodyData& ply) {
 	//todo: when approaching a space station all results vanish temporarily?
+	//	todo: above behavior seems to also occur randomly even when no nearby stations. perhaps invalid data poisons the cache?
+	//	todo: maybe whats happening is that the 'zone cube' is changing and thats resetting the array?
+	//	todo: easy to prove, just setup the stats XYZ
 	//todo: drawLine works now but its contingent on far asteroids, instead of working for either near or far
 	//todo: even when esp disabled we still parse all the asteroids. we could optimize for perf in this scenario.
 	//todo: use player resolution to clamp rendering angles. we did good to prevent negative XY, now lets present stuff from the other side
-	bool asteroidEspEnabled = getOption<bool>("asteroidEspEnabled");
-	if (!asteroidEspEnabled) return;
 
 	if (objectManager == 0) {
 		return;
