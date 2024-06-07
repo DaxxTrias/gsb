@@ -13,9 +13,9 @@
 
 struct CachedPoseData {
     physx::PxVec3 pos;
+    physx::PxVec3 vel;
     float mass;
     bool isValid;
-    physx::PxVec3 vel;
 };
 
 std::unordered_map<int, CachedPoseData> poseCache;
@@ -89,7 +89,8 @@ int updatePhysicsThread() {
                         continue;
                     }
 
-                    updating->push_back({ cachedPose.pos, cachedPose.mass });
+                    //updating->push_back({ cachedPose.pos, cachedPose.mass, cachedPose.vel });
+                    updating->push_back(bodyData{ cachedPose.pos, cachedPose.vel, cachedPose.mass});
                 }
                 catch (const std::exception& e) {
                     std::cerr << "Exception caught while processing actor: " << e.what() << std::endl;

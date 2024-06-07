@@ -133,12 +133,11 @@ HRESULT __stdcall hookD3D11Present1(IDXGISwapChain* pSwapChain, UINT SyncInterva
 
 		//todo: can probably check if localEnt initialized, and if not assume on main menu and sleep the render/processing loop?
 		//todo: drawStats (fps, velocity, XYZ, etc)
+
 		if (getOption<bool>("asteroidEspEnabled"))
 			drawAsteroidESP(ply);
 		if (getOption<bool>("drawPhysMass"))
 			drawPhysicsESP(bodys, ply);
-		//if (getOption<bool>("statsMode"))
-			//drawStats();
 
 		ImGui::End();
 	}

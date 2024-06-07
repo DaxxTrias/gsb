@@ -4,6 +4,8 @@
 #include <PxRigidBody.h>
 #include <PxRigidStatic.h>
 
+
+
 inline bool cmpf(float A, float B, float epsilon = 0.005f) {
 	return (fabs(A - B) < epsilon);
 }
@@ -19,23 +21,26 @@ std::vector<bodyData> generateBodyData() {
 
                 physx::PxActor* actor = physList[i].entry->actor;
                 if (actor == nullptr) {
-                    continue;
+                    return {};
                 }
 
                 physx::PxRigidActor* rigid = actor->is<physx::PxRigidActor>();
                 if (rigid == nullptr || (uint64_t)rigid > 0xFFFF'FFFF'FFFF'0000) {
-                    continue;
+                    return {};
                 }
+                else
+                    rigid->getGlobalPose().isValid();
+                
+                physx::PxVec3 pos = {};
 
-                physx::PxVec3 pos;
-                if (rigid == nullptr)
-                    continue;
-
-                if (rigid->getGlobalPose().isValid()) {
+                try
+                {
                     pos = rigid->getGlobalPose().p;
                 }
-                else {
-                    continue;
+                catch (const std::exception& e)
+                {
+                    throw;
+                    return {};
                 }
 
                 bool isStatic = actor->is<physx::PxRigidStatic>() != nullptr;
@@ -43,7 +48,8 @@ std::vector<bodyData> generateBodyData() {
                 if (isBody) {
                     physx::PxRigidBody* body = actor->is<physx::PxRigidBody>();
                     float mass = body->getMass();
-                    bodys.push_back({ pos, mass });
+                    physx::PxVec3 vel = body->getLinearVelocity();
+                    bodys.push_back(bodyData{ pos, vel, mass });
                 }
             }
             else {

@@ -1,4 +1,4 @@
 #pragma once
 #include "physUtils.h"
 
-void drawStats();
+void drawInfo();

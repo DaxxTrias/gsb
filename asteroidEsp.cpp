@@ -44,6 +44,52 @@ static float calculateDistance(const physx::PxVec3& pos1, const physx::PxVec3& p
 	return sqrtf(diff.x * diff.x + diff.y * diff.y + diff.z * diff.z);
 }
 
+static float calculateVelocity(const physx::PxVec3& vel) {
+	static physx::PxVec3 prevVel(0.0f, 0.0f, 0.0f);
+	static float cachedVelocity = 0.0f;
+
+	if (vel != prevVel) {
+		cachedVelocity = sqrtf(vel.x * vel.x + vel.y * vel.y + vel.z * vel.z);
+		prevVel = vel;
+	}
+	return cachedVelocity;
+}
+
+static void drawStats(const bodyData& ply, const AsteroidRenderingSettings& settings, const ImGuiIO& io) {
+	if (objectManager == 0) {
+		return;
+	}
+
+	uint32_t maxObjects = *(uint32_t*)(objectManager + 0x60068);
+	float speed = calculateVelocity(ply.vel);
+
+	char buffer[256];
+
+	// Draw "Stats" header
+	snprintf(buffer, sizeof(buffer), "Stats");
+	ImGui::GetWindowDrawList()->AddText(
+		ImGui::GetFont(), ImGui::GetFontSize(),
+		ImVec2(io.DisplaySize.x / 2, io.DisplaySize.y / 2 - 60), settings.lineFarColor, buffer);
+
+	// Draw number of asteroids
+	snprintf(buffer, sizeof(buffer), "Asteroids: %d", maxObjects);
+	ImGui::GetWindowDrawList()->AddText(
+		ImGui::GetFont(), ImGui::GetFontSize(),
+		ImVec2(io.DisplaySize.x / 2, io.DisplaySize.y / 2 - 40), settings.lineFarColor, buffer);
+
+	// Draw coordinates
+	snprintf(buffer, sizeof(buffer), "Coords: [%.0f, %.0f, %.0f]", ply.pos.x, ply.pos.y, ply.pos.z);
+	ImGui::GetWindowDrawList()->AddText(
+		ImGui::GetFont(), ImGui::GetFontSize(),
+		ImVec2(io.DisplaySize.x / 2, io.DisplaySize.y / 2 - 20), settings.lineFarColor, buffer);
+
+	// Draw velocity
+	snprintf(buffer, sizeof(buffer), "Velocity: %.2f m/s", speed);
+	ImGui::GetWindowDrawList()->AddText(
+		ImGui::GetFont(), ImGui::GetFontSize(),
+		ImVec2(io.DisplaySize.x / 2, io.DisplaySize.y / 2), settings.lineFarColor, buffer);
+}
+
 static void drawAsteroid(const physx::PxVec3& plyPos, const physx::PxVec3& asteroidPos, const char* type, float farDist, const AsteroidRenderingSettings& settings, const ImGuiIO& io) {
 	//todo: W2S doesnt seem to properly take into account FOV (such as when zooming)
 	
@@ -141,6 +187,8 @@ void drawAsteroidESP(const bodyData& ply) {
 	ImGuiIO& io = ImGui::GetIO();
 	bool checkOre = getOption<bool>("asteroidOreCheck");
 	AsteroidRenderingSettings renderSettings = loadRenderingSettings();
+
+	drawStats(ply, renderSettings, io);
 
 	for (uint64_t i = 0; i < maxObjects; i++) {
 		asteroidStruct* object = (asteroidStruct*)((*(uint64_t*)(objectManager + 0x60060) & 0xFFFFFFFFFFFFFFFCui64) + (0x150 * i));

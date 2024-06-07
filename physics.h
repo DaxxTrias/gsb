@@ -6,6 +6,7 @@
 
 struct bodyData {
 	physx::PxVec3 pos;
+	physx::PxVec3 vel;
 	float mass;
 };
 
