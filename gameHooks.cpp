@@ -165,10 +165,10 @@ asteroidStruct* __fastcall someGetObjectOrAsteroid_hook(__int64 a1, __int64 id) 
 	asteroidStruct *asteroid = FnCast("someGetObjectOrAsteroid", someGetObjectOrAsteroid_or)(a1, id);
 
 	if (getOption<bool>("debugMode")) {
-		//if (strstr(asteroid->type, "ore")) {
+		if (strstr(asteroid->type, "ore")) {
 			fprintf(Con::fpout, "asteroid %lld - %p [%.2f %.2f %.2f] %s\n", id, (void*)asteroid, asteroid->x, asteroid->y, asteroid->z, asteroid->type);
 			fflush(Con::fpout);
-		//}
+		}
 	}
 	return asteroid;
 }
