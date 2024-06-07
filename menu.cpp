@@ -117,7 +117,8 @@ bool getOptionSafe(std::string name, T &data) {
 }
 
 inline void ImGuiSettingEditColor4(const char *name) {
-	const ImGuiColorEditFlags colorEditFlags = ImGuiColorEditFlags_AlphaPreview | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_NoLabel;
+	const ImGuiColorEditFlags colorEditFlags = 
+		ImGuiColorEditFlags_AlphaPreview | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_NoLabel;
 	ImGui::ColorEdit4(name, (float*)&getOptionPtr<ImColor>(name)->Value, colorEditFlags);
 }
 
@@ -131,11 +132,15 @@ inline void ImGuiSettingSlider(const char* name) {
 
 
 void drawMenu() {
-	const ImGuiColorEditFlags colorEditFlags = ImGuiColorEditFlags_AlphaPreview | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_NoLabel;
+	const ImGuiColorEditFlags colorEditFlags = 
+		ImGuiColorEditFlags_AlphaPreview | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_NoLabel;
 
 	if (GetAsyncKeyState(VK_INSERT) & 1) {
 		showmenu = !showmenu;
 	}
+	/*if (GetAsyncKeyState(VK_F3) & 1) {
+		kilLSwitch = !killSwitch;
+	}*/
 
 	//todo: add a mass filter to display. Or some other way to filter out the non-chunky rocks if desired.
 	//todo: add a waypoint system. (Similar to navgrid. and always show these positions on the W2S regardless of distance if enabled
@@ -144,20 +149,41 @@ void drawMenu() {
 
 		ImGui::Checkbox("asteroidEspEnabled", getOptionPtr<bool>("asteroidEspEnabled"));
 
-		static char asteroidFilter[256] = "ore";
-		if (ImGui::TreeNode("asteroidFilter")) {
-			ImGui::InputText("asteroidFilter", asteroidFilter, 255);
-			if (ImGui::Button("all ore")) { strcpy(asteroidFilter, ""); }
-			if (ImGui::Button("ice ore")) { strcpy(asteroidFilter, "ice"); }
-			if (ImGui::Button("ajatitite ore")) { strcpy(asteroidFilter, "ajat"); }
-			if (ImGui::Button("valkite ore")) { strcpy(asteroidFilter, "valki"); }
-			if (ImGui::Button("charodium ore")) { strcpy(asteroidFilter, "charo"); }
-			if (ImGui::Button("lukium ore")) { strcpy(asteroidFilter, "lukiu"); }
-			if (ImGui::Button("ilmatrium ore")) { strcpy(asteroidFilter, "ilmat"); }
+		static char asteroidFilterLQ[256] = "valki";
+		if (ImGui::TreeNode("asteroidFilterLQ")) {
+			ImGui::InputText("asteroidFilterLQ", asteroidFilterLQ, 255);
+			if (ImGui::Button("all ore")) { strcpy(asteroidFilterLQ, ""); }
+			if (ImGui::Button("ice ore")) { strcpy(asteroidFilterLQ, "ice"); }
+			if (ImGui::Button("ajatitite ore")) { strcpy(asteroidFilterLQ, "ajat"); }
+			if (ImGui::Button("valkite ore")) { strcpy(asteroidFilterLQ, "valki"); }
+			if (ImGui::Button("bastium ore")) { strcpy(asteroidFilterLQ, "bastiu"); }
+			if (ImGui::Button("charodium ore")) { strcpy(asteroidFilterLQ, "charo"); }
+			if (ImGui::Button("vokarium ore")) { strcpy(asteroidFilterLQ, "vokar"); }
+			if (ImGui::Button("nhurgite ore")) { strcpy(asteroidFilterLQ, "nhurg"); }
+			if (ImGui::Button("surtrite ore")) { strcpy(asteroidFilterLQ, "surtri"); }
+			if (ImGui::Button("karnite ore")) { strcpy(asteroidFilterLQ, "karnit"); }
 			ImGui::TreePop();
 		}
 
-		*getOptionPtr<std::string>("asteroidFilter") = asteroidFilter;
+		static char asteroidFilterHQ[256] = "exor";
+		if (ImGui::TreeNode("asteroidFilterHQ")) {
+			ImGui::InputText("asteroidFilterHQ", asteroidFilterHQ, 255);
+			if (ImGui::Button("aegisium ore")) { strcpy(asteroidFilterHQ, "aegis"); }
+			if (ImGui::Button("kutonium ore")) { strcpy(asteroidFilterHQ, "kuton"); }
+			if (ImGui::Button("targium ore")) { strcpy(asteroidFilterHQ, "targiu"); }
+			if (ImGui::Button("arkanium ore")) { strcpy(asteroidFilterHQ, "arkan"); }
+			if (ImGui::Button("lukium ore")) { strcpy(asteroidFilterHQ, "lukiu"); }
+			if (ImGui::Button("ilmatrium ore")) { strcpy(asteroidFilterHQ, "ilmat"); }
+			if (ImGui::Button("ymirium ore")) { strcpy(asteroidFilterHQ, "ymiri"); }
+			if (ImGui::Button("xhalium ore")) { strcpy(asteroidFilterHQ, "xhali"); }
+			if (ImGui::Button("daltium ore")) { strcpy(asteroidFilterHQ, "dalti"); }
+			if (ImGui::Button("haderite ore")) { strcpy(asteroidFilterHQ, "hader"); }
+			ImGui::TreePop();
+		}
+
+		*getOptionPtr<std::string>("asteroidFilterLQ") = asteroidFilterLQ;
+
+		*getOptionPtr<std::string>("asteroidFilterHQ") = asteroidFilterHQ;
 
 		ImGuiSettingCheckBox("asteroidOreCheck");
 
