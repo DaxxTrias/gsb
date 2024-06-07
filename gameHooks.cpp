@@ -9,6 +9,7 @@
 #include <PxScene.h>
 #include <PxAggregate.h>
 #include <PxRigidBody.h>
+#include "menu.h"
 
 // most of the previous patterns seemed (mostly) accurate on v582, but some of the functions were rewritten
 const char* setDevConsoleState_pattern = "4C 8B DC 55 41 54 41 57 49 8D AB ? ? ? ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 80 79 ? ? 44 0F B6 E2";
@@ -159,10 +160,13 @@ __int64 createClassInstance_hook(__int64 a1, unsigned int a2, char** a3, __int64
 asteroidStruct* __fastcall someGetObjectOrAsteroid_hook(__int64 a1, __int64 id) {
 	objectManager = a1;
 	asteroidStruct *asteroid = FnCast("someGetObjectOrAsteroid", someGetObjectOrAsteroid_or)(a1, id);
-	/*if (strstr(asteroid->type, "ore")) {
-        fprintf(Con::fpout, "asteroid %lld - %p [%.2f %.2f %.2f] %s\n", id, (void*)asteroid, asteroid->x, asteroid->y, asteroid->z, asteroid->type);
-		fflush(Con::fpout);
-	}*/
+
+	if (getOption<bool>("debugMode")) {
+		if (strstr(asteroid->type, "ore")) {
+			fprintf(Con::fpout, "asteroid %lld - %p [%.2f %.2f %.2f] %s\n", id, (void*)asteroid, asteroid->x, asteroid->y, asteroid->z, asteroid->type);
+			fflush(Con::fpout);
+		}
+	}
 	return asteroid;
 }
 
