@@ -54,8 +54,7 @@ static void drawAsteroid(const physx::PxVec3& plyPos, const physx::PxVec3& aster
 		if (settings.drawFar) {
 			physx::PxVec2 screenPos = worldToScreen(asteroidPos);
 
-			//todo: this is a bad hardwire. we should use the player resolution to clamp rendering angles
-			if (screenPos.x > 0 && screenPos.y > 0 && screenPos.x < 1950 && screenPos.y < 1100) {
+			if (screenPos.x > 0 && screenPos.y > 0 && screenPos.x <= io.DisplaySize.x && screenPos.x <= io.DisplaySize.y) {
 				ImGui::GetWindowDrawList()->AddText(
 					ImGui::GetFont(), ImGui::GetFontSize(), ImVec2(screenPos.x, screenPos.y), settings.farColor, buff.c_str());
 			}
