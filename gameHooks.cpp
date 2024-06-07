@@ -173,6 +173,8 @@ asteroidStruct* __fastcall someGetObjectOrAsteroid_hook(__int64 a1, __int64 id) 
 	return asteroid;
 }
 
+// entPlayer / localPlayer setter func here
+
 /*
 __int64 __fastcall someGetObjectOrAsteroid_hook(__int64 a1, __int64 id) {
 	
@@ -232,7 +234,7 @@ void initGameHooks() {
 	//MessageBoxA(nullptr, "test", "test", MB_OK);
 
 	someGetObjectOrAsteroid_or = findSignature<someGetObjectOrAsteroid_type>(getStarbaseExe(), someGetObjectOrAsteroid_pattern);
-	placeHook("someGetObjectOrAsteroid", someGetObjectOrAsteroid_or, someGetObjectOrAsteroid_hook);
+	placeHook("getObject", someGetObjectOrAsteroid_or, someGetObjectOrAsteroid_hook);
 
 	//uint64_t preSetupC = findSignature<uint64_t>(getStarbaseExe(), setupGameConfig_pattern) + 0x144;
 	//or_setupGameConfig = (setupGameConfig_type)(preSetupC + 5 + (*(int*)(preSetupC + 1)));

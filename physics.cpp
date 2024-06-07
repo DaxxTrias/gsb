@@ -15,6 +15,7 @@ struct CachedPoseData {
     physx::PxVec3 pos;
     float mass;
     bool isValid;
+    physx::PxVec3 vel;
 };
 
 std::unordered_map<int, CachedPoseData> poseCache;
@@ -46,6 +47,7 @@ CachedPoseData getCachedPose(physx::PxRigidActor* rigid, int index) {
         data.pos = pose.p;
         physx::PxRigidBody* body = rigid->is<physx::PxRigidBody>();
         data.mass = (body != nullptr) ? body->getMass() : -1;
+        data.vel = (body != nullptr) ? body->getLinearVelocity() : physx::PxVec3(0, 0, 0);
         data.isValid = true;
     }
     catch (const std::exception& e) {
@@ -100,10 +102,7 @@ int updatePhysicsThread() {
                 }
             }
         }
-
-        // Ensure thread-safe update of bodys
         {
-            //std::lock_guard<std::mutex> lock(bodys_mutex);
             bodys = updating;
         }
 
