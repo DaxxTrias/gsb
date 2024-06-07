@@ -174,6 +174,10 @@ void drawMenu() {
 		
 		ImGuiSettingCheckBox("drawPhysMass");
 
+		ImGuiSettingSlider("minPhysMass");
+
+		ImGuiSettingCheckBox("debugMode");
+
 		if (ImGui::Button("save config")) {
 			saveConfig("gsb.cfg");
 		}

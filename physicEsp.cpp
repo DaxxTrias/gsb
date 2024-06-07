@@ -15,6 +15,10 @@ void drawPhysicsESP(std::vector<bodyData>& bodys, bodyData ply) {
 	}
 
 	for (bodyData body : bodys) {
+
+		if (body.mass < getOption<bool>("minPhysMass")) {
+			continue;
+		}
 		sprintf(buff, "%f", body.mass);
 		
 		physx::PxVec2 screenPos = worldToScreen(body.pos);
