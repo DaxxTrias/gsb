@@ -52,6 +52,9 @@ std::unordered_map<int, Actor*> actors;
 PhysListArray* physList = 0;
 uint64_t objectManager;
 
+//todo: maybe look into hooking the screenshot func in gameoverlayrenderer and then kill it, so we dont end up with ESP in ss
+//todo: bonus points if detect SS, hide ESP, then resume it.
+
 void setDevConsoleState_hook(__int64 a1, unsigned __int8 a2) {
 	FnCast("setDevConsoleState", or_setDevConsoleState)(a1, true);
 }

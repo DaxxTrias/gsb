@@ -196,6 +196,9 @@
     <ClCompile Include="libs\Minhook\src\trampoline.c">
       <Filter>Source Files\Minhook</Filter>
     </ClCompile>
+    <ClCompile Include="drawStats.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\lua-5.3.5\lualib.h">

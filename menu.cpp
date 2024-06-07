@@ -176,6 +176,8 @@ void drawMenu() {
 
 		ImGuiSettingSlider("minPhysMass");
 
+		ImGuiSettingCheckBox("statsMode");
+
 		ImGuiSettingCheckBox("debugMode");
 
 		if (ImGui::Button("save config")) {

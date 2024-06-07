@@ -68,14 +68,19 @@ int main()
 	return 0;
 }
 
+void Shutdown() {
+	fprintf(Con::fpout, "Shutting down\n");
+}
+
 BOOL APIENTRY DllMain(HINSTANCE hinstDLL,
 	DWORD fdwReason, LPVOID lpvReserved)
 {
 	switch (fdwReason)
 	{
-	case DLL_PROCESS_ATTACH:
-		CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)main, NULL, 0, NULL);
-		CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)updatePhysicsThread, NULL, 0, NULL);
+		case DLL_PROCESS_ATTACH:
+			CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)main, NULL, 0, NULL);
+			CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)updatePhysicsThread, NULL, 0, NULL);
 	}
+
 	return TRUE;
 }
