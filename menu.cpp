@@ -182,6 +182,8 @@ void drawMenu() {
 
 		ImGuiSettingCheckBox("debugMode");
 
+		//todo: add a crosshair dot
+
 		if (ImGui::Button("save config")) {
 			saveConfig("gsb.cfg");
 		}

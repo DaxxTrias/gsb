@@ -24,7 +24,9 @@ struct FilterState {
        {"xhalium", true},
        {"daltium", true},
        {"haderite", true},
-       {"merkerium", true}
+       {"merkerium", true},
+       {"corazium", true},
+       {"ukonium", true},
     };
 };
 

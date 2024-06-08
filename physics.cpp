@@ -71,7 +71,7 @@ int updatePhysicsThread() {
 
         std::shared_ptr<std::vector<bodyData>> updating = std::make_shared<std::vector<bodyData>>();
 
-        for (int i = 0; i < 0x11170; i++) { // exceeds 50k objects at origin
+        for (int i = 0; i < 0x15F90; i++) { // 90k
             if (physList[i].entry == nullptr)
                 continue;
             if (physList[i].entry != nullptr
