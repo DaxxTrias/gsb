@@ -37,9 +37,6 @@ struct AsteroidRenderingSettings {
 	ImColor nearColor;
 };
 
-static std::vector<AsteroidSubData> asteroidsSubData;
-static std::vector<AsteroidCache> asteroidsCache;
-
 static AsteroidRenderingSettings loadRenderingSettings() {
 	AsteroidRenderingSettings settings;
 	settings.drawLine = getOption<bool>("drawAsteroidLine");
@@ -51,10 +48,14 @@ static AsteroidRenderingSettings loadRenderingSettings() {
 	settings.farColor = getOption<ImColor>("farAsteroidColor");
 	settings.nearColor = getOption<ImColor>("nearAstreoidColor");
 	settings.lineFarColor = getOption<ImColor>("lineAsteroidColor");
+	settings.drawStatsColor = getOption<ImColor>("drawStatsColor");
 	settings.drawStats = getOption<bool>("drawStats");
 
 	return settings;
 }
+
+static std::vector<AsteroidSubData> asteroidsSubData;
+static std::vector<AsteroidCache> asteroidsCache;
 
 static float calculateDistance(const physx::PxVec3& pos1, const physx::PxVec3& pos2) {
 	physx::PxVec3 diff = pos1 - pos2;
