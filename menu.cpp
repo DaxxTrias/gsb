@@ -176,9 +176,10 @@ void drawMenu() {
 		ImGuiSettingCheckBox("drawAsteroidLine");
 		
 		ImGuiSettingCheckBox("drawPhysMass");
-
 		ImGuiSettingSlider("minPhysMass");
 
+		ImGuiSettingEditColor4("drawStatsColor");
+		ImGui::SameLine();
 		ImGuiSettingCheckBox("drawStats");
 
 		ImGuiSettingCheckBox("debugMode");
