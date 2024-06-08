@@ -79,11 +79,15 @@ int updatePhysicsThread() {
                 if (physList[i].entry->actor == nullptr) {
 					continue;
 				}
+                physx::PxActor* actor = {};
 
-                physx::PxActor* actor = physList[i].entry->actor;
-                if (actor == nullptr) {
-                    continue;
-                }
+                try {
+					actor = physList[i].entry->actor;
+				}
+				catch (const std::exception& e) {
+					std::cerr << "Exception caught while processing actor: " << e.what() << std::endl;
+					break;
+				}
 
                 try {
                     //todo: we should attempt to capture entity list size rather then use a hard limit
