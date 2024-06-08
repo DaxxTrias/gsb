@@ -46,7 +46,7 @@ static AsteroidRenderingSettings loadRenderingSettings() {
 	settings.minPhysMass = getOption<float>("minPhysMass");
 	settings.debugMode = getOption<bool>("debugMode");
 	settings.farColor = getOption<ImColor>("farAsteroidColor");
-	settings.nearColor = getOption<ImColor>("nearAsteroidColor");
+	settings.nearColor = getOption<ImColor>("nearAstreoidColor");
 	settings.lineFarColor = getOption<ImColor>("lineAsteroidColor");
 	settings.drawStatsColor = getOption<ImColor>("drawStatsColor");
 	settings.drawStats = getOption<bool>("drawStats");
@@ -119,6 +119,11 @@ static void drawAsteroid(const physx::PxVec3& plyPos, const physx::PxVec3& aster
 		return;
 
 	float dist = calculateDistance(plyPos, asteroidPos);
+
+	if (dist < 1.0f) {
+		return;
+	}
+
 	std::string buff;
 	if (strchr(type, '\n') != nullptr) {
 		buff = std::to_string(static_cast<int>(dist));
@@ -144,6 +149,13 @@ static void drawAsteroid(const physx::PxVec3& plyPos, const physx::PxVec3& aster
 	}
 	else if (dist < settings.farDistance && settings.drawNear) {
 		//todo: scale font size the closer the distance is
+		physx::PxVec2 screenPos = worldToScreen(asteroidPos);
+		if (screenPos.x > 0 && screenPos.y > 0) {
+			ImGui::GetWindowDrawList()->AddText(
+				ImGui::GetFont(), ImGui::GetFontSize(), ImVec2(screenPos.x, screenPos.y), settings.nearColor, buff.c_str());
+		}
+	}
+	else {
 		physx::PxVec2 screenPos = worldToScreen(asteroidPos);
 		if (screenPos.x > 0 && screenPos.y > 0) {
 			ImGui::GetWindowDrawList()->AddText(
@@ -212,6 +224,8 @@ void drawAsteroidESP(const bodyData& ply) {
 		if (checkOre && !strstr(object->type, "ore")) {
 			continue;
 		}
+		if (!checkOre && strstr(object->type, "ore"))
+			continue;
 
 		std::vector<const char*> asteroid = { object->type };
 		if (!parseAsteroids(asteroid) && checkOre)
