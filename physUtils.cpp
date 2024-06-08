@@ -3,8 +3,7 @@
 #include <PxActor.h>
 #include <PxRigidBody.h>
 #include <PxRigidStatic.h>
-
-
+#include "killSwitch.h"
 
 inline bool cmpf(float A, float B, float epsilon = 0.005f) {
 	return (fabs(A - B) < epsilon);
@@ -12,6 +11,9 @@ inline bool cmpf(float A, float B, float epsilon = 0.005f) {
 
 std::vector<bodyData> generateBodyData() {
     std::vector<bodyData> bodys;
+
+    if (killSwitch.load())
+        return bodys;
 
     if (physList != nullptr) {
         for (int i = 0; i < 0xFFFFFF; i++) {
