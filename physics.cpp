@@ -12,6 +12,7 @@
 #include <exception>
 #include <stdexcept>
 #include <Windows.h>
+#include "killSwitch.h"
 
 struct CachedPoseData {
     physx::PxVec3 pos;
@@ -62,7 +63,7 @@ CachedPoseData getCachedPose(physx::PxRigidActor* rigid, int index) {
 }
 
 int updatePhysicsThread() {
-    while (keepRunning) {
+    while (keepRunning && !killSwitch.load()) {
         if (physList == nullptr) {
             Sleep(10);
             continue;
@@ -70,7 +71,7 @@ int updatePhysicsThread() {
 
         std::shared_ptr<std::vector<bodyData>> updating = std::make_shared<std::vector<bodyData>>();
 
-        for (int i = 0; i < 0x8000; i++) {
+        for (int i = 0; i < 0x11170; i++) { // exceeds 50k objects at origin
             if (physList[i].entry == nullptr)
                 continue;
             if (physList[i].entry != nullptr

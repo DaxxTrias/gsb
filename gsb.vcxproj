@@ -202,6 +202,7 @@
     <ClCompile Include="fnv1a.cpp" />
     <ClCompile Include="gameHooks.cpp" />
     <ClCompile Include="hookUtils.cpp" />
+    <ClCompile Include="killSwitch.cpp" />
     <ClCompile Include="libs\imgui\imgui.cpp" />
     <ClCompile Include="libs\imgui\imgui_demo.cpp" />
     <ClCompile Include="libs\imgui\imgui_draw.cpp" />
@@ -279,6 +280,7 @@
     <ClInclude Include="fnv1a.h" />
     <ClInclude Include="gameHooks.h" />
     <ClInclude Include="hookUtils.h" />
+    <ClInclude Include="killSwitch.h" />
     <ClInclude Include="libs\imgui\imconfig.h" />
     <ClInclude Include="libs\imgui\imgui.h" />
     <ClInclude Include="libs\imgui\imgui_impl_dx11.h" />

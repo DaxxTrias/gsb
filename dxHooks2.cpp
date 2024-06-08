@@ -1,7 +1,7 @@
 #include "dxHooks2.h"
 #include <Windows.h>
 #include "hookUtils.h"
-#include "MinHook.h" //detour x86&x64
+#include "MinHook.h"
 #include "dxShadersHook.h"
 #include <imgui.h>
 #include <imgui_impl_win32.h>
@@ -13,6 +13,7 @@
 #include "physUtils.h"
 #include "asteroidEsp.h"
 #include "physicEsp.h"
+#include "KillSwitch.h"
 
 typedef HRESULT(__stdcall* D3D11Present1Hook) (IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT Flags, 
 	const DXGI_PRESENT_PARAMETERS* pPresentParameters);
@@ -123,6 +124,12 @@ HRESULT __stdcall hookD3D11Present1(IDXGISwapChain* pSwapChain, UINT SyncInterva
 	drawMenu();
 
 	if (initonce) {
+		
+		if (GetAsyncKeyState(VK_F3) & 1) {
+			killSwitch = !killSwitch;
+			fprintf(Con::fpout, "Killswitch: %s\n", killSwitch.load() ? "ON" : "OFF");
+		}
+
 		std::vector<bodyData> bodys = generateBodyData();
 		bodyData ply = getPlyByMass(bodys);
 		setCamPos(ply.pos);
@@ -134,12 +141,15 @@ HRESULT __stdcall hookD3D11Present1(IDXGISwapChain* pSwapChain, UINT SyncInterva
 		//todo: can probably check if localEnt initialized, and if not assume on main menu and sleep the render/processing loop?
 		//todo: drawStats (fps, velocity, XYZ, etc)
 
-		if (getOption<bool>("asteroidEspEnabled"))
-			drawAsteroidESP(ply);
-		if (getOption<bool>("drawPhysMass"))
-			drawPhysicsESP(bodys, ply);
-		if (getOption<bool>("drawStats"))
-			drawStats(ply);
+		if (!killSwitch.load())
+		{
+			if (getOption<bool>("asteroidEspEnabled"))
+				drawAsteroidESP(ply);
+			if (getOption<bool>("drawPhysMass"))
+				drawPhysicsESP(bodys, ply);
+			if (getOption<bool>("drawStats"))
+				drawStats(ply);
+		}
 
 		ImGui::End();
 	}
