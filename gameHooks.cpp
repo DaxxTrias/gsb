@@ -170,10 +170,10 @@ asteroidStruct* __fastcall someGetObjectOrAsteroid_hook(__int64 a1, __int64 id) 
 			fprintf(Con::fpout, "objManager: %llx asteroid %lld - %p [%.2f %.2f %.2f] %s\n", a1, id, (void*)asteroid, asteroid->x, asteroid->y, asteroid->z, asteroid->type);
 			fflush(Con::fpout);
 		}
-		else {
+		/*else {
 			fprintf(Con::fpout, "other %lld - %p [%.2f %.2f %.2f] %s\n", id, (void*)asteroid, asteroid->x, asteroid->y, asteroid->z, asteroid->type);
 			fflush(Con::fpout);
-		}
+		}*/
 	}
 	return asteroid;
 }

@@ -155,13 +155,15 @@ static void drawAsteroid(const physx::PxVec3& plyPos, const physx::PxVec3& aster
 				ImGui::GetFont(), ImGui::GetFontSize(), ImVec2(screenPos.x, screenPos.y), settings.nearColor, buff.c_str());
 		}
 	}
-	else {
+	/*else if (settings.debugMode) {
 		physx::PxVec2 screenPos = worldToScreen(asteroidPos);
 		if (screenPos.x > 0 && screenPos.y > 0) {
 			ImGui::GetWindowDrawList()->AddText(
 				ImGui::GetFont(), ImGui::GetFontSize(), ImVec2(screenPos.x, screenPos.y), settings.nearColor, buff.c_str());
 		}
-	}
+	}*/
+	else
+		return;
 }
 
 static void drawAsteroidsFromCache(const bodyData& ply) {
@@ -221,9 +223,13 @@ void drawAsteroidESP(const bodyData& ply) {
 			continue;
 		}
 
+		if (!renderSettings.drawNear && !renderSettings.drawFar)
+			continue;
+
 		if (checkOre && !strstr(object->type, "ore")) {
 			continue;
 		}
+
 		if (!checkOre && strstr(object->type, "ore"))
 			continue;
 
