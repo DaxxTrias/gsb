@@ -29,7 +29,7 @@ struct AsteroidRenderingSettings {
 	bool drawFar;
 	float farDistance;
 	float minPhysMass;
-	bool statsMode;
+	bool drawStats;
 	bool debugMode;
 	ImColor farColor;
 	ImColor lineFarColor;
@@ -57,6 +57,11 @@ static float calculateVelocity(const physx::PxVec3& vel) {
 
 static void drawStats(const bodyData& ply, const AsteroidRenderingSettings& settings, const ImGuiIO& io) {
 	if (objectManager == 0) {
+		return;
+	}
+
+	bool drawStats = getOption<bool>("drawStats");
+	if (!drawStats) {
 		return;
 	}
 
@@ -100,7 +105,7 @@ static void drawAsteroid(const physx::PxVec3& plyPos, const physx::PxVec3& aster
 		if (settings.drawFar) {
 			physx::PxVec2 screenPos = worldToScreen(asteroidPos);
 
-			if (screenPos.x > 0 && screenPos.y > 0 && screenPos.x <= io.DisplaySize.x && screenPos.x <= io.DisplaySize.y) {
+			if (screenPos.x > 0 && screenPos.y > 0 && screenPos.x <= io.DisplaySize.x && screenPos.y <= io.DisplaySize.y) {
 				ImGui::GetWindowDrawList()->AddText(
 					ImGui::GetFont(), ImGui::GetFontSize(), ImVec2(screenPos.x, screenPos.y), settings.farColor, buff.c_str());
 			}
@@ -132,7 +137,7 @@ static AsteroidRenderingSettings loadRenderingSettings() {
 	settings.farColor = getOption<ImColor>("farAsteroidColor");
 	settings.nearColor = getOption<ImColor>("nearAstreoidColor");
 	settings.lineFarColor = getOption<ImColor>("lineAsteroidColor");
-	settings.statsMode = getOption<bool>("statsMode");
+	settings.drawStats = getOption<bool>("drawStats");
 
 	return settings;
 }
@@ -188,8 +193,6 @@ void drawAsteroidESP(const bodyData& ply) {
 	bool checkOre = getOption<bool>("asteroidOreCheck");
 	AsteroidRenderingSettings renderSettings = loadRenderingSettings();
 
-	drawStats(ply, renderSettings, io);
-
 	for (uint64_t i = 0; i < maxObjects; i++) {
 		asteroidStruct* object = (asteroidStruct*)((*(uint64_t*)(objectManager + 0x60060) & 0xFFFFFFFFFFFFFFFCui64) + (0x150 * i));
 		if (testObjectPtr(object)) {
@@ -225,6 +228,7 @@ void drawAsteroidESP(const bodyData& ply) {
 
 		float maxDist = (subData.ptr == object) ? subData.maxDist : 0;
 		drawAsteroid(ply.pos, objectPos, object->type, maxDist, renderSettings, io);
+		drawStats(ply, renderSettings, io);
 
 		AsteroidCache cache;
 		cache.ind = static_cast<uint32_t>(i);

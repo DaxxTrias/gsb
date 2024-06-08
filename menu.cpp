@@ -179,7 +179,7 @@ void drawMenu() {
 
 		ImGuiSettingSlider("minPhysMass");
 
-		ImGuiSettingCheckBox("statsMode");
+		ImGuiSettingCheckBox("drawStats");
 
 		ImGuiSettingCheckBox("debugMode");
 
