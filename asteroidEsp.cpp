@@ -39,6 +39,22 @@ struct AsteroidRenderingSettings {
 static std::vector<AsteroidSubData> asteroidsSubData;
 static std::vector<AsteroidCache> asteroidsCache;
 
+static AsteroidRenderingSettings loadRenderingSettings() {
+	AsteroidRenderingSettings settings;
+	settings.drawLine = getOption<bool>("drawAsteroidLine");
+	settings.drawFar = getOption<bool>("drawFarAsteroid");
+	settings.drawNear = getOption<bool>("drawNearAsteroid");
+	settings.farDistance = getOption<float>("farAsteroidDistance");
+	settings.minPhysMass = getOption<float>("minPhysMass");
+	settings.debugMode = getOption<bool>("debugMode");
+	settings.farColor = getOption<ImColor>("farAsteroidColor");
+	settings.nearColor = getOption<ImColor>("nearAstreoidColor");
+	settings.lineFarColor = getOption<ImColor>("lineAsteroidColor");
+	settings.drawStats = getOption<bool>("drawStats");
+
+	return settings;
+}
+
 static float calculateDistance(const physx::PxVec3& pos1, const physx::PxVec3& pos2) {
 	physx::PxVec3 diff = pos1 - pos2;
 	return sqrtf(diff.x * diff.x + diff.y * diff.y + diff.z * diff.z);
@@ -55,17 +71,16 @@ static float calculateVelocity(const physx::PxVec3& vel) {
 	return cachedVelocity;
 }
 
-static void drawStats(const bodyData& ply, const AsteroidRenderingSettings& settings, const ImGuiIO& io) {
+void drawStats(const bodyData& ply) {
 	if (objectManager == 0) {
 		return;
 	}
 
-	bool drawStats = getOption<bool>("drawStats");
-	if (!drawStats) {
-		return;
-	}
+	ImGuiIO& io = ImGui::GetIO();
+	AsteroidRenderingSettings settings = loadRenderingSettings();
 
 	uint32_t maxObjects = *(uint32_t*)(objectManager + 0x60068);
+	
 	float speed = calculateVelocity(ply.vel);
 
 	char buffer[256];
@@ -74,25 +89,25 @@ static void drawStats(const bodyData& ply, const AsteroidRenderingSettings& sett
 	snprintf(buffer, sizeof(buffer), "Stats");
 	ImGui::GetWindowDrawList()->AddText(
 		ImGui::GetFont(), ImGui::GetFontSize(),
-		ImVec2(io.DisplaySize.x / 2, io.DisplaySize.y / 2 - 60), settings.lineFarColor, buffer);
+		ImVec2(0,0), settings.lineFarColor, buffer);
 
 	// Draw number of asteroids
 	snprintf(buffer, sizeof(buffer), "Asteroids: %d", maxObjects);
 	ImGui::GetWindowDrawList()->AddText(
 		ImGui::GetFont(), ImGui::GetFontSize(),
-		ImVec2(io.DisplaySize.x / 2, io.DisplaySize.y / 2 - 40), settings.lineFarColor, buffer);
+		ImVec2(0, 20), settings.lineFarColor, buffer);
 
 	// Draw coordinates
 	snprintf(buffer, sizeof(buffer), "Coords: [%.0f, %.0f, %.0f]", ply.pos.x, ply.pos.y, ply.pos.z);
 	ImGui::GetWindowDrawList()->AddText(
 		ImGui::GetFont(), ImGui::GetFontSize(),
-		ImVec2(io.DisplaySize.x / 2, io.DisplaySize.y / 2 - 20), settings.lineFarColor, buffer);
+		ImVec2(0, 40), settings.lineFarColor, buffer);
 
 	// Draw velocity
-	snprintf(buffer, sizeof(buffer), "Velocity: %.2f m/s", speed);
+	snprintf(buffer, sizeof(buffer), "Velocity: %f.2 m/s", speed);
 	ImGui::GetWindowDrawList()->AddText(
 		ImGui::GetFont(), ImGui::GetFontSize(),
-		ImVec2(io.DisplaySize.x / 2, io.DisplaySize.y / 2), settings.lineFarColor, buffer);
+		ImVec2(0, 60), settings.lineFarColor, buffer);
 }
 
 static void drawAsteroid(const physx::PxVec3& plyPos, const physx::PxVec3& asteroidPos, const char* type, float farDist, const AsteroidRenderingSettings& settings, const ImGuiIO& io) {
@@ -124,22 +139,6 @@ static void drawAsteroid(const physx::PxVec3& plyPos, const physx::PxVec3& aster
 				ImGui::GetFont(), ImGui::GetFontSize(), ImVec2(screenPos.x, screenPos.y), settings.nearColor, buff.c_str());
 		}
 	}
-}
-
-static AsteroidRenderingSettings loadRenderingSettings() {
-	AsteroidRenderingSettings settings;
-	settings.drawLine = getOption<bool>("drawAsteroidLine");
-	settings.drawFar = getOption<bool>("drawFarAsteroid");
-	settings.drawNear = getOption<bool>("drawNearAsteroid");
-	settings.farDistance = getOption<float>("farAsteroidDistance");
-	settings.minPhysMass = getOption<float>("minPhysMass");
-	settings.debugMode = getOption<bool>("debugMode");
-	settings.farColor = getOption<ImColor>("farAsteroidColor");
-	settings.nearColor = getOption<ImColor>("nearAstreoidColor");
-	settings.lineFarColor = getOption<ImColor>("lineAsteroidColor");
-	settings.drawStats = getOption<bool>("drawStats");
-
-	return settings;
 }
 
 static void drawAsteroidsFromCache(const bodyData& ply) {
@@ -192,7 +191,6 @@ void drawAsteroidESP(const bodyData& ply) {
 	ImGuiIO& io = ImGui::GetIO();
 	bool checkOre = getOption<bool>("asteroidOreCheck");
 	AsteroidRenderingSettings renderSettings = loadRenderingSettings();
-	drawStats(ply, renderSettings, io);
 
 	for (uint64_t i = 0; i < maxObjects; i++) {
 		asteroidStruct* object = (asteroidStruct*)((*(uint64_t*)(objectManager + 0x60060) & 0xFFFFFFFFFFFFFFFCui64) + (0x150 * i));

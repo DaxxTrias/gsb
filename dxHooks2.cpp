@@ -138,6 +138,8 @@ HRESULT __stdcall hookD3D11Present1(IDXGISwapChain* pSwapChain, UINT SyncInterva
 			drawAsteroidESP(ply);
 		if (getOption<bool>("drawPhysMass"))
 			drawPhysicsESP(bodys, ply);
+		if (getOption<bool>("drawStats"))
+			drawStats(ply);
 
 		ImGui::End();
 	}
