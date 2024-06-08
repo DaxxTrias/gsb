@@ -62,7 +62,7 @@ CachedPoseData getCachedPose(physx::PxRigidActor* rigid, int index) {
 int updatePhysicsThread() {
     while (keepRunning) {
         if (physList == nullptr) {
-            Sleep(20000); // if we try to get velocity characteristics before everythings loaded we can crash
+            Sleep(10000); // if we try to get velocity characteristics before everythings loaded we can crash
             continue;
         }
 
@@ -79,8 +79,9 @@ int updatePhysicsThread() {
                 }
 
                 try {
-                    physx::PxRigidActor* rigid = dynamic_cast<physx::PxRigidActor*>(actor);
-                    if (rigid == nullptr) {
+                    //todo: we should attempt to capture entity list size rather then use a hard limit
+                    physx::PxRigidActor* rigid = actor->is<physx::PxRigidActor>();
+                    if (rigid == nullptr || (uint64_t)rigid > 0xFFFF'FFFF'FFFF'0000) {
                         continue;
                     }
 
