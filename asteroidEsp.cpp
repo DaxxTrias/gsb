@@ -192,6 +192,7 @@ void drawAsteroidESP(const bodyData& ply) {
 	ImGuiIO& io = ImGui::GetIO();
 	bool checkOre = getOption<bool>("asteroidOreCheck");
 	AsteroidRenderingSettings renderSettings = loadRenderingSettings();
+	drawStats(ply, renderSettings, io);
 
 	for (uint64_t i = 0; i < maxObjects; i++) {
 		asteroidStruct* object = (asteroidStruct*)((*(uint64_t*)(objectManager + 0x60060) & 0xFFFFFFFFFFFFFFFCui64) + (0x150 * i));
@@ -228,7 +229,6 @@ void drawAsteroidESP(const bodyData& ply) {
 
 		float maxDist = (subData.ptr == object) ? subData.maxDist : 0;
 		drawAsteroid(ply.pos, objectPos, object->type, maxDist, renderSettings, io);
-		drawStats(ply, renderSettings, io);
 
 		AsteroidCache cache;
 		cache.ind = static_cast<uint32_t>(i);

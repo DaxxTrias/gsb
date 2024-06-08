@@ -62,7 +62,7 @@ CachedPoseData getCachedPose(physx::PxRigidActor* rigid, int index) {
 int updatePhysicsThread() {
     while (keepRunning) {
         if (physList == nullptr) {
-            Sleep(10000); // if we try to get velocity characteristics before everythings loaded we can crash
+            Sleep(10);
             continue;
         }
 
