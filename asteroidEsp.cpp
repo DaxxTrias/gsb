@@ -104,8 +104,7 @@ void drawStats(const bodyData& ply) {
 		ImVec2(5, 40), settings.lineFarColor, buffer);
 
 	// Draw velocity
-	//snprintf(buffer, sizeof(buffer), "Velocity: %f.2 m/s", speed);
-	snprintf(buffer, sizeof(buffer), "Velocity: %f m/s", speed);
+	snprintf(buffer, sizeof(buffer), "Velocity: %.0f m/s", speed);
 	ImGui::GetWindowDrawList()->AddText(
 		ImGui::GetFont(), ImGui::GetFontSize(),
 		ImVec2(5, 60), settings.lineFarColor, buffer);

@@ -215,6 +215,7 @@
     <ClCompile Include="libs\Minhook\src\HDE\hde64.c" />
     <ClCompile Include="libs\Minhook\src\hook.c" />
     <ClCompile Include="libs\Minhook\src\trampoline.c" />
+    <ClCompile Include="localPlayer.cpp" />
     <ClCompile Include="luaExecutor.cpp" />
     <ClCompile Include="luaHooks.cpp" />
     <ClCompile Include="main.cpp" />
@@ -225,6 +226,7 @@
     </ClCompile>
     <ClCompile Include="physics.cpp" />
     <ClCompile Include="physUtils.cpp" />
+    <ClCompile Include="playerEnt.cpp" />
     <ClCompile Include="render.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
