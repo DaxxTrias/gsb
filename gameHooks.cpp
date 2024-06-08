@@ -169,24 +169,14 @@ asteroidStruct* __fastcall someGetObjectOrAsteroid_hook(__int64 a1, __int64 id) 
 			fprintf(Con::fpout, "asteroid %lld - %p [%.2f %.2f %.2f] %s\n", id, (void*)asteroid, asteroid->x, asteroid->y, asteroid->z, asteroid->type);
 			fflush(Con::fpout);
 		}
+		/*else {
+			fprintf(Con::fpout, "other %lld - %p [%.2f %.2f %.2f] %s\n", id, (void*)asteroid, asteroid->x, asteroid->y, asteroid->z, asteroid->type);
+			fflush(Con::fpout);*/
 	}
 	return asteroid;
 }
 
 // entPlayer / localPlayer setter func here
-
-/*
-__int64 __fastcall someGetObjectOrAsteroid_hook(__int64 a1, __int64 id) {
-	
-	//fprintf(Con::fpout, "someGetObjectOrAsteroid %llx %llx\n", a1, id);
-
-	__int64 smreturn = FnCast("someGetObjectOrAsteroid", someGetObjectOrAsteroid_or)(a1, id);
-
-	fprintf(Con::fpout, "someGetObjectOrAsteroid %llx\n", smreturn);
-
-	return smreturn;
-}
-*/
 
 void initGameHooks() {
 	or_setDevConsoleState = findSignature<setDevConsoleState_type>(getStarbaseExe(), setDevConsoleState_pattern);

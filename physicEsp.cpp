@@ -14,7 +14,7 @@ void drawPhysicsESP(std::vector<bodyData>& bodys, bodyData ply) {
 		return;
 	}
 
-	for (bodyData body : bodys) {
+	for (bodyData& body : bodys) {
 
 		if (body.mass < getOption<float>("minPhysMass")) {
 			continue;
