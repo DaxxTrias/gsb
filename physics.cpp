@@ -70,7 +70,9 @@ int updatePhysicsThread() {
 
         std::shared_ptr<std::vector<bodyData>> updating = std::make_shared<std::vector<bodyData>>();
 
-        for (int i = 0; i < 0xFFFFFF; i++) {
+        for (int i = 0; i < 0x8000; i++) {
+            if (physList[i].entry == nullptr)
+                continue;
             if (physList[i].entry != nullptr
                 && (physList[i].id & 0xFFFFFF) == i
                 && ((physList[i].entry->id & 0xFFFFFF) == (physList[i].id & 0xFFFFFF))) {
