@@ -115,8 +115,17 @@ void drawStats(const bodyData& ply) {
 static void drawAsteroid(const physx::PxVec3& plyPos, const physx::PxVec3& asteroidPos, const char* type, float farDist, const AsteroidRenderingSettings& settings, const ImGuiIO& io) {
 	//todo: W2S doesnt seem to properly take into account FOV (such as when zooming)
 	
+	if (asteroidPos.x == 0 && asteroidPos.y == 0 && asteroidPos.z == 0)
+		return;
+
 	float dist = calculateDistance(plyPos, asteroidPos);
-	std::string buff = std::string(type) + " " + std::to_string(static_cast<int>(dist));
+	std::string buff;
+	if (strchr(type, '\n') != nullptr) {
+		buff = std::to_string(static_cast<int>(dist));
+	}
+	else {
+		buff = std::string(type) + " " + std::to_string(static_cast<int>(dist));
+	}
 
 	if (dist > settings.farDistance) {
 		if (settings.drawFar) {
@@ -205,7 +214,7 @@ void drawAsteroidESP(const bodyData& ply) {
 		}
 
 		std::vector<const char*> asteroid = { object->type };
-		if (!parseAsteroids(asteroid))
+		if (!parseAsteroids(asteroid) && checkOre)
 			continue;
 
 		physx::PxVec3 objectPos{ object->x, object->y, object->z };
