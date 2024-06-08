@@ -63,7 +63,9 @@ std::vector<bodyData> generateBodyData() {
     return bodys;
 }
 
-
+//todo: we should investigate if this player location shuffles around
+// im assuming it does, but if is more static maybe we can cache the data to not double loop the entity list
+// everytime we look for an entity and the player, every frame
 bodyData getPlyByMass(std::vector<bodyData>& bodys) {
     for (bodyData body : bodys) {
         if (cmpf(body.mass, 2.287f, 0.01f)) {

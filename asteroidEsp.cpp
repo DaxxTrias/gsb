@@ -93,8 +93,8 @@ void drawStats(const bodyData& ply) {
 		ImGui::GetFont(), ImGui::GetFontSize(),
 		ImVec2(5,0), settings.drawStatsColor, buffer);
 
-	// Draw number of asteroids
-	snprintf(buffer, sizeof(buffer), "Asteroids: %d", maxObjects);
+	// Draw number of entities/asteroids
+	snprintf(buffer, sizeof(buffer), "Objects: %d", maxObjects);
 	ImGui::GetWindowDrawList()->AddText(
 		ImGui::GetFont(), ImGui::GetFontSize(),
 		ImVec2(5, 20), settings.drawStatsColor, buffer);
