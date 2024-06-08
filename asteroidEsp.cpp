@@ -46,7 +46,7 @@ static AsteroidRenderingSettings loadRenderingSettings() {
 	settings.minPhysMass = getOption<float>("minPhysMass");
 	settings.debugMode = getOption<bool>("debugMode");
 	settings.farColor = getOption<ImColor>("farAsteroidColor");
-	settings.nearColor = getOption<ImColor>("nearAstreoidColor");
+	settings.nearColor = getOption<ImColor>("nearAsteroidColor");
 	settings.lineFarColor = getOption<ImColor>("lineAsteroidColor");
 	settings.drawStatsColor = getOption<ImColor>("drawStatsColor");
 	settings.drawStats = getOption<bool>("drawStats");
