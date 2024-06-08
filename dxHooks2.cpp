@@ -14,6 +14,7 @@
 #include "asteroidEsp.h"
 #include "physicEsp.h"
 #include "KillSwitch.h"
+#include <iostream>
 
 typedef HRESULT(__stdcall* D3D11Present1Hook) (IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT Flags, 
 	const DXGI_PRESENT_PARAMETERS* pPresentParameters);
@@ -127,7 +128,8 @@ HRESULT __stdcall hookD3D11Present1(IDXGISwapChain* pSwapChain, UINT SyncInterva
 		
 		if (GetAsyncKeyState(VK_F3) & 1) {
 			killSwitch = !killSwitch;
-			fprintf(Con::fpout, "Killswitch: %s\n", killSwitch.load() ? "ON" : "OFF");
+			//fprintf(Con::fpout, "Killswitch: %s\n", killSwitch.load() ? "ON" : "OFF"); //
+			std::cout << "Killswitch: " << (killSwitch.load() ? "ON" : "OFF") << std::endl;
 		}
 
 		std::vector<bodyData> bodys = generateBodyData();
