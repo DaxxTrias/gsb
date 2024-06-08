@@ -89,25 +89,26 @@ void drawStats(const bodyData& ply) {
 	snprintf(buffer, sizeof(buffer), "Stats");
 	ImGui::GetWindowDrawList()->AddText(
 		ImGui::GetFont(), ImGui::GetFontSize(),
-		ImVec2(0,0), settings.lineFarColor, buffer);
+		ImVec2(5,0), settings.lineFarColor, buffer);
 
 	// Draw number of asteroids
 	snprintf(buffer, sizeof(buffer), "Asteroids: %d", maxObjects);
 	ImGui::GetWindowDrawList()->AddText(
 		ImGui::GetFont(), ImGui::GetFontSize(),
-		ImVec2(0, 20), settings.lineFarColor, buffer);
+		ImVec2(5, 20), settings.lineFarColor, buffer);
 
 	// Draw coordinates
 	snprintf(buffer, sizeof(buffer), "Coords: [%.0f, %.0f, %.0f]", ply.pos.x, ply.pos.y, ply.pos.z);
 	ImGui::GetWindowDrawList()->AddText(
 		ImGui::GetFont(), ImGui::GetFontSize(),
-		ImVec2(0, 40), settings.lineFarColor, buffer);
+		ImVec2(5, 40), settings.lineFarColor, buffer);
 
 	// Draw velocity
-	snprintf(buffer, sizeof(buffer), "Velocity: %f.2 m/s", speed);
+	//snprintf(buffer, sizeof(buffer), "Velocity: %f.2 m/s", speed);
+	snprintf(buffer, sizeof(buffer), "Velocity: %f m/s", speed);
 	ImGui::GetWindowDrawList()->AddText(
 		ImGui::GetFont(), ImGui::GetFontSize(),
-		ImVec2(0, 60), settings.lineFarColor, buffer);
+		ImVec2(5, 60), settings.lineFarColor, buffer);
 }
 
 static void drawAsteroid(const physx::PxVec3& plyPos, const physx::PxVec3& asteroidPos, const char* type, float farDist, const AsteroidRenderingSettings& settings, const ImGuiIO& io) {
