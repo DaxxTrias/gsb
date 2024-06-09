@@ -8,6 +8,7 @@
 #include "menu.h"
 #include "asteroidFiltering.h"
 #include <vector>
+#include "console.h"
 
 
 struct AsteroidSubData {
@@ -244,6 +245,11 @@ void drawAsteroidESP(const bodyData& ply) {
 			asteroidsSubData.resize(uint64_t((i + 1) * 1.2));
 		}
 
+		if (dist < 5.0f && renderSettings.debugMode)
+		{
+			fprintf(Con::fpout, "ObjAdd: %p Dist: %f\n", object, dist);
+		}
+
 		AsteroidSubData& subData = asteroidsSubData[i];
 		if (dist > 600) {
 			if (subData.ptr != object || subData.subPtr != (void*)object->ptr0) {
@@ -257,7 +263,9 @@ void drawAsteroidESP(const bodyData& ply) {
 		}
 
 		float maxDist = (subData.ptr == object) ? subData.maxDist : 0;
+
 		drawAsteroid(ply.pos, objectPos, object->type, maxDist, renderSettings, io);
+		
 
 		AsteroidCache cache;
 		cache.ind = static_cast<uint32_t>(i);

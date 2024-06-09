@@ -71,7 +71,7 @@ int updatePhysicsThread() {
 
         std::shared_ptr<std::vector<bodyData>> updating = std::make_shared<std::vector<bodyData>>();
 
-        for (int i = 0; i < 0x15F90; i++) { // 90k
+        for (int i = 0; i < 0x17318; i++) { // 95k
             if (physList[i].entry == nullptr)
                 continue;
             if (physList[i].entry != nullptr
