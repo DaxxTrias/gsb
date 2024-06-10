@@ -33,31 +33,39 @@ CachedPoseData getCachedPose(physx::PxRigidActor* rigid, uint64_t indx) {
     }
 
     CachedPoseData data = {};
+    data.isValid = false;
+
+    // lua GC constantly shuffles memory around, we should expect a certain amount of nulls when using this particular method
+    //todo: ie look for alternate player positioning coords (playerEnt maybe?)
+    if (rigid == nullptr) {
+        // Lua GC constantly shuffles memory around, we should expect a certain amount of nulls when using this particular method
+        std::cerr << "rigid pointer is null" << std::endl;
+        return data;
+    }
+
     try {
-        if (rigid == nullptr) {
-            // lua GC constantly shuffles memory around, we should expect a certain amount of nulls when using this particular method
-            //todo: ie look for alternate player positioning coords (playerEnt maybe?)
-            data.isValid = false;
-            throw std::runtime_error("rigid pointer is null");
-        }
-        physx::PxTransform pose = {};
-        if (data.isValid)
-        {
-            pose = rigid->getGlobalPose();
-        }
+        physx::PxTransform pose = rigid->getGlobalPose();
         if (!pose.isValid()) {
-            data.isValid = false;
+            std::cerr << "Invalid global pose for rigid actor" << std::endl;
             return data;
         }
+
         data.pos = pose.p;
+
         physx::PxRigidBody* body = rigid->is<physx::PxRigidBody>();
-        data.mass = (body != nullptr) ? body->getMass() : -1;
-        data.vel = (body != nullptr) ? body->getLinearVelocity() : physx::PxVec3(0, 0, 0);
+        if (body != nullptr) {
+            data.mass = body->getMass();
+            data.vel = body->getLinearVelocity();
+        }
+        else {
+            data.mass = -1;
+            data.vel = physx::PxVec3(0, 0, 0);
+        }
+
         data.isValid = true;
     }
     catch (const std::exception& e) {
         std::cerr << "Exception caught while processing rigid actor: " << e.what() << std::endl;
-        data.isValid = false;
     }
 
     poseCache[index] = data;
