@@ -28,3 +28,4 @@ typedef HRESULT(STDMETHODCALLTYPE* CreateSwapChainForHwnd_type)(
 
 void initDxHooks2();
 void removeDXHooks();
+void RemoveImGuiD3D11();

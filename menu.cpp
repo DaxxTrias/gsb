@@ -141,8 +141,6 @@ void drawMenu() {
 		showmenu = !showmenu;
 	}
 
-	
-
 	//todo: add a mass filter to display. Or some other way to filter out the non-chunky rocks if desired.
 	//todo: add a waypoint system. (Similar to navgrid. and always show these positions on the W2S regardless of distance if enabled
 	if (showmenu) {
@@ -187,9 +185,6 @@ void drawMenu() {
 
 		if (ImGui::Button("save config")) {
 			saveConfig("gsb.cfg");
-		}
-		if (ImGui::Button("Shutdown")) {
-			Shutdown();
 		}
 
 		ImGui::End();

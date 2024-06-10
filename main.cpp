@@ -21,6 +21,7 @@
 #include "menu.h"
 #include "physics.h"
 #include "dxHooks2.h"
+#include "killSwitch.h"
 
 static bool minHookInitialized = false;
 
@@ -59,7 +60,7 @@ int main()
 
 	loadConfig("gsb.cfg");
 
-	while (keepRunning) {
+	while (true) {
 		char buff[4096];
 		fgets(buff, 4000, Con::fpin);
 		setRunString(buff);
@@ -69,8 +70,12 @@ int main()
 }
 
 void Shutdown() {
-	keepRunning = false;
+	//todo: dont use this yet, its broken and only freezes the game
 	fprintf(Con::fpout, "Shutting down\n");
+	keepRunning = false;
+	killSwitch = true;
+	fprintf(Con::fpout, "Dismantling Imgui\n");
+	RemoveImGuiD3D11();
 	stopUpdatePhysicsThread();
 	fprintf(Con::fpout, "Halted Physics thread\n");
 	removeGameHooks();

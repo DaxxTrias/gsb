@@ -55,6 +55,13 @@ static void InitImGuiD3D11()
 	ImGui_ImplDX11_Init(pDevice, pContext);
 }
 
+static void RemoveImGuiD3D11()
+{
+	ImGui_ImplDX11_Shutdown();
+	ImGui_ImplWin32_Shutdown();
+	ImGui::DestroyContext();
+}
+
 static LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	if (ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam)) {
 		return true;
