@@ -10,6 +10,7 @@
 #include <PxAggregate.h>
 #include <PxRigidBody.h>
 #include "menu.h"
+#include "memHelper.h"
 
 // most of the previous patterns seemed (mostly) accurate on v582, but some of the functions were rewritten
 const char* setDevConsoleState_pattern = "4C 8B DC 55 41 54 41 57 49 8D AB ? ? ? ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 80 79 ? ? 44 0F B6 E2";
@@ -192,10 +193,7 @@ std::vector<uintptr_t> offsets = {0xAF99568};
 void initGameHooks() {
 
     baseAddress = reinterpret_cast<uintptr_t>(getStarbaseExe());
-	for (auto offset : offsets) {
-		localEnt = *(uintptr_t*)baseAddress + offset;
-	}
-
+	localEnt = getMultiLevelPointer(baseAddress, offsets);
 	uintptr_t localEnt_VelocityVec3 = localEnt + 0xC4c;
 
 	or_setDevConsoleState = findSignature<setDevConsoleState_type>(getStarbaseExe(), setDevConsoleState_pattern);

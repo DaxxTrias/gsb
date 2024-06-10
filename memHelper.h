@@ -1,5 +1,9 @@
-#pragma once
-#include <cstdint>
-#include <vector>
+#ifndef MEMHELPER_H
+#define MEMHELPER_H
 
-uintptr_t getMultiLevelPointer(uintptr_t baseAddress, std::vector<uintptr_t> offsets);
+#include <vector>
+#include <cstdint>
+
+uintptr_t getMultiLevelPointer(uintptr_t baseAddress, const std::vector<uintptr_t>& offsets);
+
+#endif // MEMHELPER_H

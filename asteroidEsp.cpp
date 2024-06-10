@@ -74,6 +74,7 @@ static float calculateVelocity(const physx::PxVec3& vel) {
 		prevVel = vel;
 	}
 	return cachedVelocity;
+	//maybe just do return vec.magnitude(); and nothing else?
 }
 
 static physx::PxVec3 createPxVec3(float x, float y, float z) {
@@ -102,9 +103,9 @@ void drawStats(const bodyData& ply) {
 	ImGuiIO& io = ImGui::GetIO();
 	AsteroidRenderingSettings settings = loadRenderingSettings();
 	
-	float localEnt_VelocityX = 1.0f;
-	float localEnt_VelocityY = 2.0f;
-	float localEnt_VelocityZ = 3.0f;
+	float localEnt_VelocityX = *reinterpret_cast<float*>(localEnt_VelocityVec3);
+	float localEnt_VelocityY = *reinterpret_cast<float*>(localEnt_VelocityVec3 + 0x4);
+	float localEnt_VelocityZ = *reinterpret_cast<float*>(localEnt_VelocityVec3 + 0x8);
 
 	physx::PxVec3 localEnt_VelocityVec3 = createPxVec3(localEnt_VelocityX, localEnt_VelocityY, localEnt_VelocityZ);
 	float speed = calculateVelocity(localEnt_VelocityVec3);
