@@ -55,7 +55,7 @@ static void InitImGuiD3D11()
 	ImGui_ImplDX11_Init(pDevice, pContext);
 }
 
-static void RemoveImGuiD3D11()
+void RemoveImGuiD3D11()
 {
 	ImGui_ImplDX11_Shutdown();
 	ImGui_ImplWin32_Shutdown();

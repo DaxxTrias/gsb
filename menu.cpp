@@ -140,6 +140,10 @@ void drawMenu() {
 	if (GetAsyncKeyState(VK_INSERT) & 1) {
 		showmenu = !showmenu;
 	}
+	if (GetAsyncKeyState(VK_END) & 1) {
+		CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Shutdown, g_hModule, 0, NULL);
+	}
+	
 
 	//todo: add a mass filter to display. Or some other way to filter out the non-chunky rocks if desired.
 	//todo: add a waypoint system. (Similar to navgrid. and always show these positions on the W2S regardless of distance if enabled

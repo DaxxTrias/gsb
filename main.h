@@ -1,3 +1,4 @@
 #pragma once
 
-void Shutdown();
+void Shutdown(HMODULE hModule);
+extern HMODULE g_hModule;

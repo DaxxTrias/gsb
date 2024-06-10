@@ -22,8 +22,12 @@
 #include "physics.h"
 #include "dxHooks2.h"
 #include "killSwitch.h"
+#include <atomic>
+
 
 static bool minHookInitialized = false;
+HMODULE g_hModule = nullptr;
+std::atomic<bool> isShuttingDown(false); // Shutdown flag
 
 int main()
 {
@@ -69,12 +73,18 @@ int main()
 	return 0;
 }
 
-void Shutdown() {
-	//todo: dont use this yet, its broken and only freezes the game
-	fprintf(Con::fpout, "Shutting down\n");
+void Shutdown(HMODULE hModule) {
+	// Check if shutdown is already in progress
+	if (isShuttingDown.exchange(true)) {
+		return; // If already shutting down, do nothing
+	}
+
+	// Signal threads to stop
 	keepRunning = false;
 	killSwitch = true;
-	fprintf(Con::fpout, "Dismantling Imgui\n");
+
+	fprintf(Con::fpout, "Shutting down\n");
+	fprintf(Con::fpout, "Dismantling ImGui\n");
 	RemoveImGuiD3D11();
 	stopUpdatePhysicsThread();
 	fprintf(Con::fpout, "Halted Physics thread\n");
@@ -83,17 +93,32 @@ void Shutdown() {
 	removeDXHooks();
 	fprintf(Con::fpout, "Removed DirectX hooks\n");
 	FreeConsole();
-	FreeLibraryAndExitThread(GetModuleHandle(NULL), 0);
+
+	// Uninitialize MinHook
+	if (MH_Uninitialize() != MH_OK) {
+		fprintf(Con::fpout, "MinHook uninitialization failed\n");
+	}
+
+	// Clean up the module and exit the thread
+	FreeLibraryAndExitThread(hModule, 0);
 }
 
-BOOL APIENTRY DllMain(HINSTANCE hinstDLL,
-	DWORD fdwReason, LPVOID lpvReserved)
+
+BOOL APIENTRY DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 {
 	switch (fdwReason)
 	{
-		case DLL_PROCESS_ATTACH:
-			CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)main, NULL, 0, NULL);
-			CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)updatePhysicsThread, NULL, 0, NULL);
+	case DLL_PROCESS_ATTACH:
+		DisableThreadLibraryCalls(hinstDLL); // Prevent DllMain from being called on thread creation/destruction
+		g_hModule = hinstDLL; // Store the module handle
+		CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)main, NULL, 0, NULL);
+		CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)updatePhysicsThread, NULL, 0, NULL);
+		break;
+	case DLL_PROCESS_DETACH:
+		if (lpvReserved == NULL && !isShuttingDown.load()) { // Indicates a call to FreeLibrary or a DLL unload request
+			CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Shutdown, g_hModule, 0, NULL);
+		}
+		break;
 	}
 
 	return TRUE;

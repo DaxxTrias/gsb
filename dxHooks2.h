@@ -27,5 +27,5 @@ typedef HRESULT(STDMETHODCALLTYPE* CreateSwapChainForHwnd_type)(
     _COM_Outptr_  IDXGISwapChain1** ppSwapChain);
 
 void initDxHooks2();
-void removeDXHooks();
-void RemoveImGuiD3D11();
+extern void removeDXHooks();
+extern void RemoveImGuiD3D11();
