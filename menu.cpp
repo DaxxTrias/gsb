@@ -141,7 +141,7 @@ void drawMenu() {
 		showmenu = !showmenu;
 	}
 	if (GetAsyncKeyState(VK_END) & 1) {
-		CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Shutdown, g_hModule, 0, NULL);
+		//CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Shutdown, g_hModule, 0, NULL);
 	}
 	
 
