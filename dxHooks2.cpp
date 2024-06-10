@@ -292,7 +292,7 @@ static HRESULT STDMETHODCALLTYPE CreateSwapChainForHwnd_hook(IDXGIFactory2* This
 }
 
 void initDxHooks2() {
-	HMODULE gameOverlayRenderer = GetModuleHandleA("GameOverlayRenderer64.dll"); // +0x8CEC0 (jun-4-2024)
+	HMODULE gameOverlayRenderer = GetModuleHandleA("GameOverlayRenderer64.dll"); // CreateSwapChainForHwnd +0x8CEC0 (jun-4-2024) 
 	if (!gameOverlayRenderer) {
 		MessageBoxA(nullptr, "GameOverlayRenderer64.dll not found", "Error", MB_OK);
 		return;
