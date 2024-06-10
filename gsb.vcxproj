@@ -220,6 +220,7 @@
     <ClCompile Include="luaExecutor.cpp" />
     <ClCompile Include="luaHooks.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="memHelper.cpp" />
     <ClCompile Include="menu.cpp" />
     <ClCompile Include="physicEsp.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
