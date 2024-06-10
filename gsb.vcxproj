@@ -302,6 +302,7 @@
     <ClInclude Include="luaExecutor.h" />
     <ClInclude Include="luaHooks.h" />
     <ClInclude Include="main.h" />
+    <ClInclude Include="memHelper.h" />
     <ClInclude Include="menu.h" />
     <ClInclude Include="physicEsp.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>

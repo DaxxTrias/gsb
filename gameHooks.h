@@ -360,5 +360,7 @@ extern someGlobalGetterSetter_type or_someGlobalGetterSetter;
 extern getPhysClass_type getPhysClass;
 extern getPhysClass_type maybeOpenDebug;;
 
+extern uintptr_t localEnt_VelocityVec3;
+
 void initGameHooks();
 void removeGameHooks();

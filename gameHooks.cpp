@@ -184,7 +184,20 @@ asteroidStruct* __fastcall someGetObjectOrAsteroid_hook(__int64 a1, __int64 id) 
 
 // entPlayer / localPlayer setter func here
 
+uintptr_t baseAddress;
+uintptr_t localEnt;
+uintptr_t localEnt_VelocityVec3;
+std::vector<uintptr_t> offsets = {0xAF99568};
+
 void initGameHooks() {
+
+    baseAddress = reinterpret_cast<uintptr_t>(getStarbaseExe());
+	for (auto offset : offsets) {
+		localEnt = *(uintptr_t*)baseAddress + offset;
+	}
+
+	uintptr_t localEnt_VelocityVec3 = localEnt + 0xC4c;
+
 	or_setDevConsoleState = findSignature<setDevConsoleState_type>(getStarbaseExe(), setDevConsoleState_pattern);
 	//placeHook("setDevConsoleState", or_setDevConsoleState, setDevConsoleState_hook);
 
