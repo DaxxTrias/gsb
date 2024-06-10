@@ -8,4 +8,5 @@ namespace Con {
 
 	void init();
 	void enableStdout(bool state);
+	void cleanup();
 };

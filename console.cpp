@@ -21,6 +21,18 @@ void Con::init() {
 	fpout = _fdopen(hConHandle, "w");
 }
 
+void Con::cleanup() {
+	if (fpout) {
+		fclose(fpout);
+		fpout = nullptr;
+	}
+	if (fpin) {
+		fclose(fpin);
+		fpin = nullptr;
+	}
+	FreeConsole();
+}
+
 void Con::enableStdout(bool state) {
 	const char* pipe = state ? "CONOUT$" : "NUL:";
 	FILE* newStdout = freopen(pipe, "w", stdout);
