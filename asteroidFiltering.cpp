@@ -20,7 +20,7 @@ struct FilterState {
        {"arkanium", true},
        {"lukium", true},
        {"ilmatrium", true},
-       {"ymirium", true},
+       {"ymrium", true},
        {"xhalium", true},
        {"daltium", true},
        {"haderite", true},
