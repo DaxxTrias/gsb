@@ -59,7 +59,7 @@ int main()
 
 	loadConfig("gsb.cfg");
 
-	while (true) {
+	while (keepRunning) {
 		char buff[4096];
 		fgets(buff, 4000, Con::fpin);
 		setRunString(buff);
@@ -69,7 +69,16 @@ int main()
 }
 
 void Shutdown() {
+	keepRunning = false;
 	fprintf(Con::fpout, "Shutting down\n");
+	stopUpdatePhysicsThread();
+	fprintf(Con::fpout, "Halted Physics thread\n");
+	removeGameHooks();
+	fprintf(Con::fpout, "Removed GameHooks\n");
+	removeDXHooks();
+	fprintf(Con::fpout, "Removed DirectX hooks\n");
+	FreeConsole();
+	FreeLibraryAndExitThread(GetModuleHandle(NULL), 0);
 }
 
 BOOL APIENTRY DllMain(HINSTANCE hinstDLL,

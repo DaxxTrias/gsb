@@ -301,3 +301,15 @@ void initDxHooks2() {
 
 	placeHook("CreateSwapChainForHwnd", CreateSwapChainForHwnd_or, CreateSwapChainForHwnd_hook);
 }
+
+void removeDXHooks() {
+	if (phookD3D11Present1) {
+		MH_DisableHook((DWORD_PTR*)pSwapChainVtable[22]);
+		MH_RemoveHook((DWORD_PTR*)pSwapChainVtable[22]);
+	}
+	if (phookD3D11Draw) {
+		MH_DisableHook((DWORD_PTR*)pContextVTable[13]);
+		MH_RemoveHook((DWORD_PTR*)pContextVTable[13]);
+	}
+	removeHook("CreateSwapChainForHwnd");
+}

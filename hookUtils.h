@@ -1,9 +1,14 @@
 #pragma once
 #include <string>
+#include <Windows.h>
 #include <stdint.h>
 #include "console.h"
 
+using std::string;
+
 void placeHook(std::string name, void* original, void* hook);
+void removeHook(const string& name);
+
 void* getTramp(std::string name);
 
 template<typename T>

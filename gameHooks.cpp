@@ -239,5 +239,19 @@ void initGameHooks() {
 	//placeHook("setupGameConfig", or_setupGameConfig, setupGameConfig_hook);
 }
 
-
-
+void removeGameHooks() {
+	//removeHook("setDevConsoleState");
+	//removeHook("addFuncToLuaClass");
+	//removeHook("GetOptionFloat");
+	//removeHook("SetOptionFloat");
+	//removeHook("GetOptionBool");
+	//removeHook("SetOptionBool");
+	//removeHook("getSceneInstanceManagerFromInstanceRootBySceneUH");
+	//removeHook("SceneInstanceManager__getActor");
+	//removeHook("someGlobalGetterSetter");
+	//removeHook("somePxStuff");
+	removeHook("getPxActorFromList");
+	//removeHook("setupGameConfig");
+	//removeHook("createClassInstance");
+	removeHook("getObject");
+}

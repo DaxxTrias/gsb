@@ -16,6 +16,7 @@
 #include <unordered_set>
 #include <string>
 #include "asteroidFiltering.h"
+#include "main.h"
 
 using nlohmann::json;
 
@@ -186,6 +187,9 @@ void drawMenu() {
 
 		if (ImGui::Button("save config")) {
 			saveConfig("gsb.cfg");
+		}
+		if (ImGui::Button("Shutdown")) {
+			Shutdown();
 		}
 
 		ImGui::End();

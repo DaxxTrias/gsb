@@ -11,5 +11,8 @@ struct bodyData {
 };
 
 extern std::shared_ptr<std::vector<bodyData>> bodys;
+extern std::atomic<bool> keepRunning;
 
 int updatePhysicsThread();
+
+void stopUpdatePhysicsThread();

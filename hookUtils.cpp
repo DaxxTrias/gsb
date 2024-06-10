@@ -3,7 +3,6 @@
 #include <string>
 #include <unordered_map>
 #include <MinHook.h>
-
 #include "console.h"
 
 using std::string;
@@ -36,6 +35,36 @@ void placeHook(string name, void* original, void* hook) {
 
 	fprintf(Con::fpout, "(MH) placed hook %s\n", name.c_str());
 	fflush(Con::fpout);
+}
+
+void removeHook(const string& name) {
+	auto it = hooks.find(name);
+	if (it != hooks.end()) {
+		HookData* hookData = it->second;
+
+		// Disable the hook
+		if (MH_DisableHook(hookData->original) != MH_OK) {
+			fprintf(Con::fpout, "error on disabling hook %s\n", name.c_str());
+			fflush(Con::fpout);
+		}
+
+		// Remove the hook
+		if (MH_RemoveHook(hookData->original) != MH_OK) {
+			fprintf(Con::fpout, "error on removing hook %s\n", name.c_str());
+			fflush(Con::fpout);
+		}
+
+		// Clean up
+		delete hookData;
+		hooks.erase(it);
+
+		fprintf(Con::fpout, "(MH) removed hook %s\n", name.c_str());
+		fflush(Con::fpout);
+	}
+	else {
+		fprintf(Con::fpout, "hook %s not found\n", name.c_str());
+		fflush(Con::fpout);
+	}
 }
 
 void* getTramp(string name) {

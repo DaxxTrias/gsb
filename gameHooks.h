@@ -361,3 +361,4 @@ extern getPhysClass_type getPhysClass;
 extern getPhysClass_type maybeOpenDebug;;
 
 void initGameHooks();
+void removeGameHooks();
