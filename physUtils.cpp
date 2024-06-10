@@ -26,7 +26,7 @@ std::vector<bodyData> generateBodyData() {
                     return {};
                 }
 
-                physx::PxRigidActor* rigid = actor->is<physx::PxRigidActor>();
+                physx::PxRigidActor* rigid = actor->is<physx::PxRigidActor>(); // crashes when opening SSC?
                 if (rigid == nullptr || (uint64_t)rigid > 0xFFFF'FFFF'FFFF'0000) {
                     return {};
                 }
@@ -46,7 +46,7 @@ std::vector<bodyData> generateBodyData() {
                 }
 
                 bool isStatic = actor->is<physx::PxRigidStatic>() != nullptr;
-                bool isBody = actor->is<physx::PxRigidBody>() != nullptr; // 
+                bool isBody = actor->is<physx::PxRigidBody>() != nullptr;
 
                 if (isBody) {
                     physx::PxRigidBody* body = actor->is<physx::PxRigidBody>();
@@ -54,6 +54,9 @@ std::vector<bodyData> generateBodyData() {
                     physx::PxVec3 vel = body->getLinearVelocity();
                     bodys.push_back(bodyData{ pos, vel, mass });
                 }
+				else if (isStatic) {
+                    break;
+				}
             }
             else {
                 if ((physList[i].id & 0xFFFFFF) != (i & 0xFFFFFF)) {
