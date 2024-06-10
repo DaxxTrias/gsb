@@ -97,7 +97,7 @@ void Shutdown(HMODULE hModule) {
 	if (MH_Uninitialize() != MH_OK) {
 		fprintf(Con::fpout, "MinHook uninitialization failed\n");
 	}
-	FreeConsole();
+	Con::cleanup();
 
 	// Clean up the module and exit the thread
 	FreeLibraryAndExitThread(hModule, 0);
