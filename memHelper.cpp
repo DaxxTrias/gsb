@@ -1,7 +1,8 @@
-#include <Windows.h>
 #include <iostream>
+#include <vector>
+#include <Windows.h>
 
-uintptr_t getMultiLevelPointer(uintptr_t baseAddress, std::vector<uintptr_t> offsets) {
+uintptr_t getMultiLevelPointer(uintptr_t baseAddress, const std::vector<uintptr_t>& offsets) {
     uintptr_t currentAddress = baseAddress;
 
     for (size_t i = 0; i < offsets.size(); ++i) {
