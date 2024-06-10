@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <vector>
 #include <PxActor.h>
+#include <atomic>
 
 struct Actor
 {
@@ -352,7 +353,7 @@ extern std::unordered_map<int, SceneInstanceManager*> sceneInstances;
 extern std::vector<SceneRoot*> sceneRoots;
 extern std::unordered_map<int, Actor*> actors;
 extern PhysListArray* physList;
-static uint32_t maxObjects;
+extern std::atomic<uint32_t> maxObjects;
 extern uint64_t objectManager;
 
 extern someGlobalGetterSetter_type or_someGlobalGetterSetter;

@@ -82,7 +82,7 @@ void drawStats(const bodyData& ply) {
 	AsteroidRenderingSettings settings = loadRenderingSettings();
 	
 	float speed = calculateVelocity(ply.vel);
-
+	uint32_t obj = maxObjects;
 	char buffer[256];
 
 	// Draw "Stats" header
@@ -92,7 +92,7 @@ void drawStats(const bodyData& ply) {
 		ImVec2(5,0), settings.drawStatsColor, buffer);
 
 	// Draw number of entities/asteroids
-	snprintf(buffer, sizeof(buffer), "Objects: %d", maxObjects);
+	snprintf(buffer, sizeof(buffer), "Objects: %d", obj);
 	ImGui::GetWindowDrawList()->AddText(
 		ImGui::GetFont(), ImGui::GetFontSize(),
 		ImVec2(5, 20), settings.drawStatsColor, buffer);

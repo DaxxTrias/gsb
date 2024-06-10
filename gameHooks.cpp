@@ -50,7 +50,7 @@ std::unordered_map<int, SceneInstanceManager*> sceneInstances;
 std::vector<SceneRoot*> sceneRoots;
 std::unordered_map<int, Actor*> actors;
 PhysListArray* physList = 0;
-//uint32_t maxObjects = 0;
+std::atomic<uint32_t> maxObjects{ 0 };
 uint64_t objectManager;
 
 //todo: maybe look into hooking the screenshot func in gameoverlayrenderer and then kill it, so we dont end up with ESP in ss
