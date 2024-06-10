@@ -74,7 +74,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>libs\include;..\lua-5.3.5;libs\imgui;libs\Minhook\include;libs\PhysX\PhysX_3.4\Include;libs\PhysX\PxShared\include;$(IncludePath)</IncludePath>
+    <IncludePath>libs\include;..\lua-5.3.5;libs\imgui;libs\Minhook\include;libs\PhysX\PhysX_3.4\Include;libs\PhysX\PxShared\include;libs\PhysX\PxShared\include\foundation;$(IncludePath)</IncludePath>
     <LibraryPath>libs\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -297,6 +297,7 @@
     <ClInclude Include="libs\Minhook\src\HDE\table32.h" />
     <ClInclude Include="libs\Minhook\src\HDE\table64.h" />
     <ClInclude Include="libs\Minhook\src\trampoline.h" />
+    <ClInclude Include="libs\PhysX\PxShared\include\foundation\PxVec3.h" />
     <ClInclude Include="luaExecutor.h" />
     <ClInclude Include="luaHooks.h" />
     <ClInclude Include="menu.h" />

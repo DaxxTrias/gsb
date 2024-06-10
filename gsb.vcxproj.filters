@@ -393,6 +393,9 @@
     <ClInclude Include="killSwitch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="libs\PhysX\PxShared\include\foundation\PxVec3.h">
+      <Filter>Header Files\PhysX</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
@@ -424,6 +427,9 @@
     </Filter>
     <Filter Include="Header Files\disasm">
       <UniqueIdentifier>{5ef11bb0-6706-4f2a-bc8f-13de10780243}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\PhysX">
+      <UniqueIdentifier>{9f92565a-d13c-48c0-947b-ffd3c7361e73}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
