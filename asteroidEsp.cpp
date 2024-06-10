@@ -10,7 +10,6 @@
 #include <vector>
 #include "console.h"
 
-
 struct AsteroidSubData {
 	float maxDist;
 	asteroidStruct* ptr;
@@ -81,8 +80,6 @@ void drawStats(const bodyData& ply) {
 
 	ImGuiIO& io = ImGui::GetIO();
 	AsteroidRenderingSettings settings = loadRenderingSettings();
-
-	uint32_t maxObjects = *(uint32_t*)(objectManager + 0x60068);
 	
 	float speed = calculateVelocity(ply.vel);
 
@@ -107,10 +104,10 @@ void drawStats(const bodyData& ply) {
 		ImVec2(5, 40), settings.drawStatsColor, buffer);
 
 	// Draw velocity
-	snprintf(buffer, sizeof(buffer), "Velocity: %.0f m/s", speed);
+	/*snprintf(buffer, sizeof(buffer), "Velocity: %.0f m/s", speed);
 	ImGui::GetWindowDrawList()->AddText(
 		ImGui::GetFont(), ImGui::GetFontSize(),
-		ImVec2(5, 60), settings.drawStatsColor, buffer);
+		ImVec2(5, 60), settings.drawStatsColor, buffer);*/
 }
 
 static void drawAsteroid(const physx::PxVec3& plyPos, const physx::PxVec3& asteroidPos, const char* type, float farDist, const AsteroidRenderingSettings& settings, const ImGuiIO& io) {
@@ -212,7 +209,7 @@ void drawAsteroidESP(const bodyData& ply) {
 	updateCounter = 0;
 	asteroidsCache.clear();
 
-	uint32_t maxObjects = *(uint32_t*)(objectManager + 0x60068);
+	//maxObjects = *(uint32_t*)(objectManager + 0x60068);
 
 	ImGuiIO& io = ImGui::GetIO();
 	bool checkOre = getOption<bool>("asteroidOreCheck");

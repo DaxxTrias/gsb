@@ -50,6 +50,7 @@ std::unordered_map<int, SceneInstanceManager*> sceneInstances;
 std::vector<SceneRoot*> sceneRoots;
 std::unordered_map<int, Actor*> actors;
 PhysListArray* physList = 0;
+//uint32_t maxObjects = 0;
 uint64_t objectManager;
 
 //todo: maybe look into hooking the screenshot func in gameoverlayrenderer and then kill it, so we dont end up with ESP in ss
@@ -162,6 +163,9 @@ __int64 createClassInstance_hook(__int64 a1, unsigned int a2, char** a3, __int64
 
 asteroidStruct* __fastcall someGetObjectOrAsteroid_hook(__int64 a1, __int64 id) {
 	objectManager = a1;
+
+	maxObjects = *(uint32_t*)(objectManager + 0x60068);
+
 	asteroidStruct *asteroid = FnCast("getObject", someGetObjectOrAsteroid_or)(a1, id);
 
 	if (getOption<bool>("debugMode")) {

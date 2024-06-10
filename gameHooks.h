@@ -307,8 +307,9 @@ struct asteroidStruct
     float x;            //0xB0
     float y;            //0xB4
     float z;            //0xB8
-    int gapBC;          //0xBC
-    __int64 field_C0;   //0xC0
+    float rotation1;    //0xBC
+    float rotation2;    //0xC0
+    int field_C4;       //0xC4
     __int64 field_C8;   //0xC8
     int field_D0;       //0xD0
     unsigned int field_D4;//0xD4
@@ -326,7 +327,7 @@ struct asteroidStruct
     char* type;         //0x130
     __int64 field_138;  //0x138
     int field_140;	    //0x140
-    int someFlag;       //0x144
+    int bitmaskFlag;    //0x144
     __int64 field_148;  //0x148
 };
 
@@ -351,6 +352,7 @@ extern std::unordered_map<int, SceneInstanceManager*> sceneInstances;
 extern std::vector<SceneRoot*> sceneRoots;
 extern std::unordered_map<int, Actor*> actors;
 extern PhysListArray* physList;
+static uint32_t maxObjects;
 extern uint64_t objectManager;
 
 extern someGlobalGetterSetter_type or_someGlobalGetterSetter;

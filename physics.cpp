@@ -71,7 +71,8 @@ int updatePhysicsThread() {
 
         std::shared_ptr<std::vector<bodyData>> updating = std::make_shared<std::vector<bodyData>>();
 
-        for (int i = 0; i < 0x17318; i++) { // 95k
+        //todo: is this the npScene->RigidActors array?
+        for (int i = 0; i < maxObjects; i++) {
             if (physList[i].entry == nullptr)
                 continue;
             if (physList[i].entry != nullptr

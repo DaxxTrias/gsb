@@ -16,7 +16,7 @@ std::vector<bodyData> generateBodyData() {
         return bodys;
 
     if (physList != nullptr) {
-        for (int i = 0; i < 0xFFFFFF; i++) {
+        for (int i = 0; i < maxObjects; i++) {
             if (physList[i].entry != nullptr
                 && (physList[i].id & 0xFFFFFF) == i
                 && ((physList[i].entry->id & 0xFFFFFF) == (physList[i].id & 0xFFFFFF))) {
@@ -46,7 +46,8 @@ std::vector<bodyData> generateBodyData() {
                 }
 
                 bool isStatic = actor->is<physx::PxRigidStatic>() != nullptr;
-                bool isBody = actor->is<physx::PxRigidBody>() != nullptr;
+                bool isBody = actor->is<physx::PxRigidBody>() != nullptr; // 
+
                 if (isBody) {
                     physx::PxRigidBody* body = actor->is<physx::PxRigidBody>();
                     float mass = body->getMass();
