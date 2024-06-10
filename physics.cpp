@@ -44,7 +44,7 @@ CachedPoseData getCachedPose(physx::PxRigidActor* rigid, uint64_t indx) {
     }
 
     try {
-        physx::PxTransform pose = rigid->getGlobalPose();
+        physx::PxTransform pose = rigid->getGlobalPose(); // still does a crash
         if (!pose.isValid()) {
             std::cerr << "Invalid global pose for rigid actor" << std::endl;
             return data;
