@@ -158,6 +158,8 @@ HRESULT __stdcall hookD3D11Present1(IDXGISwapChain* pSwapChain, UINT SyncInterva
 				drawPhysicsESP(bodys, ply);
 			if (getOption<bool>("drawStats"))
 				drawStats(ply);
+			if (getOption<bool>("drawCrosshair"))
+				drawCrosshair();
 		}
 
 		ImGui::End();

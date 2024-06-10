@@ -92,12 +92,12 @@ void Shutdown(HMODULE hModule) {
 	fprintf(Con::fpout, "Removed GameHooks\n");
 	removeDXHooks();
 	fprintf(Con::fpout, "Removed DirectX hooks\n");
-	FreeConsole();
 
 	// Uninitialize MinHook
 	if (MH_Uninitialize() != MH_OK) {
 		fprintf(Con::fpout, "MinHook uninitialization failed\n");
 	}
+	FreeConsole();
 
 	// Clean up the module and exit the thread
 	FreeLibraryAndExitThread(hModule, 0);

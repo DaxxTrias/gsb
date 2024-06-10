@@ -1,4 +1,4 @@
-#include "asteroidEsp.h"
+﻿#include "asteroidEsp.h"
 #include "gameHooks.h"
 #include "render.h"
 #include <foundation/PxVec2.h>
@@ -31,6 +31,7 @@ struct AsteroidRenderingSettings {
 	float minPhysMass;
 	bool drawStats;
 	bool debugMode;
+	bool crossHair;
 	ImColor farColor;
 	ImColor lineFarColor;
 	ImColor drawStatsColor;
@@ -45,6 +46,7 @@ static AsteroidRenderingSettings loadRenderingSettings() {
 	settings.farDistance = getOption<float>("farAsteroidDistance");
 	settings.minPhysMass = getOption<float>("minPhysMass");
 	settings.debugMode = getOption<bool>("debugMode");
+	settings.debugMode = getOption<bool>("drawCrosshair");
 	settings.farColor = getOption<ImColor>("farAsteroidColor");
 	settings.nearColor = getOption<ImColor>("nearAstreoidColor");
 	settings.lineFarColor = getOption<ImColor>("lineAsteroidColor");
@@ -71,6 +73,18 @@ static float calculateVelocity(const physx::PxVec3& vel) {
 		prevVel = vel;
 	}
 	return cachedVelocity;
+}
+
+void drawCrosshair() {
+	ImGuiIO& io = ImGui::GetIO();
+	AsteroidRenderingSettings settings = loadRenderingSettings();
+
+	char buffer[256];
+
+	snprintf(buffer, sizeof(buffer), "*"); // ● <-- U+25CF
+	ImGui::GetWindowDrawList()->AddText(
+		ImGui::GetFont(), ImGui::GetFontSize() + 3,
+		ImVec2(io.DisplaySize.x / 2 - 4, io.DisplaySize.y / 2 - 8), settings.drawStatsColor, buffer);
 }
 
 void drawStats(const bodyData& ply) {
