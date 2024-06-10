@@ -103,7 +103,7 @@ void initLuaHook() {
 	or_f_parser = findSignature<f_parser_type>(getLuaDll(), f_parser_bytecode_pattern);
 	placeHook("f_parser", or_f_parser, f_parser_hook);
 
-	HINSTANCE luaDll = LoadLibrary("lua_x64.dll");
+	HINSTANCE luaDll = GetModuleHandleA("lua_x64.dll");
 	or_lua_pushinteger_type = (lua_pushinteger_type)GetProcAddress(luaDll, "lua_pushinteger");
 	lua_setglobal_sb = (lua_setglobal_type)GetProcAddress(luaDll, "lua_setglobal");
 	lua_pcallk_sb = (lua_pcallk_type)GetProcAddress(luaDll, "lua_pcallk");
