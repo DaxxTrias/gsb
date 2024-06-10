@@ -25,7 +25,9 @@ std::unordered_map<int, CachedPoseData> poseCache;
 std::shared_ptr<std::vector<bodyData>> bodys = std::make_shared<std::vector<bodyData>>();
 std::atomic<bool> keepRunning(true);
 
-CachedPoseData getCachedPose(physx::PxRigidActor* rigid, int index) {
+CachedPoseData getCachedPose(physx::PxRigidActor* rigid, uint64_t indx) {
+    int index = static_cast<int>(indx);
+
     if (poseCache.find(index) != poseCache.end()) {
         return poseCache[index];
     }
@@ -72,7 +74,7 @@ int updatePhysicsThread() {
         std::shared_ptr<std::vector<bodyData>> updating = std::make_shared<std::vector<bodyData>>();
 
         //todo: is this the npScene->RigidActors array?
-        for (int i = 0; i < maxObjects; i++) {
+        for (uint64_t i = 0; i < maxObjects; i++) {
             if (physList[i].entry == nullptr)
                 continue;
             if (physList[i].entry != nullptr

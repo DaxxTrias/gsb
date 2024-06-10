@@ -16,9 +16,3 @@ struct bodyData {
 
 std::vector<bodyData> generateBodyData();
 bodyData getPlyByMass(std::vector<bodyData>& bodys);
-
-// Define the extern variables if not already defined
-extern std::atomic<bool> killSwitch;
-extern PhysListArray* physList;
-extern std::atomic<uint32_t> maxObjects;
-extern uint64_t objectManager;
