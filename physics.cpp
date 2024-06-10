@@ -74,64 +74,57 @@ int updatePhysicsThread() {
         std::shared_ptr<std::vector<bodyData>> updating = std::make_shared<std::vector<bodyData>>();
 
         //todo: is this the npScene->RigidActors array?
-        for (uint64_t i = 0; i < maxObjects; i++) {
-            if (physList[i].entry == nullptr)
+        for (uint64_t i = 0; i < maxObjects; ++i) {
+            auto& entry = physList[i];
+
+            if (entry.entry == nullptr ||
+                (entry.id & 0xFFFFFF) != i ||
+                ((entry.entry->id & 0xFFFFFF) != (entry.id & 0xFFFFFF))) {
                 continue;
-            if (physList[i].entry != nullptr
-                && (physList[i].id & 0xFFFFFF) == i
-                && ((physList[i].entry->id & 0xFFFFFF) == (physList[i].id & 0xFFFFFF))) {
+            }
 
-                // access violation here as well not handled properly
-                if (physList[i].entry->actor == nullptr) {
-					continue;
-				}
-                physx::PxActor* actor = {};
+            physx::PxActor* actor = nullptr;
 
-                try {
-					actor = physList[i].entry->actor;
-				}
-				catch (const std::exception& e) {
-					std::cerr << "Exception caught while processing actor: " << e.what() << std::endl;
-					break;
-				}
-
-                try {
-                    //todo: we should attempt to capture entity list size rather then use a hard limit
-                    physx::PxRigidActor* rigid = actor->is<physx::PxRigidActor>();
-                    if (rigid == nullptr || (uint64_t)rigid > 0xFFFF'FFFF'FFFF'0000) {
-                        continue;
-                    }
-
-                    CachedPoseData cachedPose = getCachedPose(rigid, i);
-                    if (!cachedPose.isValid) {
-                        continue;
-                    }
-
-                    //updating->push_back({ cachedPose.pos, cachedPose.mass, cachedPose.vel });
-                    updating->push_back(bodyData{ cachedPose.pos, cachedPose.vel, cachedPose.mass});
-                }
-                catch (const physx::PxErrorCallback& e) {
-                    std::cerr << "PhysX exception caught while processing actor: " << std::endl;
-                    break;
-                }
-                catch (const std::exception& e) {
-                    std::cerr << "Exception caught while processing actor: " << e.what() << std::endl;
-                    break;
-                }
-                catch (...) {
-                    std::cerr << "Unknown exception caught while processing actor." << std::endl;
-                    break;
+            try {
+                actor = entry.entry->actor;
+                if (actor == nullptr) {
+                    continue;
                 }
             }
-            else {
-                if ((physList[i].id & 0xFFFFFF) != (i & 0xFFFFFF)) {
-                    break;
+            catch (const std::exception& e) {
+                std::cerr << "Exception caught while accessing actor: " << e.what() << std::endl;
+                continue;
+            }
+
+            // Determine if the actor is a PxRigidActor
+            physx::PxRigidActor* rigid = actor->is<physx::PxRigidActor>();
+            if (rigid == nullptr || (uintptr_t)rigid > 0xFFFF'FFFF'FFFF'0000) {
+                continue;
+            }
+
+            try {
+                CachedPoseData cachedPose = getCachedPose(rigid, i);
+                if (!cachedPose.isValid) {
+                    continue;
                 }
+
+                updating->push_back(bodyData{ cachedPose.pos, cachedPose.vel, cachedPose.mass });
+            }
+            catch (const physx::PxErrorCallback& e) {
+                std::cerr << "PhysX exception caught while processing actor: " << std::endl;
+                continue;
+            }
+            catch (const std::exception& e) {
+                std::cerr << "Exception caught while processing actor: " << e.what() << std::endl;
+                continue;
+            }
+            catch (...) {
+                std::cerr << "Unknown exception caught while processing actor." << std::endl;
+                continue;
             }
         }
-        {
-            bodys = updating;
-        }
+
+        bodys = updating;
 
         // Clear the cache for the next iteration
         poseCache.clear();

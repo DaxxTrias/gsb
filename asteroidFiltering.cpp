@@ -65,7 +65,7 @@ bool isInFilter(const char* parsedString) {
 bool parseAsteroids(const std::vector<const char*>& asteroids) {
     for (const char* asteroid : asteroids) {
         if (isInFilter(asteroid)) {
-            // Do something with the matched asteroid
+
             //printf("Matched asteroid: %s\n", asteroid);
             return true;
         }
