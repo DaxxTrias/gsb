@@ -106,17 +106,24 @@ void drawStats(const bodyData& ply) {
 	ImGuiIO& io = ImGui::GetIO();
 	AsteroidRenderingSettings settings = loadRenderingSettings();
 	
-	uintptr_t initialOffset = 0xAF99568;
-	uintptr_t nextOffset = 0xC4C;
+    uintptr_t initialOffset = 0xAF99568;
+    uintptr_t nextOffset = 0xC4C;
 
-	localEnt = *reinterpret_cast<uintptr_t*>(baseAddress + initialOffset);
-	localEnt_VelocityVec3 = localEnt + 0xC4C;
-	float localEnt_VelocityX = *reinterpret_cast<float*>(localEnt_VelocityVec3);
-	float localEnt_VelocityY = *reinterpret_cast<float*>(localEnt_VelocityVec3 + 0x4);
-	float localEnt_VelocityZ = *reinterpret_cast<float*>(localEnt_VelocityVec3 + 0x8);
+    localEnt = *reinterpret_cast<uintptr_t*>(baseAddress + initialOffset);
+    localEnt_VelocityVec3 = localEnt + 0xC4C;
 
-	physx::PxVec3 localEnt_VelocityVector3 = createPxVec3(localEnt_VelocityX, localEnt_VelocityY, localEnt_VelocityZ);
-	float speed = calculateVelocity(localEnt_VelocityVector3);
+    float localEnt_VelocityX = 1.0f;
+    float localEnt_VelocityY = 2.0f;
+    float localEnt_VelocityZ = 3.0f;
+
+    if (localEnt != 0 && localEnt_VelocityVec3 != 0) {
+        localEnt_VelocityX = *reinterpret_cast<float*>(localEnt_VelocityVec3);
+        localEnt_VelocityY = *reinterpret_cast<float*>(localEnt_VelocityVec3 + 0x4);
+        localEnt_VelocityZ = *reinterpret_cast<float*>(localEnt_VelocityVec3 + 0x8);
+    }
+
+    physx::PxVec3 localEnt_VelocityVector3 = createPxVec3(localEnt_VelocityX, localEnt_VelocityY, localEnt_VelocityZ);
+    float speed = calculateVelocity(localEnt_VelocityVector3);
 
 	uint32_t obj = maxObjects;
 	char buffer[256];

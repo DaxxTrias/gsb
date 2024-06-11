@@ -140,7 +140,6 @@ HRESULT __stdcall hookD3D11Present1(IDXGISwapChain* pSwapChain, UINT SyncInterva
 		
 		if (GetAsyncKeyState(VK_F3) & 1) {
 			killSwitch = !killSwitch;
-			//fprintf(Con::fpout, "Killswitch: %s\n", killSwitch.load() ? "ON" : "OFF"); //
 			std::cout << "Killswitch: " << (killSwitch.load() ? "ON" : "OFF") << std::endl;
 		}
 
@@ -148,10 +147,9 @@ HRESULT __stdcall hookD3D11Present1(IDXGISwapChain* pSwapChain, UINT SyncInterva
 		bodyData ply = getPlyByMass(bodys);
 
 		uintptr_t initialOffset = 0xA6296E8;
-		uintptr_t nextOffset = 0x21C;
 		renderingModule = *reinterpret_cast<uintptr_t*>(baseAddress + initialOffset);
-		playerFOV = renderingModule + 0xC4C;
-		pFOV = *reinterpret_cast<float*>(playerFOV);
+		playerFOV = renderingModule + 0x21C;
+		pFOV = reinterpret_cast<float*>(playerFOV)[0];
 		setCamPos(ply.pos);
 
 		ImGui::Begin("Transparent", reinterpret_cast<bool*>(true), ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoBackground);
