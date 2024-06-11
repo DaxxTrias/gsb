@@ -15,6 +15,7 @@
 #include "physicEsp.h"
 #include "KillSwitch.h"
 #include <iostream>
+#include "gameHooks.h"
 
 typedef HRESULT(__stdcall* D3D11Present1Hook) (IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT Flags, 
 	const DXGI_PRESENT_PARAMETERS* pPresentParameters);
@@ -68,6 +69,10 @@ static LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPAR
 	}
 	return CallWindowProc(oWndProc, hWnd, uMsg, wParam, lParam);
 }
+
+uintptr_t renderingModule;
+uintptr_t playerFOV;
+float pFOV = 90;
 
 HRESULT __stdcall hookD3D11Present1(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT Flags, 
 	const DXGI_PRESENT_PARAMETERS* pPresentParameters) {
@@ -141,6 +146,12 @@ HRESULT __stdcall hookD3D11Present1(IDXGISwapChain* pSwapChain, UINT SyncInterva
 
 		std::vector<bodyData> bodys = generateBodyData();
 		bodyData ply = getPlyByMass(bodys);
+
+		uintptr_t initialOffset = 0xA6296E8;
+		uintptr_t nextOffset = 0x21C;
+		renderingModule = *reinterpret_cast<uintptr_t*>(baseAddress + initialOffset);
+		playerFOV = renderingModule + 0xC4C;
+		pFOV = *reinterpret_cast<float*>(playerFOV);
 		setCamPos(ply.pos);
 
 		ImGui::Begin("Transparent", reinterpret_cast<bool*>(true), ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoBackground);
