@@ -11,7 +11,7 @@
 #include <memory>
 
 inline bool cmpf(float A, float B, float epsilon = 0.005f) {
-	return (fabs(A - B) < epsilon);
+    return (fabs(A - B) < epsilon);
 }
 
 std::vector<bodyData> generateBodyData() {
@@ -23,9 +23,9 @@ std::vector<bodyData> generateBodyData() {
     if (physList != nullptr) {
         for (uint32_t i = 0; i < maxObjects; ++i) {
             auto& entry = physList[i];
-            if (entry.entry == nullptr)
-                continue;
-            if ((entry.id & 0xFFFFFF) != i ||
+
+            if (entry.entry == nullptr ||
+                (entry.id & 0xFFFFFF) != i ||
                 ((entry.entry->id & 0xFFFFFF) != (entry.id & 0xFFFFFF))) {
                 continue;
             }
@@ -51,7 +51,7 @@ std::vector<bodyData> generateBodyData() {
             physx::PxVec3 pos = {};
 
             try {
-                if (rigid != nullptr && !rigid->getGlobalPose().isValid()) {
+                if (!rigid->getGlobalPose().isValid()) {
                     continue;
                 }
                 pos = rigid->getGlobalPose().p;

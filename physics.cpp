@@ -29,49 +29,30 @@ CachedPoseData getCachedPose(physx::PxRigidActor* rigid, uint64_t indx) {
     int index = static_cast<int>(indx);
 
     if (poseCache.find(index) != poseCache.end()) {
-        CachedPoseData cachedData = poseCache[index];
-        if (cachedData.isValid) {
-            return cachedData;
-        }
+        return poseCache[index];
     }
 
     CachedPoseData data = {};
-    data.isValid = false;
-
-    // lua GC constantly shuffles memory around, we should expect a certain amount of nulls when using this particular method
-    //todo: ie look for alternate player positioning coords (playerEnt maybe?)
-    if (rigid == nullptr) {
-        // Lua GC constantly shuffles memory around, we should expect a certain amount of nulls when using this particular method
-        std::cerr << "rigid pointer is null" << std::endl;
-        return data;
-    }
-
     try {
-        // Revalidate the rigid pointer before accessing
-        if (!rigid->getGlobalPose().isValid()) {
-            std::cerr << "Invalid global pose for rigid actor" << std::endl;
-            return data;
+        if (rigid == nullptr) {
+            // lua GC constantly shuffles memory around, we should expect a certain amount of nulls when using this particular method
+            //todo: ie look for alternate player positioning coords (playerEnt maybe?)
+            data.isValid = false;
+            throw std::runtime_error("rigid pointer is null");
         }
-
-        // Copy the global pose to avoid relying on the pointer
-        physx::PxTransform pose = rigid->getGlobalPose();
+        physx::PxTransform pose = {};
+        if (data.isValid)
+        {
+            pose = rigid->getGlobalPose();
+        }
         if (!pose.isValid()) {
-            std::cerr << "Invalid global pose for rigid actor" << std::endl;
+            data.isValid = false;
             return data;
         }
-
         data.pos = pose.p;
-
         physx::PxRigidBody* body = rigid->is<physx::PxRigidBody>();
-        if (body != nullptr) {
-            data.mass = body->getMass();
-            data.vel = body->getLinearVelocity();
-        }
-        else {
-            data.mass = -1;
-            data.vel = physx::PxVec3(0, 0, 0);
-        }
-
+        data.mass = (body != nullptr) ? body->getMass() : -1;
+        data.vel = (body != nullptr) ? body->getLinearVelocity() : physx::PxVec3(0, 0, 0);
         data.isValid = true;
     }
     catch (const std::exception& e) {
@@ -93,58 +74,64 @@ int updatePhysicsThread() {
         std::shared_ptr<std::vector<bodyData>> updating = std::make_shared<std::vector<bodyData>>();
 
         //todo: is this the npScene->RigidActors array?
-        for (uint64_t i = 0; i < maxObjects; ++i) {
-
+        for (uint64_t i = 0; i < maxObjects; i++) {
+            if (physList[i].entry == nullptr)
+                continue;
             if (physList[i].entry != nullptr
                 && (physList[i].id & 0xFFFFFF) == i
-                && ((physList[i].entry->id & 0xFFFFFF) == (physList[i].id & 0xFFFFFF)))
-            {
-                physx::PxActor* actor = nullptr;
+                && ((physList[i].entry->id & 0xFFFFFF) == (physList[i].id & 0xFFFFFF))) {
+
+                // access violation here as well not handled properly
+                if (physList[i].entry->actor == nullptr) {
+                    continue;
+                }
+                physx::PxActor* actor = {};
 
                 try {
                     actor = physList[i].entry->actor;
-                    if (actor == nullptr) {
-                        continue;
-                    }
                 }
                 catch (const std::exception& e) {
-                    std::cerr << "Exception caught while accessing actor: " << e.what() << std::endl;
-                    continue;
-                }
-
-                // Determine if the actor is a PxRigidActor
-                physx::PxRigidActor* rigid = actor->is<physx::PxRigidActor>();
-                if (rigid == nullptr || (uintptr_t)rigid > 0xFFFF'FFFF'FFFF'0000) {
-                    continue;
+                    std::cerr << "Exception caught while processing actor: " << e.what() << std::endl;
+                    break;
                 }
 
                 try {
-                    if (rigid == nullptr) {
+                    //todo: we should attempt to capture entity list size rather then use a hard limit
+                    physx::PxRigidActor* rigid = actor->is<physx::PxRigidActor>();
+                    if (rigid == nullptr || (uint64_t)rigid > 0xFFFF'FFFF'FFFF'0000) {
                         continue;
                     }
+
                     CachedPoseData cachedPose = getCachedPose(rigid, i);
                     if (!cachedPose.isValid) {
                         continue;
                     }
 
+                    //updating->push_back({ cachedPose.pos, cachedPose.mass, cachedPose.vel });
                     updating->push_back(bodyData{ cachedPose.pos, cachedPose.vel, cachedPose.mass });
                 }
                 catch (const physx::PxErrorCallback& e) {
                     std::cerr << "PhysX exception caught while processing actor: " << std::endl;
-                    continue;
+                    break;
                 }
                 catch (const std::exception& e) {
                     std::cerr << "Exception caught while processing actor: " << e.what() << std::endl;
-                    continue;
+                    break;
                 }
                 catch (...) {
                     std::cerr << "Unknown exception caught while processing actor." << std::endl;
-                    continue;
+                    break;
+                }
+            }
+            else {
+                if ((physList[i].id & 0xFFFFFF) != (i & 0xFFFFFF)) {
+                    break;
                 }
             }
         }
-
-        bodys = updating;
+        {
+            bodys = updating;
+        }
 
         // Clear the cache for the next iteration
         poseCache.clear();
