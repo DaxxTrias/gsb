@@ -7,13 +7,11 @@
 #include <atomic>
 #include <memory>
 #include <vector>
-#include <string>
 
 struct bodyData {
     physx::PxVec3 pos;
     physx::PxVec3 vel;
     float mass;
-    std::string name;
 };
 
 std::vector<bodyData> generateBodyData();

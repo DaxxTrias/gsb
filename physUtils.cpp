@@ -62,20 +62,12 @@ std::vector<bodyData> generateBodyData() {
                 std::cerr << "Exception caught while getting global pose: " << e.what() << std::endl;
                 continue;
             }
+
             if (isBody) {
                 physx::PxRigidBody* body = static_cast<physx::PxRigidBody*>(actor);
                 float mass = body->getMass();
                 physx::PxVec3 vel = body->getLinearVelocity();
-                const char* rigidName = body->getName();
-                if (rigidName != nullptr) {
-                    bodys.push_back(bodyData{ pos, vel, mass, rigidName });
-                }
-				else {
-					bodys.push_back(bodyData{ pos, vel, mass, "" });
-				}
-			}
-			else {
-				bodys.push_back(bodyData{ pos, physx::PxVec3(0, 0, 0), -1, "" });
+                bodys.push_back(bodyData{ pos, vel, mass });
             }
         }
     }

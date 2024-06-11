@@ -3,13 +3,11 @@
 #include <atomic>
 #include <memory>
 #include <vector>
-#include <string>
 
 struct bodyData {
 	physx::PxVec3 pos;
 	physx::PxVec3 vel;
 	float mass;
-	std::string name;
 };
 
 extern std::shared_ptr<std::vector<bodyData>> bodys;
