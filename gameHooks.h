@@ -362,9 +362,6 @@ extern getPhysClass_type getPhysClass;
 extern getPhysClass_type maybeOpenDebug;;
 
 extern uintptr_t baseAddress;
-extern uintptr_t localEnt;
-extern uintptr_t localEnt_VelocityVec3;
-extern std::vector<uintptr_t> offsets;
 
 void initGameHooks();
 void removeGameHooks();
