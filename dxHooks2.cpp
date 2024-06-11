@@ -157,7 +157,6 @@ HRESULT __stdcall hookD3D11Present1(IDXGISwapChain* pSwapChain, UINT SyncInterva
 		ImGui::SetWindowSize(ImVec2(io.DisplaySize.x, io.DisplaySize.y), ImGuiCond_Always);
 
 		//todo: can probably check if localEnt initialized, and if not assume on main menu and sleep the render/processing loop?
-		//todo: drawStats (fps, velocity, XYZ, etc)
 
 		if (!killSwitch.load())
 		{

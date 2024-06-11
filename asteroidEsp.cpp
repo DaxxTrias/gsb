@@ -56,9 +56,13 @@ static AsteroidRenderingSettings loadRenderingSettings() {
 
 	return settings;
 }
+using namespace physx;
 
 static std::vector<AsteroidSubData> asteroidsSubData;
 static std::vector<AsteroidCache> asteroidsCache;
+
+uintptr_t localEnt;
+uintptr_t localEnt_VelocityVec3;
 
 static float calculateDistance(const physx::PxVec3& pos1, const physx::PxVec3& pos2) {
 	physx::PxVec3 diff = pos1 - pos2;
@@ -93,11 +97,6 @@ void drawCrosshair() {
 		ImVec2(io.DisplaySize.x / 2 - 4, io.DisplaySize.y / 2 - 8), settings.drawStatsColor, buffer);
 }
 
-using namespace physx;
-
-uintptr_t localEnt;
-uintptr_t localEnt_VelocityVec3;
-
 void drawStats(const bodyData& ply) {
 	if (objectManager == 0) {
 		return;
@@ -112,9 +111,9 @@ void drawStats(const bodyData& ply) {
     localEnt = *reinterpret_cast<uintptr_t*>(baseAddress + initialOffset);
     localEnt_VelocityVec3 = localEnt + 0xC4C;
 
-    float localEnt_VelocityX = 1.0f;
-    float localEnt_VelocityY = 2.0f;
-    float localEnt_VelocityZ = 3.0f;
+	float localEnt_VelocityX = 0.0f;
+	float localEnt_VelocityY = 0.0f;
+	float localEnt_VelocityZ = 0.0f;
 
     if (localEnt != 0 && localEnt_VelocityVec3 != 0) {
         localEnt_VelocityX = *reinterpret_cast<float*>(localEnt_VelocityVec3);
