@@ -1,14 +1,9 @@
 #include "physUtils.h"
+#include "gameHooks.h"
 #include <PxActor.h>
-#include "killSwitch.h"
-#include "gamehooks.h"
-#include <PxRigidDynamic.h>
-#include <PxRigidStatic.h>
 #include <PxRigidBody.h>
-#include <iostream>
-#include <vector>
-#include <atomic>
-#include <memory>
+#include <PxRigidStatic.h>
+#include "killSwitch.h"
 
 inline bool cmpf(float A, float B, float epsilon = 0.005f) {
     return (fabs(A - B) < epsilon);
@@ -21,51 +16,52 @@ std::vector<bodyData> generateBodyData() {
         return bodys;
 
     if (physList != nullptr) {
-        for (uint32_t i = 0; i < maxObjects; ++i) {
-            auto& entry = physList[i];
+        for (int i = 0; i < maxObjects; i++) {
+            if (physList[i].entry != nullptr
+                && (physList[i].id & 0xFFFFFF) == i
+                && ((physList[i].entry->id & 0xFFFFFF) == (physList[i].id & 0xFFFFFF))) {
 
-            if (entry.entry == nullptr ||
-                (entry.id & 0xFFFFFF) != i ||
-                ((entry.entry->id & 0xFFFFFF) != (entry.id & 0xFFFFFF))) {
-                continue;
-            }
-
-            physx::PxActor* actor = entry.entry->actor;
-            if (actor == nullptr) {
-                continue;
-            }
-
-            // Determine if the actor is a PxRigidStatic or PxRigidBody
-            bool isStatic = actor->is<physx::PxRigidStatic>() != nullptr;
-            bool isBody = actor->is<physx::PxRigidBody>() != nullptr;
-
-            if (!isStatic && !isBody) {
-                continue;
-            }
-
-            physx::PxRigidActor* rigid = actor->is<physx::PxRigidActor>();
-            if (rigid == nullptr || (uintptr_t)rigid > 0xFFFF'FFFF'FFFF'0000) {
-                continue;
-            }
-
-            physx::PxVec3 pos = {};
-
-            try {
-                if (!rigid->getGlobalPose().isValid()) {
-                    continue;
+                physx::PxActor* actor = physList[i].entry->actor;
+                if (actor == nullptr) {
+                    return {};
                 }
-                pos = rigid->getGlobalPose().p;
-            }
-            catch (const std::exception& e) {
-                std::cerr << "Exception caught while getting global pose: " << e.what() << std::endl;
-                continue;
-            }
 
-            if (isBody) {
-                physx::PxRigidBody* body = static_cast<physx::PxRigidBody*>(actor);
-                float mass = body->getMass();
-                physx::PxVec3 vel = body->getLinearVelocity();
-                bodys.push_back(bodyData{ pos, vel, mass });
+                physx::PxRigidActor* rigid = actor->is<physx::PxRigidActor>(); // crashes when opening SSC?
+                if (rigid == nullptr || (uint64_t)rigid > 0xFFFF'FFFF'FFFF'0000) {
+                    return {};
+                }
+                else
+                    rigid->getGlobalPose().isValid();
+
+                physx::PxVec3 pos = {};
+
+                try
+                {
+                    pos = rigid->getGlobalPose().p;
+                }
+                catch (const std::exception& e)
+                {
+                    throw;
+                    return {};
+                }
+
+                bool isStatic = actor->is<physx::PxRigidStatic>() != nullptr;
+                bool isBody = actor->is<physx::PxRigidBody>() != nullptr;
+
+                if (isBody) {
+                    physx::PxRigidBody* body = actor->is<physx::PxRigidBody>();
+                    float mass = body->getMass();
+                    physx::PxVec3 vel = body->getLinearVelocity();
+                    bodys.push_back(bodyData{ pos, vel, mass });
+                }
+                else if (isStatic) {
+                    break;
+                }
+            }
+            else {
+                if ((physList[i].id & 0xFFFFFF) != (i & 0xFFFFFF)) {
+                    break;
+                }
             }
         }
     }
