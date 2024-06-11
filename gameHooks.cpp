@@ -188,13 +188,17 @@ asteroidStruct* __fastcall someGetObjectOrAsteroid_hook(__int64 a1, __int64 id) 
 uintptr_t baseAddress;
 uintptr_t localEnt;
 uintptr_t localEnt_VelocityVec3;
-std::vector<uintptr_t> offsets = {0xAF99568};
+
+// Define the initial offset and subsequent offsets
+uintptr_t initialOffset = 0xAF99568;
+std::vector<uintptr_t> offsets = { 0xC4C };
 
 void initGameHooks() {
 
-    baseAddress = reinterpret_cast<uintptr_t>(getStarbaseExe());
-	localEnt = getMultiLevelPointer(baseAddress, offsets);
-	uintptr_t localEnt_VelocityVec3 = localEnt + 0xC4c;
+	//baseAddress = reinterpret_cast<uintptr_t>(getStarbaseExe());
+
+	// Get the final address after applying the initial offset and subsequent offsets
+	//localEnt_VelocityVec3 = getPointerAddress(baseAddress, initialOffset, offsets);
 
 	or_setDevConsoleState = findSignature<setDevConsoleState_type>(getStarbaseExe(), setDevConsoleState_pattern);
 	//placeHook("setDevConsoleState", or_setDevConsoleState, setDevConsoleState_hook);
