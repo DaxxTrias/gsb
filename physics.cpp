@@ -29,7 +29,10 @@ CachedPoseData getCachedPose(physx::PxRigidActor* rigid, uint64_t indx) {
     int index = static_cast<int>(indx);
 
     if (poseCache.find(index) != poseCache.end()) {
-        return poseCache[index];
+        CachedPoseData cachedData = poseCache[index];
+        if (cachedData.isValid) {
+            return cachedData;
+        }
     }
 
     CachedPoseData data = {};
@@ -44,6 +47,13 @@ CachedPoseData getCachedPose(physx::PxRigidActor* rigid, uint64_t indx) {
     }
 
     try {
+        // Revalidate the rigid pointer before accessing
+        if (!rigid->getGlobalPose().isValid()) {
+            std::cerr << "Invalid global pose for rigid actor" << std::endl;
+            return data;
+        }
+
+        // Copy the global pose to avoid relying on the pointer
         physx::PxTransform pose = rigid->getGlobalPose(); // still does a crash
         if (!pose.isValid()) {
             std::cerr << "Invalid global pose for rigid actor" << std::endl;
@@ -66,6 +76,7 @@ CachedPoseData getCachedPose(physx::PxRigidActor* rigid, uint64_t indx) {
     }
     catch (const std::exception& e) {
         std::cerr << "Exception caught while processing rigid actor: " << e.what() << std::endl;
+        data.isValid = false;
     }
 
     poseCache[index] = data;
