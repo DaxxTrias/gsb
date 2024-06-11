@@ -1,6 +1,5 @@
 #include "render.h"
 #include <foundation/PxVec2.h>
-#include "dxHooks2.h"
 
 static DirectX::XMMATRIX statProj{
 			1, 0, 0, 0,
@@ -11,7 +10,6 @@ static DirectX::XMMATRIX statProj{
 
 float ViewportWidth;
 float ViewportHeight;
-float FOV = 90.0f; // Field of View in degrees
 
 float worldView[4][4];
 static physx::PxVec3 camPos;
@@ -44,26 +42,22 @@ void setCamPos(physx::PxVec3 camPosNew) {
 }
 
 physx::PxVec2 worldToScreen(physx::PxVec3 worldPos) {
-    physx::PxVec3 localPos = camPos - worldPos;
-    DirectX::XMVECTOR Pos = DirectX::XMVectorSet(localPos.x, localPos.y, localPos.z, 1.0f);
+	physx::PxVec3 localPos = camPos - worldPos;
+	DirectX::XMVECTOR Pos = DirectX::XMVectorSet(localPos.x, localPos.y, localPos.z, 1.0f);
 
-    float mx = Pos.m128_f32[0] * WorldViewProj.r[0].m128_f32[0] + Pos.m128_f32[1] * WorldViewProj.r[1].m128_f32[0] + Pos.m128_f32[2] * WorldViewProj.r[2].m128_f32[0] + WorldViewProj.r[3].m128_f32[0];
-    float my = Pos.m128_f32[0] * WorldViewProj.r[0].m128_f32[1] + Pos.m128_f32[1] * WorldViewProj.r[1].m128_f32[1] + Pos.m128_f32[2] * WorldViewProj.r[2].m128_f32[1] + WorldViewProj.r[3].m128_f32[1];
-    float mz = Pos.m128_f32[0] * WorldViewProj.r[0].m128_f32[2] + Pos.m128_f32[1] * WorldViewProj.r[1].m128_f32[2] + Pos.m128_f32[2] * WorldViewProj.r[2].m128_f32[2] + WorldViewProj.r[3].m128_f32[2];
-    float mw = Pos.m128_f32[0] * WorldViewProj.r[0].m128_f32[3] + Pos.m128_f32[1] * WorldViewProj.r[1].m128_f32[3] + Pos.m128_f32[2] * WorldViewProj.r[2].m128_f32[3] + WorldViewProj.r[3].m128_f32[3];
+	float mx = Pos.m128_f32[0] * WorldViewProj.r[0].m128_f32[0] + Pos.m128_f32[1] * WorldViewProj.r[1].m128_f32[0] + Pos.m128_f32[2] * WorldViewProj.r[2].m128_f32[0] + WorldViewProj.r[3].m128_f32[0];
+	float my = Pos.m128_f32[0] * WorldViewProj.r[0].m128_f32[1] + Pos.m128_f32[1] * WorldViewProj.r[1].m128_f32[1] + Pos.m128_f32[2] * WorldViewProj.r[2].m128_f32[1] + WorldViewProj.r[3].m128_f32[1];
+	float mz = Pos.m128_f32[0] * WorldViewProj.r[0].m128_f32[2] + Pos.m128_f32[1] * WorldViewProj.r[1].m128_f32[2] + Pos.m128_f32[2] * WorldViewProj.r[2].m128_f32[2] + WorldViewProj.r[3].m128_f32[2];
+	float mw = Pos.m128_f32[0] * WorldViewProj.r[0].m128_f32[3] + Pos.m128_f32[1] * WorldViewProj.r[1].m128_f32[3] + Pos.m128_f32[2] * WorldViewProj.r[2].m128_f32[3] + WorldViewProj.r[3].m128_f32[3];
 
-    float aspectRatio = ViewportWidth / ViewportHeight;
-	FOV = pFOV;
-    float tanHalfFOV = tanf(DirectX::XMConvertToRadians(FOV / 2.0f));
+	float xx, yy;
+	xx = ((mx / mw) * (ViewportWidth / 2.0f)) + (ViewportWidth / 2.0f);
+	yy = (ViewportHeight / 2.0f) - ((my / mw) * (ViewportHeight / 2.0f)); //- or + depends on the game
 
-    float xx, yy;
-    xx = ((mx / mw) * (ViewportWidth / 2.0f)) + (ViewportWidth / 2.0f);
-    yy = (ViewportHeight / 2.0f) - ((my / mw) * (ViewportHeight / 2.0f)) * aspectRatio / tanHalfFOV;
-
-    if (mw > 0.0f) {
-        return physx::PxVec2(ViewportWidth - xx, ViewportHeight - yy);
-    }
-    return physx::PxVec2(-100, -100);
+	if (mw > 0.0f) {
+		return physx::PxVec2(ViewportWidth - xx, ViewportHeight - yy);
+	}
+	return physx::PxVec2(-100, -100);
 }
 
 physx::PxVec2 worldToScreenIgnoreDirection(physx::PxVec3 worldPos) {
@@ -78,7 +72,7 @@ physx::PxVec2 worldToScreenIgnoreDirection(physx::PxVec3 worldPos) {
 	float xx, yy;
 	xx = ((mx / mw) * (ViewportWidth / 2.0f)) + (ViewportWidth / 2.0f);
 	yy = (ViewportHeight / 2.0f) - ((my / mw) * (ViewportHeight / 2.0f)); //- or + depends on the game
-	
+
 	if (mw > 0.0f) {
 		return physx::PxVec2(ViewportWidth - xx, ViewportHeight - yy);
 	}
