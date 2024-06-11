@@ -18,6 +18,7 @@ struct CachedPoseData {
     physx::PxVec3 pos;
     physx::PxVec3 vel;
     float mass;
+    std::string name;
     bool isValid;
 };
 
@@ -56,10 +57,12 @@ CachedPoseData getCachedPose(physx::PxRigidActor* rigid, uint64_t indx) {
         if (body != nullptr) {
             data.mass = body->getMass();
             data.vel = body->getLinearVelocity();
+            data.name = body->getName();
         }
         else {
             data.mass = -1;
             data.vel = physx::PxVec3(0, 0, 0);
+            data.name = "";
         }
 
         data.isValid = true;
@@ -119,7 +122,7 @@ int updatePhysicsThread() {
                     continue;
                 }
 
-                updating->push_back(bodyData{ cachedPose.pos, cachedPose.vel, cachedPose.mass });
+                updating->push_back(bodyData{ cachedPose.pos, cachedPose.vel, cachedPose.mass, cachedPose.name });
             }
             catch (const physx::PxErrorCallback& e) {
                 std::cerr << "PhysX exception caught while processing actor: " << std::endl;
