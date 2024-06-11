@@ -110,12 +110,12 @@ void drawStats(const bodyData& ply) {
 	//float localEnt_VelocityX = *reinterpret_cast<float*>(localEnt_VelocityVec3);
 	//float localEnt_VelocityY = *reinterpret_cast<float*>(localEnt_VelocityVec3 + 0x4);
 	//float localEnt_VelocityZ = *reinterpret_cast<float*>(localEnt_VelocityVec3 + 0x8);
-	float localEnt_VelocityX = 1.0f;
-	float localEnt_VelocityY = 2.0f;
-	float localEnt_VelocityZ = 3.0f;
+	//float localEnt_VelocityX = 1.0f;
+	//float localEnt_VelocityY = 2.0f;
+	//float localEnt_VelocityZ = 3.0f;
 
-	physx::PxVec3 localEnt_VelocityVector3 = createPxVec3(localEnt_VelocityX, localEnt_VelocityY, localEnt_VelocityZ);
-	float speed = calculateVelocity(localEnt_VelocityVector3);
+	//physx::PxVec3 localEnt_VelocityVector3 = createPxVec3(localEnt_VelocityX, localEnt_VelocityY, localEnt_VelocityZ);
+	//float speed = calculateVelocity(localEnt_VelocityVector3);
 
 	uint32_t obj = maxObjects;
 	char buffer[256];
@@ -139,10 +139,10 @@ void drawStats(const bodyData& ply) {
 		ImVec2(5, 40), settings.drawStatsColor, buffer);
 
 	// Draw velocity
-	snprintf(buffer, sizeof(buffer), "Velocity: %.0f m/s", speed);
-	ImGui::GetWindowDrawList()->AddText(
-		ImGui::GetFont(), ImGui::GetFontSize(),
-		ImVec2(5, 60), settings.drawStatsColor, buffer);
+	//snprintf(buffer, sizeof(buffer), "Velocity: %.0f m/s", speed);
+	//ImGui::GetWindowDrawList()->AddText(
+	//	ImGui::GetFont(), ImGui::GetFontSize(),
+	//	ImVec2(5, 60), settings.drawStatsColor, buffer);
 }
 
 static void drawAsteroid(const physx::PxVec3& plyPos, const physx::PxVec3& asteroidPos, const char* type, float farDist, const AsteroidRenderingSettings& settings, const ImGuiIO& io) {
