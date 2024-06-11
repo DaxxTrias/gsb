@@ -83,55 +83,53 @@ int updatePhysicsThread() {
 
         //todo: is this the npScene->RigidActors array?
         for (uint64_t i = 0; i < maxObjects; ++i) {
-            auto& entry = physList[i];
 
-            if (entry.entry == nullptr ||
-                (entry.id & 0xFFFFFF) != i ||
-                ((entry.entry->id & 0xFFFFFF) != (entry.id & 0xFFFFFF))) {
-                continue;
-            }
+            if (physList[i].entry != nullptr
+                && (physList[i].id & 0xFFFFFF) == i
+                && ((physList[i].entry->id & 0xFFFFFF) == (physList[i].id & 0xFFFFFF)))
+            {
+                physx::PxActor* actor = nullptr;
 
-            physx::PxActor* actor = nullptr;
-
-            try {
-                actor = entry.entry->actor;
-                if (actor == nullptr) {
-                    continue;
+                try {
+                    actor = physList[i].entry->actor;
+                    if (actor == nullptr) {
+                        continue;
+                    }
                 }
-            }
-            catch (const std::exception& e) {
-                std::cerr << "Exception caught while accessing actor: " << e.what() << std::endl;
-                continue;
-            }
-
-            // Determine if the actor is a PxRigidActor
-            physx::PxRigidActor* rigid = actor->is<physx::PxRigidActor>();
-            if (rigid == nullptr || (uintptr_t)rigid > 0xFFFF'FFFF'FFFF'0000) {
-                continue;
-            }
-
-            try {
-                if (rigid == nullptr) {
-					continue;
-				}
-                CachedPoseData cachedPose = getCachedPose(rigid, i);
-                if (!cachedPose.isValid) {
+                catch (const std::exception& e) {
+                    std::cerr << "Exception caught while accessing actor: " << e.what() << std::endl;
                     continue;
                 }
 
-                updating->push_back(bodyData{ cachedPose.pos, cachedPose.vel, cachedPose.mass });
-            }
-            catch (const physx::PxErrorCallback& e) {
-                std::cerr << "PhysX exception caught while processing actor: " << std::endl;
-                continue;
-            }
-            catch (const std::exception& e) {
-                std::cerr << "Exception caught while processing actor: " << e.what() << std::endl;
-                continue;
-            }
-            catch (...) {
-                std::cerr << "Unknown exception caught while processing actor." << std::endl;
-                continue;
+                // Determine if the actor is a PxRigidActor
+                physx::PxRigidActor* rigid = actor->is<physx::PxRigidActor>();
+                if (rigid == nullptr || (uintptr_t)rigid > 0xFFFF'FFFF'FFFF'0000) {
+                    continue;
+                }
+
+                try {
+                    if (rigid == nullptr) {
+                        continue;
+                    }
+                    CachedPoseData cachedPose = getCachedPose(rigid, i);
+                    if (!cachedPose.isValid) {
+                        continue;
+                    }
+
+                    updating->push_back(bodyData{ cachedPose.pos, cachedPose.vel, cachedPose.mass });
+                }
+                catch (const physx::PxErrorCallback& e) {
+                    std::cerr << "PhysX exception caught while processing actor: " << std::endl;
+                    continue;
+                }
+                catch (const std::exception& e) {
+                    std::cerr << "Exception caught while processing actor: " << e.what() << std::endl;
+                    continue;
+                }
+                catch (...) {
+                    std::cerr << "Unknown exception caught while processing actor." << std::endl;
+                    continue;
+                }
             }
         }
 
