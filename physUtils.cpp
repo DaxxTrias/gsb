@@ -24,11 +24,12 @@ std::vector<bodyData> generateBodyData() {
         for (uint32_t i = 0; i < maxObjects; ++i) {
             auto& entry = physList[i];
 
-            if (entry.entry == nullptr ||
-                (entry.id & 0xFFFFFF) != i ||
-                ((entry.entry->id & 0xFFFFFF) != (entry.id & 0xFFFFFF))) {
+            if (entry.entry == nullptr)
                 continue;
-            }
+
+            if ((entry.id & 0xFFFFFF) != i ||
+                ((entry.entry->id & 0xFFFFFF) != (entry.id & 0xFFFFFF)))
+                continue;
 
             physx::PxActor* actor = entry.entry->actor;
             if (actor == nullptr) {
