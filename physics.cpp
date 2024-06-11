@@ -111,6 +111,9 @@ int updatePhysicsThread() {
             }
 
             try {
+                if (rigid == nullptr) {
+					continue;
+				}
                 CachedPoseData cachedPose = getCachedPose(rigid, i);
                 if (!cachedPose.isValid) {
                     continue;

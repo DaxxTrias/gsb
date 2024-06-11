@@ -26,7 +26,8 @@ std::vector<bodyData> generateBodyData() {
 
             if (entry.entry == nullptr)
                 continue;
-
+            if (entry.id == 0)
+				continue;
             if ((entry.id & 0xFFFFFF) != i ||
                 ((entry.entry->id & 0xFFFFFF) != (entry.id & 0xFFFFFF)))
                 continue;
@@ -52,7 +53,7 @@ std::vector<bodyData> generateBodyData() {
             physx::PxVec3 pos = {};
 
             try {
-                if (!rigid->getGlobalPose().isValid()) {
+                if (rigid != nullptr && !rigid->getGlobalPose().isValid()) {
                     continue;
                 }
                 pos = rigid->getGlobalPose().p;
