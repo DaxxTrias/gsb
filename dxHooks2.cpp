@@ -143,7 +143,7 @@ HRESULT __stdcall hookD3D11Present1(IDXGISwapChain* pSwapChain, UINT SyncInterva
 			std::cout << "Killswitch: " << (killSwitch.load() ? "ON" : "OFF") << std::endl;
 		}
 
-		std::vector<bodyData> bodys = generateBodyData();
+		std::vector<bodyData> bodys = generateBodyData(); // crash can occur when quickly exiting/entering ssc
 		bodyData ply = getPlyByMass(bodys);
 
 		uintptr_t initialOffset = 0xA6296E8;

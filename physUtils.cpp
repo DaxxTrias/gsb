@@ -76,6 +76,7 @@ std::vector<bodyData> generateBodyData() {
 //followup: first position in ent table looks like player and doesnt appear to move.
 // 2nd entrat looks a lot like personal ship (pawnVehicle?)
 bodyData getPlyByMass(std::vector<bodyData>& bodys) {
+    //todo: in instances of duo play, this method can result in thinking the other person is the main player.
     for (bodyData body : bodys) {
         if (cmpf(body.mass, 2.287f, 0.01f)) {
             return body;
