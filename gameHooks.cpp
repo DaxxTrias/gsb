@@ -62,6 +62,14 @@ void setDevConsoleState_hook(__int64 a1, unsigned __int8 a2) {
 }
 
 __int64 addFuncToLuaClass_hook(__int64 L, const char* name, void* func, unsigned int type, void* callHandler, void* luaClass) {
+
+	if (getOption<bool>("debugMode")) {
+		
+		fprintf(Con::fpout, "addFuncToLuaClass: %s\n", name);
+		fflush(Con::fpout);
+	
+	}
+
 	return FnCast("addFuncToLuaClass", or_addFuncToLuaClass)(L, name, func, type, callHandler, luaClass);
 }
 
@@ -89,6 +97,12 @@ SceneInstanceManager* getSceneInstanceManagerFromInstanceRootBySceneUH_hook(Scen
 	//sceneRoots.push_back(root);
 	SceneInstanceManager *result = FnCast("getSceneInstanceManagerFromInstanceRootBySceneUH", or_getSceneInstanceManagerFromInstanceRootBySceneUH)(root, uh);
 	sceneInstances[uh] = result;
+	
+	if (getOption<bool>("debugMode")) {
+		fprintf(Con::fpout, "sceneRoot: %p uh: %d\n", root, uh);
+		fflush(Con::fpout);
+	}
+
 	return result;
 }
 
@@ -128,9 +142,14 @@ void* somePxStuff_hook(uint64_t a1) {
 }
 
 __int64 getPxActorFromList_hook(__int64 list, int id) {
-	//fprintf(Con::fpout, "getPxActorFromList: %llx id: %d\n", list, id);
+	
 	physList = *(PhysListArray**)(list + 0x140);
-    //fprintf(Con::fpout, "physList %p\n", physList);
+   
+	if (getOption<bool>("debugMode")) {
+		fprintf(Con::fpout, "getPxActorFromList: %llx id: %d\n", list, id); // keep scrolling down until you find the ID. its very big.
+		fprintf(Con::fpout, "physList %p\n", physList); // the array that holds all PxActors at +0x140 on v922
+	}
+
 	return FnCast("getPxActorFromList", or_getPxActorFromList)(list, id);
 }
 
@@ -195,7 +214,7 @@ void initGameHooks() {
 	//placeHook("setDevConsoleState", or_setDevConsoleState, setDevConsoleState_hook);
 
 	or_addFuncToLuaClass = findSignature<addFuncToLuaClass_type>(getStarbaseExe(), addFuncToLuaClass_pattern);
-	//placeHook("addFuncToLuaClass", or_addFuncToLuaClass, addFuncToLuaClass_hook);
+	placeHook("addFuncToLuaClass", or_addFuncToLuaClass, addFuncToLuaClass_hook);
 
 	or_GetOptionFloat = findSignature<GetOptionFloat_type>(getStarbaseExe(), GetOptionFloat_pattern);
 	//placeHook("GetOptionFloat", or_GetOptionFloat, GetOptionFloat_hook);
