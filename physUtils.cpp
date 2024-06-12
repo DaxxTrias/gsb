@@ -1,6 +1,7 @@
 #include "physUtils.h"
 #include "gameHooks.h"
 #include <PxActor.h>
+#include <PxScene.h>
 #include <PxRigidBody.h>
 #include <PxRigidStatic.h>
 #include "killSwitch.h"
@@ -59,6 +60,10 @@ std::vector<bodyData> generateBodyData() {
                         if (actorType == PxActorType::eRIGID_DYNAMIC)
 						{
                             //fprintf(stdout, "Dynamic actor\n");
+                            PxScene *scene = actor->getScene();
+                            //fprintf(stdout, "Scene: %p\n", scene);
+
+                            //PxU32 nbActors = scene->getNbActors(PxActorTypeSelectionFlag::eRIGID_DYNAMIC);
 						}
 						else if (actorType == PxActorType::eRIGID_STATIC)
 						{
