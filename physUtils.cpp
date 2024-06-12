@@ -24,7 +24,7 @@ std::vector<bodyData> generateBodyData() {
                 && (physList[i].id & 0xFFFFFF) == i
                 && ((physList[i].entry->id & 0xFFFFFF) == (physList[i].id & 0xFFFFFF))) {
 
-                PxActor* actor = physList[i].entry->actor;
+                PxActor* actor = (physList[i].entry != nullptr) ? physList[i].entry->actor : nullptr;
                 if (actor == nullptr) {
                     return {};
                 }
