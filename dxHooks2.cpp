@@ -138,12 +138,14 @@ HRESULT __stdcall hookD3D11Present1(IDXGISwapChain* pSwapChain, UINT SyncInterva
 
 	if (initonce) {
 		
-		if (GetAsyncKeyState(VK_F3) & 1) {
+		if (GetAsyncKeyState(VK_F4) & 1) {
 			killSwitch = !killSwitch;
 			std::cout << "Killswitch: " << (killSwitch.load() ? "ON" : "OFF") << std::endl;
 		}
 
-		std::vector<bodyData> bodys = generateBodyData(); // crash can occur when quickly exiting/entering ssc
+		std::vector<bodyData> bodys = {};
+		if (!killSwitch.load())
+			bodys = generateBodyData();
 		bodyData ply = getPlyByMass(bodys);
 
 		uintptr_t initialOffset = 0xA6296E8;
