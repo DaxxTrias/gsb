@@ -62,6 +62,22 @@ void setDevConsoleState_hook(__int64 a1, unsigned __int8 a2) {
 }
 
 __int64 addFuncToLuaClass_hook(__int64 L, const char* name, void* func, unsigned int type, void* callHandler, void* luaClass) {
+	if (strcmp(name, "addDebugBind") == 0 || strcmp(name, "getObjectManager") == 0 ||
+		strcmp(name, "postConsoleMessage") == 0 || strcmp(name, "setIsConsoleOpen") == 0 ||
+		strcmp(name, "getIsConsoleOpen") == 0)
+	{
+		fprintf(Con::fpout, "L: %llx name: %s func: %llx type: %d callHandler: %llx luaClass: %llx\n",
+			L, name, reinterpret_cast<unsigned long long>(func), type, reinterpret_cast<unsigned long long>(callHandler), reinterpret_cast<unsigned long long>(luaClass));
+	}
+	//typeManager/getObjectManagerHandler  __int64 __fastcall sub_16069C0(__int64 a1)
+	//bindHandler/addDebugBind __int64 __fastcall sub_1E79480(__int64 a1)
+	/*else
+	{
+		fprintf(Con::fpout, "addFuncToLuaClass: %s\n", name);
+	}*/
+
+	fflush(Con::fpout);
+
 	return FnCast("addFuncToLuaClass", or_addFuncToLuaClass)(L, name, func, type, callHandler, luaClass);
 }
 
@@ -89,6 +105,12 @@ SceneInstanceManager* getSceneInstanceManagerFromInstanceRootBySceneUH_hook(Scen
 	//sceneRoots.push_back(root);
 	SceneInstanceManager *result = FnCast("getSceneInstanceManagerFromInstanceRootBySceneUH", or_getSceneInstanceManagerFromInstanceRootBySceneUH)(root, uh);
 	sceneInstances[uh] = result;
+	
+	if (getOption<bool>("debugMode")) {
+		fprintf(Con::fpout, "sceneRoot: %p uh: %d\n", root, uh);
+		fflush(Con::fpout);
+	}
+
 	return result;
 }
 
@@ -128,9 +150,14 @@ void* somePxStuff_hook(uint64_t a1) {
 }
 
 __int64 getPxActorFromList_hook(__int64 list, int id) {
-	//fprintf(Con::fpout, "getPxActorFromList: %llx id: %d\n", list, id);
+	
 	physList = *(PhysListArray**)(list + 0x140);
-    //fprintf(Con::fpout, "physList %p\n", physList);
+   
+	//if (getOption<bool>("debugMode")) {
+	//	fprintf(Con::fpout, "getPxActorFromList: %llx id: %d\n", list, id); // keep scrolling down until you find the ID. its very big.
+	//	fprintf(Con::fpout, "physList %p\n", physList); // the array that holds all PxActors at +0x140 on v922
+	//}
+
 	return FnCast("getPxActorFromList", or_getPxActorFromList)(list, id);
 }
 
@@ -171,10 +198,10 @@ asteroidStruct* __fastcall someGetObjectOrAsteroid_hook(__int64 a1, __int64 id) 
 
 	if (getOption<bool>("debugMode")) {
 
-		if (strstr(asteroid->type, "ore")) {
+		/*if (strstr(asteroid->type, "ore")) {
 			fprintf(Con::fpout, "objManager: %llx asteroid %lld - %p [%.2f %.2f %.2f] %s\n", a1, id, (void*)asteroid, asteroid->x, asteroid->y, asteroid->z, asteroid->type);
 			fflush(Con::fpout);
-		}
+		}*/
 		/*else {
 			fprintf(Con::fpout, "other %lld - %p [%.2f %.2f %.2f] %s\n", id, (void*)asteroid, asteroid->x, asteroid->y, asteroid->z, asteroid->type);
 			fflush(Con::fpout);
@@ -195,7 +222,7 @@ void initGameHooks() {
 	//placeHook("setDevConsoleState", or_setDevConsoleState, setDevConsoleState_hook);
 
 	or_addFuncToLuaClass = findSignature<addFuncToLuaClass_type>(getStarbaseExe(), addFuncToLuaClass_pattern);
-	//placeHook("addFuncToLuaClass", or_addFuncToLuaClass, addFuncToLuaClass_hook);
+	placeHook("addFuncToLuaClass", or_addFuncToLuaClass, addFuncToLuaClass_hook);
 
 	or_GetOptionFloat = findSignature<GetOptionFloat_type>(getStarbaseExe(), GetOptionFloat_pattern);
 	//placeHook("GetOptionFloat", or_GetOptionFloat, GetOptionFloat_hook);

@@ -12,6 +12,7 @@ struct FilterState {
        {"charodium", true},
        {"vokarium", false},
        {"nhurgite", false},
+       {"exorium", true},
        {"surtrite", false},
        {"karnite", false},
        {"aegisium", true},
