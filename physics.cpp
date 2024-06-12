@@ -82,7 +82,7 @@ int updatePhysicsThread() {
                 && ((physList[i].entry->id & 0xFFFFFF) == (physList[i].id & 0xFFFFFF))) {
 
                 // access violation here as well not handled properly
-                if (physList[i].entry->actor == nullptr) {
+                if (physList[i].entry == nullptr || physList[i].entry->actor == nullptr) {
                     continue;
                 }
                 physx::PxActor* actor = {};
