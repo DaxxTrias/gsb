@@ -53,14 +53,15 @@ std::vector<bodyData> generateBodyData() {
 
                 if (isBody) {
                     PxRigidBody* body = actor->is<PxRigidBody>();
-                    float mass = body->getMass();
+                    float mass = (body != nullptr) ? body->getMass() : -1;
+                    PxVec3 vel = (body != nullptr) ? body->getLinearVelocity() : physx::PxVec3(0, 0, 0);
                     if (mass > 1.0f)
                     {
                         int actorType = actor->getType();
                         if (actorType == PxActorType::eRIGID_DYNAMIC)
 						{
                             //fprintf(stdout, "Dynamic actor\n");
-                            PxScene *scene = actor->getScene();
+                            //PxScene *scene = actor->getScene();
                             //fprintf(stdout, "Scene: %p\n", scene);
 
                             //PxU32 nbActors = scene->getNbActors(PxActorTypeSelectionFlag::eRIGID_DYNAMIC);
@@ -82,7 +83,6 @@ std::vector<bodyData> generateBodyData() {
                             fprintf(stdout, "Unknown actor type\n");
 						}
                     }
-                    PxVec3 vel = body->getLinearVelocity();
                     bodys.push_back(bodyData{ pos, vel, mass });
                 }
                 else if (isStatic) {
