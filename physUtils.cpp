@@ -51,6 +51,30 @@ std::vector<bodyData> generateBodyData() {
                 if (isBody) {
                     physx::PxRigidBody* body = actor->is<physx::PxRigidBody>();
                     float mass = body->getMass();
+                    if (mass > 1.0f)
+                    {
+                        int actorType = actor->getType();
+                        if (actorType == physx::PxActorType::eRIGID_DYNAMIC)
+						{
+                            //fprintf(stdout, "Dynamic actor\n");
+						}
+						else if (actorType == physx::PxActorType::eRIGID_STATIC)
+						{
+                            fprintf(stdout, "Static actor\n");
+						}
+						else if (actorType == physx::PxActorType::eARTICULATION_LINK)
+						{
+                            fprintf(stdout, "Articulation link\n");
+						}
+						else if (actorType == physx::PxActorType::eACTOR_COUNT)
+						{
+                            fprintf(stdout, "Actor count\n");
+						}
+						else
+						{
+                            fprintf(stdout, "Unknown actor type\n");
+						}
+                    }
                     physx::PxVec3 vel = body->getLinearVelocity();
                     bodys.push_back(bodyData{ pos, vel, mass });
                 }
