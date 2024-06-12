@@ -5,6 +5,8 @@
 #include <PxRigidStatic.h>
 #include "killSwitch.h"
 
+using namespace physx;
+
 inline bool cmpf(float A, float B, float epsilon = 0.005f) {
     return (fabs(A - B) < epsilon);
 }
@@ -21,19 +23,19 @@ std::vector<bodyData> generateBodyData() {
                 && (physList[i].id & 0xFFFFFF) == i
                 && ((physList[i].entry->id & 0xFFFFFF) == (physList[i].id & 0xFFFFFF))) {
 
-                physx::PxActor* actor = physList[i].entry->actor;
+                PxActor* actor = physList[i].entry->actor;
                 if (actor == nullptr) {
                     return {};
                 }
 
-                physx::PxRigidActor* rigid = actor->is<physx::PxRigidActor>(); // crashes when opening SSC?
+                PxRigidActor* rigid = actor->is<PxRigidActor>(); // crashes when opening SSC?
                 if (rigid == nullptr || (uint64_t)rigid > 0xFFFF'FFFF'FFFF'0000) {
                     return {};
                 }
                 else
                     rigid->getGlobalPose().isValid();
 
-                physx::PxVec3 pos = {};
+                PxVec3 pos = {};
 
                 try
                 {
@@ -45,28 +47,28 @@ std::vector<bodyData> generateBodyData() {
                     return {};
                 }
 
-                bool isStatic = actor->is<physx::PxRigidStatic>() != nullptr;
-                bool isBody = actor->is<physx::PxRigidBody>() != nullptr;
+                bool isStatic = actor->is<PxRigidStatic>() != nullptr;
+                bool isBody = actor->is<PxRigidBody>() != nullptr;
 
                 if (isBody) {
-                    physx::PxRigidBody* body = actor->is<physx::PxRigidBody>();
+                    PxRigidBody* body = actor->is<PxRigidBody>();
                     float mass = body->getMass();
                     if (mass > 1.0f)
                     {
                         int actorType = actor->getType();
-                        if (actorType == physx::PxActorType::eRIGID_DYNAMIC)
+                        if (actorType == PxActorType::eRIGID_DYNAMIC)
 						{
                             //fprintf(stdout, "Dynamic actor\n");
 						}
-						else if (actorType == physx::PxActorType::eRIGID_STATIC)
+						else if (actorType == PxActorType::eRIGID_STATIC)
 						{
                             fprintf(stdout, "Static actor\n");
 						}
-						else if (actorType == physx::PxActorType::eARTICULATION_LINK)
+						else if (actorType == PxActorType::eARTICULATION_LINK)
 						{
                             fprintf(stdout, "Articulation link\n");
 						}
-						else if (actorType == physx::PxActorType::eACTOR_COUNT)
+						else if (actorType == PxActorType::eACTOR_COUNT)
 						{
                             fprintf(stdout, "Actor count\n");
 						}
@@ -75,7 +77,7 @@ std::vector<bodyData> generateBodyData() {
                             fprintf(stdout, "Unknown actor type\n");
 						}
                     }
-                    physx::PxVec3 vel = body->getLinearVelocity();
+                    PxVec3 vel = body->getLinearVelocity();
                     bodys.push_back(bodyData{ pos, vel, mass });
                 }
                 else if (isStatic) {
