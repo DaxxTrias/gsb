@@ -62,14 +62,19 @@ void setDevConsoleState_hook(__int64 a1, unsigned __int8 a2) {
 }
 
 __int64 addFuncToLuaClass_hook(__int64 L, const char* name, void* func, unsigned int type, void* callHandler, void* luaClass) {
-
-	if (name == "addDebugBind" || name == "getObjectManager" || name == "postConsoleMessage" 
-		|| name == "setIsConsoleOpen" || name == "setIsConsoleOpen")
+	if (strcmp(name, "addDebugBind") == 0 || strcmp(name, "getObjectManager") == 0 ||
+		strcmp(name, "postConsoleMessage") == 0 || strcmp(name, "setIsConsoleOpen") == 0 ||
+		strcmp(name, "getIsConsoleOpen") == 0)
 	{
-		fprintf(Con::fpout, "L: %llx name: %s func: %llx type: %d callHandler: %llx luaClass: %llx\n", L, name, func, type, callHandler, luaClass);
+		fprintf(Con::fpout, "L: %llx name: %s func: %llx type: %d callHandler: %llx luaClass: %llx\n",
+			L, name, reinterpret_cast<unsigned long long>(func), type, reinterpret_cast<unsigned long long>(callHandler), reinterpret_cast<unsigned long long>(luaClass));
 	}
-	else
+	//typeManager/getObjectManagerHandler  __int64 __fastcall sub_16069C0(__int64 a1)
+	//bindHandler/addDebugBind __int64 __fastcall sub_1E79480(__int64 a1)
+	/*else
+	{
 		fprintf(Con::fpout, "addFuncToLuaClass: %s\n", name);
+	}*/
 
 	fflush(Con::fpout);
 
