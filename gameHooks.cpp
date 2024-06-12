@@ -63,12 +63,15 @@ void setDevConsoleState_hook(__int64 a1, unsigned __int8 a2) {
 
 __int64 addFuncToLuaClass_hook(__int64 L, const char* name, void* func, unsigned int type, void* callHandler, void* luaClass) {
 
-	if (getOption<bool>("debugMode")) {
-		
-		fprintf(Con::fpout, "addFuncToLuaClass: %s\n", name);
-		fflush(Con::fpout);
-	
+	if (name == "addDebugBind" || name == "getObjectManager" || name == "postConsoleMessage" 
+		|| name == "setIsConsoleOpen" || name == "setIsConsoleOpen")
+	{
+		fprintf(Con::fpout, "L: %llx name: %s func: %llx type: %d callHandler: %llx luaClass: %llx\n", L, name, func, type, callHandler, luaClass);
 	}
+	else
+		fprintf(Con::fpout, "addFuncToLuaClass: %s\n", name);
+
+	fflush(Con::fpout);
 
 	return FnCast("addFuncToLuaClass", or_addFuncToLuaClass)(L, name, func, type, callHandler, luaClass);
 }
@@ -145,10 +148,10 @@ __int64 getPxActorFromList_hook(__int64 list, int id) {
 	
 	physList = *(PhysListArray**)(list + 0x140);
    
-	if (getOption<bool>("debugMode")) {
-		fprintf(Con::fpout, "getPxActorFromList: %llx id: %d\n", list, id); // keep scrolling down until you find the ID. its very big.
-		fprintf(Con::fpout, "physList %p\n", physList); // the array that holds all PxActors at +0x140 on v922
-	}
+	//if (getOption<bool>("debugMode")) {
+	//	fprintf(Con::fpout, "getPxActorFromList: %llx id: %d\n", list, id); // keep scrolling down until you find the ID. its very big.
+	//	fprintf(Con::fpout, "physList %p\n", physList); // the array that holds all PxActors at +0x140 on v922
+	//}
 
 	return FnCast("getPxActorFromList", or_getPxActorFromList)(list, id);
 }
@@ -190,10 +193,10 @@ asteroidStruct* __fastcall someGetObjectOrAsteroid_hook(__int64 a1, __int64 id) 
 
 	if (getOption<bool>("debugMode")) {
 
-		if (strstr(asteroid->type, "ore")) {
+		/*if (strstr(asteroid->type, "ore")) {
 			fprintf(Con::fpout, "objManager: %llx asteroid %lld - %p [%.2f %.2f %.2f] %s\n", a1, id, (void*)asteroid, asteroid->x, asteroid->y, asteroid->z, asteroid->type);
 			fflush(Con::fpout);
-		}
+		}*/
 		/*else {
 			fprintf(Con::fpout, "other %lld - %p [%.2f %.2f %.2f] %s\n", id, (void*)asteroid, asteroid->x, asteroid->y, asteroid->z, asteroid->type);
 			fflush(Con::fpout);
