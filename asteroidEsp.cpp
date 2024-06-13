@@ -274,7 +274,10 @@ void drawAsteroidESP(const bodyData& ply) {
 			continue;
 
 		std::vector<const char*> asteroid = { object->type };
-		if (!parseAsteroids(asteroid) && checkOre)
+
+		bool isAsteroid = parseAsteroids(asteroid);
+
+		if (isAsteroid && !checkOre)
 			continue;
 
 		physx::PxVec3 objectPos{ object->x, object->y, object->z };
@@ -286,7 +289,7 @@ void drawAsteroidESP(const bodyData& ply) {
 
 		if (dist < 5.0f && renderSettings.debugMode)
 		{
-			fprintf(Con::fpout, "ObjAdd: %p Dist: %f\n", object, dist);
+			fprintf(Con::fpout, "ObjAdd: %p Dist: %f idx: %i\n", object, dist, i);
 		}
 
 		AsteroidSubData& subData = asteroidsSubData[i];
