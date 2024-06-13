@@ -25,14 +25,14 @@ struct AsteroidCache {
 };
 
 struct AsteroidRenderingSettings {
-	bool drawLine;
-	bool drawNear;
-	bool drawFar;
-	float farDistance;
-	float minPhysMass;
-	bool drawStats;
-	bool debugMode;
-	bool crossHair;
+	bool drawLine = false;
+	bool drawNear = true;
+	bool drawFar = false;
+	float farDistance = 2000.f;
+	float minPhysMass = 300.f;
+	bool drawStats = true;
+	bool debugMode = false;
+	bool crossHair = true;
 	ImColor farColor;
 	ImColor lineFarColor;
 	ImColor drawStatsColor;
@@ -47,7 +47,7 @@ static AsteroidRenderingSettings loadRenderingSettings() {
 	settings.farDistance = getOption<float>("farAsteroidDistance");
 	settings.minPhysMass = getOption<float>("minPhysMass");
 	settings.debugMode = getOption<bool>("debugMode");
-	settings.debugMode = getOption<bool>("drawCrosshair");
+	settings.crossHair = getOption<bool>("drawCrosshair");
 	settings.farColor = getOption<ImColor>("farAsteroidColor");
 	settings.nearColor = getOption<ImColor>("nearAstreoidColor");
 	settings.lineFarColor = getOption<ImColor>("lineAsteroidColor");
