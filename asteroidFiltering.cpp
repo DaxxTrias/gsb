@@ -1,7 +1,7 @@
 #include <unordered_map>
 #include <string>
 #include <unordered_set>
-
+#include "menu.h"
 
 struct FilterState {
     std::unordered_map<std::string, bool> filters = {
@@ -66,7 +66,16 @@ bool isInFilter(const char* parsedString) {
 
 bool parseAsteroids(const std::vector<const char*>& asteroids) {
     for (const char* asteroid : asteroids) {
-        if (isInFilter(asteroid)) {
+
+        //todo: we can get stuck in an infinite loop rendering the stale cache. i think.
+        //if (isInFilter(asteroid)) {
+
+            //printf("Matched asteroid: %s\n", asteroid);
+            //return true;
+        //}
+
+        bool oreCheck = getOption<bool>("asteroidOreCheck");
+        if (isInFilter(asteroid) && oreCheck) {
 
             //printf("Matched asteroid: %s\n", asteroid);
             return true;

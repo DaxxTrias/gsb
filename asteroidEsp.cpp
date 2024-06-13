@@ -289,7 +289,7 @@ void drawAsteroidESP(const bodyData& ply) {
 
 		if (dist < 5.0f && renderSettings.debugMode)
 		{
-			fprintf(Con::fpout, "ObjAdd: %p Dist: %f idx: %i\n", object, dist, i);
+			fprintf(Con::fpout, "ObjAdd: %p Dist: %f idx: %ild\n", object, dist, reinterpret_cast<uintptr_t>(object));
 		}
 
 		AsteroidSubData& subData = asteroidsSubData[i];
