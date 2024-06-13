@@ -327,8 +327,7 @@ struct asteroidStruct
     __int64 field_120;  //0x120
     __int64 field_128;  //0x128
     char* type;         //0x130
-    int typeID;         //0x138
-    int field_13C;      //0x13C
+    __int64 field_138;  //0x138
     int field_140;	    //0x140
     int bitmaskFlag;    //0x144
     __int64 field_148;  //0x148
