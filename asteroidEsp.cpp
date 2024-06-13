@@ -10,13 +10,11 @@
 #include <vector>
 #include "console.h"
 #include <PxPhysicsAPI.h>
-#include "filterTypeIDs.h"
 
 struct AsteroidSubData {
 	float maxDist;
 	asteroidStruct* ptr;
 	void* subPtr;
-	int typeID;
 };
 
 struct AsteroidCache {
@@ -174,7 +172,7 @@ static void drawAsteroid(
 		buff = std::to_string(static_cast<int>(typeID)) + " " + std::to_string(static_cast<int>(dist));
 	}
 	else {
-		buff = std::to_string(static_cast<int>(typeID)) + " " + std::string(type) + " " + std::to_string(static_cast<int>(dist));
+		buff = std::string(type) + " " + std::to_string(static_cast<int>(dist));
 	}
 
 	if (dist > settings.farDistance) {
@@ -262,9 +260,6 @@ void drawAsteroidESP(const bodyData& ply) {
 	bool checkOre = getOption<bool>("asteroidOreCheck");
 	AsteroidRenderingSettings renderSettings = loadRenderingSettings();
 
-	std::vector<int> typeIDs = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1000 };
-	std::vector<int> filteredTypeIDs = filterTypeIDs(typeIDs);
-
 	for (uint64_t i = 0; i < maxObjects; i++) {
 		asteroidStruct* object = (asteroidStruct*)((*(uint64_t*)(objectManager + 0x60060) & 0xFFFFFFFFFFFFFFFCui64) + (0x150 * i));
 		if (testObjectPtr(object)) {
@@ -288,15 +283,7 @@ void drawAsteroidESP(const bodyData& ply) {
 		if (isAsteroid && !checkOre)
 			continue;
 
-		//if (object->typeID != 0) {
-			// Check if typeID is in the filtered list
-			if (std::find(filteredTypeIDs.begin(), filteredTypeIDs.end(), object->typeID) != filteredTypeIDs.end()) {
-				fprintf(Con::fpout, "ObjAdd2: %p i: %llu typeID: %i\n", object, i, static_cast<int>(object->typeID));
-			}
-			/*else {
-				continue;
-			}*/
-		//}
+
 
 		physx::PxVec3 objectPos{ object->x, object->y, object->z };
 		float dist = calculateDistance(ply.pos, objectPos);
@@ -316,7 +303,6 @@ void drawAsteroidESP(const bodyData& ply) {
 				subData.ptr = object;
 				subData.maxDist = dist;
 				subData.subPtr = (void*)object->ptr0;
-				//subData.typeID = object->typeID;
 			}
 			else if (subData.maxDist < dist) {
 				subData.maxDist = dist;
