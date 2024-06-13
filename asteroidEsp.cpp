@@ -20,6 +20,7 @@ struct AsteroidSubData {
 struct AsteroidCache {
 	physx::PxVec3 pos;
 	char type[256];
+	int typeID;
 	float dist;
 	uint32_t ind;
 };
@@ -152,7 +153,9 @@ void drawStats(const bodyData& ply) {
 		ImVec2(5, 60), settings.drawStatsColor, buffer);
 }
 
-static void drawAsteroid(const physx::PxVec3& plyPos, const physx::PxVec3& asteroidPos, const char* type, float farDist, const AsteroidRenderingSettings& settings, const ImGuiIO& io) {
+static void drawAsteroid(
+	const physx::PxVec3& plyPos, const physx::PxVec3& asteroidPos, const char* type, float farDist, 
+	const AsteroidRenderingSettings& settings, const ImGuiIO& io, int typeID) {
 	//todo: W2S doesnt seem to properly take into account FOV (such as when zooming)
 	
 	if (asteroidPos.x == 0 && asteroidPos.y == 0 && asteroidPos.z == 0)
@@ -166,7 +169,7 @@ static void drawAsteroid(const physx::PxVec3& plyPos, const physx::PxVec3& aster
 
 	std::string buff;
 	if (strchr(type, '\n') != nullptr) {
-		buff = std::to_string(static_cast<int>(dist));
+		buff = std::to_string(static_cast<int>(typeID)) + " " + std::to_string(static_cast<int>(dist));
 	}
 	else {
 		buff = std::string(type) + " " + std::to_string(static_cast<int>(dist));
@@ -211,7 +214,7 @@ static void drawAsteroidsFromCache(const bodyData& ply) {
 	AsteroidRenderingSettings settings = loadRenderingSettings();
 
 	for (const auto& asteroid : asteroidsCache) {
-		drawAsteroid(ply.pos, asteroid.pos, asteroid.type, asteroid.dist, settings, io);
+		drawAsteroid(ply.pos, asteroid.pos, asteroid.type, asteroid.dist, settings, io, asteroid.typeID);
 	}
 }
 
@@ -280,6 +283,8 @@ void drawAsteroidESP(const bodyData& ply) {
 		if (isAsteroid && !checkOre)
 			continue;
 
+
+
 		physx::PxVec3 objectPos{ object->x, object->y, object->z };
 		float dist = calculateDistance(ply.pos, objectPos);
 
@@ -287,9 +292,9 @@ void drawAsteroidESP(const bodyData& ply) {
 			asteroidsSubData.resize(uint64_t((i + 1) * 1.2));
 		}
 
-		if (dist < 5.0f && renderSettings.debugMode)
+		if (dist < 20.0f && dist > 2.0f && renderSettings.debugMode)
 		{
-			fprintf(Con::fpout, "ObjAdd: %p Dist: %f idx: %ild\n", object, dist, reinterpret_cast<uintptr_t>(object));
+			fprintf(Con::fpout, "ObjAdd: %p Dist: %f i: %i typeID: %i\n", object, dist, i, object->typeID);
 		}
 
 		AsteroidSubData& subData = asteroidsSubData[i];
@@ -306,13 +311,14 @@ void drawAsteroidESP(const bodyData& ply) {
 
 		float maxDist = (subData.ptr == object) ? subData.maxDist : 0;
 
-		drawAsteroid(ply.pos, objectPos, object->type, maxDist, renderSettings, io);
+		drawAsteroid(ply.pos, objectPos, object->type, maxDist, renderSettings, io, object->typeID);
 		
 
 		AsteroidCache cache;
 		cache.ind = static_cast<uint32_t>(i);
 		cache.pos = objectPos;
 		cache.dist = maxDist;
+		cache.typeID = object->typeID;
 		strcpy(cache.type, object->type);
 		asteroidsCache.push_back(cache);
 	}

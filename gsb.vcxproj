@@ -199,6 +199,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="filterTypeIDs.cpp" />
     <ClCompile Include="fnv1a.cpp" />
     <ClCompile Include="gameHooks.cpp" />
     <ClCompile Include="hookUtils.cpp" />
