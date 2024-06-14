@@ -60,11 +60,11 @@ std::vector<bodyData> generateBodyData() {
                         int actorType = actor->getType();
                         if (actorType == PxActorType::eRIGID_DYNAMIC)
 						{
-                            uint32_t nbShapes = body->getNbShapes();
+                            //uint32_t nbShapes = body->getNbShapes();
                             /*const char* name = actor->getName();
                             fprintf(stdout, "Dynamic actor: %s\n", name);*/
                             //fprintf(stdout, "Dynamic actor\n");
-                            PxScene *scene = actor->getScene();
+                            //PxScene *scene = actor->getScene();
                             //fprintf(stdout, "Scene: %p\n", scene);
 
                             //uint32_t nbActors = scene->getNbActors(PxActorTypeSelectionFlag::eRIGID_DYNAMIC);
