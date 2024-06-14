@@ -143,16 +143,18 @@ HRESULT __stdcall hookD3D11Present1(IDXGISwapChain* pSwapChain, UINT SyncInterva
 			std::cout << "Killswitch: " << (killSwitch.load() ? "ON" : "OFF") << std::endl;
 		}
 
-		std::vector<bodyData> bodys = {};
-		if (!killSwitch.load())
-			bodys = generateBodyData();
-		bodyData ply = getPlyByMass(bodys);
+		
+		//if (!killSwitch.load())
+		//{
+		//	
+		//}
+			
 
 		//uintptr_t initialOffset = 0xA6296E8;
 		//renderingModule = *reinterpret_cast<uintptr_t*>(baseAddress + initialOffset);
 		//playerFOV = renderingModule + 0x21C;
 		//pFOV = reinterpret_cast<float*>(playerFOV)[0];
-		setCamPos(ply.pos);
+		
 
 		ImGui::Begin("Transparent", reinterpret_cast<bool*>(true), ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoBackground);
 		ImGui::SetWindowPos(ImVec2(0, 0), ImGuiCond_Always);
@@ -162,6 +164,10 @@ HRESULT __stdcall hookD3D11Present1(IDXGISwapChain* pSwapChain, UINT SyncInterva
 
 		if (!killSwitch.load())
 		{
+			std::vector<bodyData> bodys = {};
+			bodys = generateBodyData();
+			bodyData ply = getPlyByMass(bodys);
+			setCamPos(ply.pos);
 			if (getOption<bool>("asteroidEspEnabled"))
 				drawAsteroidESP(ply);
 			if (getOption<bool>("drawPhysMass"))
@@ -215,7 +221,7 @@ void __stdcall hookD3D11Draw(ID3D11DeviceContext* pContext, UINT VertexCount, UI
 		pscBuffer = NULL;
 	}
 
-	if (initonce && veWidth / 100 == 24) {
+	if (initonce && veWidth / 100 == 24 && !killSwitch.load()) {
 		ID3D11Buffer* pWorldViewCB;
 		pContext->VSGetConstantBuffers(0, 1, &pWorldViewCB);
 		ID3D11Buffer* m_pCurWorldViewCB = NULL;
