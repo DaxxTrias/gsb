@@ -24,7 +24,6 @@
 #include "killSwitch.h"
 #include <atomic>
 
-
 static bool minHookInitialized = false;
 HMODULE g_hModule = nullptr;
 std::atomic<bool> isShuttingDown(false); // Shutdown flag
@@ -60,9 +59,9 @@ int main()
 
 	pauseAllThreads(false);
 
-	fprintf(Con::fpout, "cfg loaded\n");
-
 	loadConfig("gsb.cfg");
+
+	fprintf(Con::fpout, "cfg loaded\n");
 
 	while (true) {
 		char buff[4096];
@@ -102,7 +101,6 @@ void Shutdown(HMODULE hModule) {
 	// Clean up the module and exit the thread
 	FreeLibraryAndExitThread(hModule, 0);
 }
-
 
 BOOL APIENTRY DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 {

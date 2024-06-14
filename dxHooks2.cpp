@@ -141,21 +141,13 @@ HRESULT __stdcall hookD3D11Present1(IDXGISwapChain* pSwapChain, UINT SyncInterva
 		if (GetAsyncKeyState(VK_F4) & 1) {
 			killSwitch = !killSwitch;
 			std::cout << "Killswitch: " << (killSwitch.load() ? "ON" : "OFF") << std::endl;
-		}
-
-		
-		//if (!killSwitch.load())
-		//{
-		//	
-		//}
-			
+		}	
 
 		//uintptr_t initialOffset = 0xA6296E8;
 		//renderingModule = *reinterpret_cast<uintptr_t*>(baseAddress + initialOffset);
 		//playerFOV = renderingModule + 0x21C;
 		//pFOV = reinterpret_cast<float*>(playerFOV)[0];
 		
-
 		ImGui::Begin("Transparent", reinterpret_cast<bool*>(true), ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoBackground);
 		ImGui::SetWindowPos(ImVec2(0, 0), ImGuiCond_Always);
 		ImGui::SetWindowSize(ImVec2(io.DisplaySize.x, io.DisplaySize.y), ImGuiCond_Always);

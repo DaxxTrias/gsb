@@ -8,7 +8,6 @@ const char* f_parser_bytecode_pattern = "48 89 5C 24 ? 48 89 6C 24 ? 57 48 83 EC
 
 f_parser_type or_f_parser;
 lua_pushinteger_type or_lua_pushinteger_type;
-
 lua_setglobal_type lua_setglobal_sb;
 lua_pcallk_type lua_pcallk_sb;
 luaL_loadstring_type luaL_loadstring_sb;

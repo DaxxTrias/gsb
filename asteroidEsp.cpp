@@ -251,8 +251,6 @@ void drawAsteroidESP(const bodyData& ply) {
 	updateCounter = 0;
 	asteroidsCache.clear();
 
-	//maxObjects = *(uint32_t*)(objectManager + 0x60068);
-
 	ImGuiIO& io = ImGui::GetIO();
 	bool checkOre = getOption<bool>("asteroidOreCheck");
 	AsteroidRenderingSettings renderSettings = loadRenderingSettings();
@@ -287,7 +285,9 @@ void drawAsteroidESP(const bodyData& ply) {
 
 		if (dist < 15.0f && dist > 1.2f && renderSettings.debugMode)
 		{
-			fprintf(Con::fpout, "ObjAdd: %p Dist: %f idx: %ild\n", object, dist, reinterpret_cast<uintptr_t>(object));
+			fprintf(
+				Con::fpout, "ObjAdd: %p Dist: %f idx: %ild\n", 
+					object, dist, reinterpret_cast<uintptr_t>(object));
 		}
 
 		AsteroidSubData& subData = asteroidsSubData[i];

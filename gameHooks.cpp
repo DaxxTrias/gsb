@@ -69,8 +69,8 @@ __int64 addFuncToLuaClass_hook(__int64 L, const char* name, void* func, unsigned
 		fprintf(Con::fpout, "L: %llx name: %s func: %llx type: %d callHandler: %llx luaClass: %llx\n",
 			L, name, reinterpret_cast<unsigned long long>(func), type, reinterpret_cast<unsigned long long>(callHandler), reinterpret_cast<unsigned long long>(luaClass));
 	}
-	//typeManager/getObjectManagerHandler  __int64 __fastcall sub_16069C0(__int64 a1)
-	//bindHandler/addDebugBind __int64 __fastcall sub_1E79480(__int64 a1)
+	//typeManager/getObjectManagerHandler:     __int64 __fastcall sub_16069C0(__int64 a1)
+	//bindHandler/addDebugBind:                __int64 __fastcall sub_1E79480(__int64 a1)
 	/*else
 	{
 		fprintf(Con::fpout, "addFuncToLuaClass: %s\n", name);
@@ -260,8 +260,6 @@ void initGameHooks() {
 	//or_createClassInstance = findSignature<createClassInstance_type>(getStarbaseExe(), createClassInstance_patter);
 	//placeHook("createClassInstance", or_createClassInstance, createClassInstance_hook);
 
-	//MessageBoxA(nullptr, "test", "test", MB_OK);
-
 	someGetObjectOrAsteroid_or = findSignature<someGetObjectOrAsteroid_type>(getStarbaseExe(), someGetObjectOrAsteroid_pattern);
 	placeHook("getObject", someGetObjectOrAsteroid_or, someGetObjectOrAsteroid_hook);
 
@@ -274,7 +272,7 @@ void initGameHooks() {
 
 void removeGameHooks() {
 	//removeHook("setDevConsoleState");
-	//removeHook("addFuncToLuaClass");
+	removeHook("addFuncToLuaClass");
 	//removeHook("GetOptionFloat");
 	//removeHook("SetOptionFloat");
 	//removeHook("GetOptionBool");

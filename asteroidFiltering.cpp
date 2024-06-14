@@ -68,12 +68,7 @@ bool parseAsteroids(const std::vector<const char*>& asteroids) {
     for (const char* asteroid : asteroids) {
 
         //todo: we can get stuck in an infinite loop rendering the stale cache. i think.
-        //if (isInFilter(asteroid)) {
-
-            //printf("Matched asteroid: %s\n", asteroid);
-            //return true;
-        //}
-
+        // so implemented a option check to try and help us escape it if we get trapped in stale cache
         bool oreCheck = getOption<bool>("asteroidOreCheck");
         if (isInFilter(asteroid) && oreCheck) {
 
