@@ -275,9 +275,7 @@ void drawAsteroidESP(const bodyData& ply) {
 
 		std::vector<const char*> asteroid = { object->type };
 
-		bool isAsteroid = parseAsteroids(asteroid);
-
-		if (isAsteroid && !checkOre)
+		if (!parseAsteroids(asteroid) && checkOre)
 			continue;
 
 		physx::PxVec3 objectPos{ object->x, object->y, object->z };
