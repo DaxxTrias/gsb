@@ -64,7 +64,9 @@ void setDevConsoleState_hook(__int64 a1, unsigned __int8 a2) {
 }
 
 void updatePositionDeltas_hook(__int64 context, float* posDeltas) {
-	fprintf(Con::fpout, "updatePositionDeltas: Conext: %llx   Deltas: %.2f %.2f %.2f\n", context, posDeltas[0], posDeltas[1],posDeltas[2]);
+	//might be giving us the PxCharacterController context 
+	//todo: can probably get the pxActor here, instead of itering thru entity list and sometimes hosting W2S from another players PoV
+	fprintf(Con::fpout, "updatePositionDeltas: Context: %llx   Deltas: %.2f %.2f %.2f\n", context, posDeltas[0], posDeltas[1],posDeltas[2]);
 	fflush(Con::fpout);
 	FnCast("updatePositionDeltas", or_updatePositionDeltas)(context, posDeltas);
 }
