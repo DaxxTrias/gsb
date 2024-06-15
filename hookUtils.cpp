@@ -119,6 +119,10 @@ unsigned char* getStarbaseExe() {
 	return (unsigned char*)GetModuleHandle("Starbase.exe");
 }
 
+unsigned char* getPlayerKinematicsDll() {
+	return (unsigned char*)GetModuleHandle("PhysX3CharacterKinematic_x64.dll");
+}
+
 unsigned char* getLuaDll() {
 	return (unsigned char*)GetModuleHandle("lua_x64.dll");
 }

@@ -13,6 +13,7 @@
 #include "memHelper.h"
 
 // most of the previous patterns seemed (mostly) accurate on v582, but some of the functions were rewritten
+const char* updatePositionDeltas_pattern = "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 33 FF";
 const char* setDevConsoleState_pattern = "4C 8B DC 55 41 54 41 57 49 8D AB ? ? ? ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 80 79 ? ? 44 0F B6 E2";
 const char* addFuncToLuaClass_pattern = "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC 20 48 8B EA 41 8B D9 41 8B D1 49 8B F8 48 8B F1 FF 15 ? ? ? ? 44 8B C3 48 8B D7 48 8B C8";
 const char* GetOptionFloat_pattern = "48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 41 56 48 83 EC 20 48 8B 31 4C 8B F2 48 8B F9 33 D2 49 8B C8 49 8B D8 E8 ? ? ? ? 4C 8B C3 0F";
@@ -30,6 +31,7 @@ const char* setupGameConfig_pattern = "48 8B C4 55 53 48 8D 68 A1 48 81 EC ? ? ?
 const char* createClassInstance_patter = "40 53 56 41 55 41 56 48 83 EC ? 8B DA"; // maybe (function appears to have been rewritten. only about 70% confidence)
 const char* someGetObjectOrAsteroid_pattern = "48 89 5C 24 ? 57 48 83 EC ? 48 8B F9 8B DA 3B 91 ? ? ? ? 72 ? 41 B8 ? ? ? ? 48 8D 15 ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 74 ? CC 3B 9F ? ? ? ? 72 ? 4C 8D 0D ? ? ? ? 41 B8 ? ? ? ? 48 8D 15 ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 74 ? CC 48 8B 8F ? ? ? ? 48 69 C3 ? ? ? ? 48 8B 5C 24 ? 48 83 E1 ? 48 03 C1 48 83 C4 ? 5F C3 CC CC CC CC CC CC CC CC CC CC CC CC CC CC 48 89 5C 24 ? 57 48 83 EC ? 41 8B D8"; // 50% chance this is right (there were 2 possibilities)
 
+updatePositionDeltas_type or_updatePositionDeltas;
 setDevConsoleState_type or_setDevConsoleState;
 addFuncToLuaClass_type or_addFuncToLuaClass;
 GetOptionFloat_type or_GetOptionFloat;
@@ -59,6 +61,12 @@ uint64_t objectManager;
 
 void setDevConsoleState_hook(__int64 a1, unsigned __int8 a2) {
 	FnCast("setDevConsoleState", or_setDevConsoleState)(a1, true);
+}
+
+void updatePositionDeltas_hook(__int64 context, float* posDeltas) {
+	fprintf(Con::fpout, "updatePositionDeltas: %llx\n", context);
+	fflush(Con::fpout);
+	FnCast("updatePositionDeltas", or_updatePositionDeltas)(context, posDeltas);
 }
 
 __int64 addFuncToLuaClass_hook(__int64 L, const char* name, void* func, unsigned int type, void* callHandler, void* luaClass) {
@@ -217,6 +225,9 @@ uintptr_t baseAddress;
 void initGameHooks() {
 
 	baseAddress = reinterpret_cast<uintptr_t>(getStarbaseExe());
+
+    or_updatePositionDeltas = findSignature<updatePositionDeltas_type>(getPlayerKinematicsDll(), updatePositionDeltas_pattern);
+	placeHook("updatePositionDeltas", or_updatePositionDeltas, updatePositionDeltas_hook);
 	
 	or_setDevConsoleState = findSignature<setDevConsoleState_type>(getStarbaseExe(), setDevConsoleState_pattern);
 	//placeHook("setDevConsoleState", or_setDevConsoleState, setDevConsoleState_hook);

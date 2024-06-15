@@ -342,6 +342,7 @@ typedef SceneInstanceManager*(*getSceneInstanceManagerFromInstanceRootBySceneUH_
 typedef Actor* (*SceneInstanceManager__getActor_type)(SceneInstanceManager* a1, int id);
 typedef void* (*someGlobalGetterSetter_type)(char* name, unsigned int strLen, char a3, void* a4, char* a5);
 typedef void* (*getPhysClass_type)();
+typedef void(*updatePositionDeltas_type)(__int64 context, float* posDeltas);
 typedef void* (*somePxStuff_type)(__int64 a1);
 typedef __int64 (*getPxActorFromList_type)(__int64 list, int id);
 typedef __int64 (*setupGameConfig_type)(__int64 a1, unsigned int a2, __int64* preHashName, __int64 a4, __int64 a5, float value, int a7, __int64* a8, __int64* a9);

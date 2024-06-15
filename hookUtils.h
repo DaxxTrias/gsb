@@ -31,3 +31,4 @@ T findSignatureFull(unsigned char* data, unsigned char* sig, char* pattern) {
 
 unsigned char* getStarbaseExe();
 unsigned char* getLuaDll();
+unsigned char* getPlayerKinematicsDll();
