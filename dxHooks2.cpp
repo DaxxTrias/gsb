@@ -24,14 +24,16 @@ typedef void(__stdcall* D3D11DrawHook) (ID3D11DeviceContext* pContext, UINT Vert
 static ID3D11Device* pDevice = NULL;
 static ID3D11DeviceContext* pContext = NULL;
 static CreateSwapChainForHwnd_type CreateSwapChainForHwnd_or;
+static ID3D11RenderTargetView* mainRenderTargetViewD3D11;
+static D3D11Present1Hook phookD3D11Present1 = NULL;
+static D3D11DrawHook phookD3D11Draw = NULL;
+static ID3D11DepthStencilState* DepthStencilState_TRUE = NULL; //depth off
+static ID3D11DepthStencilState* DepthStencilState_FALSE = NULL; //depth off
+static ID3D11DepthStencilState* DepthStencilState_ORIG = NULL; //depth on
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 static HWND window = NULL;
 WNDPROC oWndProc;
-
-static ID3D11RenderTargetView* mainRenderTargetViewD3D11;
-static D3D11Present1Hook phookD3D11Present1 = NULL;
-static D3D11DrawHook phookD3D11Draw = NULL;
 
 static DWORD_PTR* pSwapChainVtable = NULL;
 static DWORD_PTR* pContextVTable = NULL;
@@ -39,9 +41,9 @@ static DWORD_PTR* pDeviceVTable = NULL;
 
 static bool initonce = false;
 
-static ID3D11DepthStencilState* DepthStencilState_TRUE = NULL; //depth off
-static ID3D11DepthStencilState* DepthStencilState_FALSE = NULL; //depth off
-static ID3D11DepthStencilState* DepthStencilState_ORIG = NULL; //depth on
+uintptr_t renderingModule;
+uintptr_t playerFOV;
+float pFOV = 90;
 
 static void InitImGuiD3D11()
 {
@@ -70,9 +72,6 @@ static LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPAR
 	return CallWindowProc(oWndProc, hWnd, uMsg, wParam, lParam);
 }
 
-uintptr_t renderingModule;
-uintptr_t playerFOV;
-float pFOV = 90;
 
 HRESULT __stdcall hookD3D11Present1(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT Flags, 
 	const DXGI_PRESENT_PARAMETERS* pPresentParameters) {
