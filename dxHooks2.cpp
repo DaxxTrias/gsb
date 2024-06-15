@@ -153,6 +153,8 @@ HRESULT __stdcall hookD3D11Present1(IDXGISwapChain* pSwapChain, UINT SyncInterva
 		ImGui::SetWindowSize(ImVec2(io.DisplaySize.x, io.DisplaySize.y), ImGuiCond_Always);
 
 		//todo: can probably check if localEnt initialized, and if not assume on main menu and sleep the render/processing loop?
+		//todo: buying a ship in the creator might be able to 'break' the data loc's we hook. playerCoords seem to get toasted for sure.
+		//reloading to main menu fixes the core esp, but physics esp still broken even after relog from above event/issue
 
 		if (!killSwitch.load())
 		{
