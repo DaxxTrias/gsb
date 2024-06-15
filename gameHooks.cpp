@@ -64,7 +64,7 @@ void setDevConsoleState_hook(__int64 a1, unsigned __int8 a2) {
 }
 
 void updatePositionDeltas_hook(__int64 context, float* posDeltas) {
-	fprintf(Con::fpout, "updatePositionDeltas: %llx\n", context);
+	fprintf(Con::fpout, "updatePositionDeltas: Conext: %llx   Deltas: %.2f %.2f %.2f\n", context, posDeltas[0], posDeltas[1],posDeltas[2]);
 	fflush(Con::fpout);
 	FnCast("updatePositionDeltas", or_updatePositionDeltas)(context, posDeltas);
 }
@@ -74,7 +74,7 @@ __int64 addFuncToLuaClass_hook(__int64 L, const char* name, void* func, unsigned
 		strcmp(name, "postConsoleMessage") == 0 || strcmp(name, "setIsConsoleOpen") == 0 ||
 		strcmp(name, "getIsConsoleOpen") == 0)
 	{
-		fprintf(Con::fpout, "L: %llx name: %s func: %llx type: %d callHandler: %llx luaClass: %llx\n",
+		fprintf(Con::fpout, "AddFuncToLua: Lua_State: %llx name: %s func: %llx type: %d callHandler: %llx luaClass: %llx\n",
 			L, name, reinterpret_cast<unsigned long long>(func), type, reinterpret_cast<unsigned long long>(callHandler), reinterpret_cast<unsigned long long>(luaClass));
 	}
 	//typeManager/getObjectManagerHandler:     __int64 __fastcall sub_16069C0(__int64 a1)
