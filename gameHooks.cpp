@@ -13,6 +13,7 @@
 #include "memHelper.h"
 
 // most of the previous patterns seemed (mostly) accurate on v582, but some of the functions were rewritten
+const char* updateActors_pattern = "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 33 FF"; // this is a precursor function to the one below
 const char* updatePositionDeltas_pattern = "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 33 FF";
 const char* setDevConsoleState_pattern = "4C 8B DC 55 41 54 41 57 49 8D AB ? ? ? ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 80 79 ? ? 44 0F B6 E2";
 const char* addFuncToLuaClass_pattern = "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC 20 48 8B EA 41 8B D9 41 8B D1 49 8B F8 48 8B F1 FF 15 ? ? ? ? 44 8B C3 48 8B D7 48 8B C8";
