@@ -342,6 +342,7 @@ typedef SceneInstanceManager*(*getSceneInstanceManagerFromInstanceRootBySceneUH_
 typedef Actor* (*SceneInstanceManager__getActor_type)(SceneInstanceManager* a1, int id);
 typedef void* (*someGlobalGetterSetter_type)(char* name, unsigned int strLen, char a3, void* a4, char* a5);
 typedef void* (*getPhysClass_type)();
+typedef __int64(*PxControllerRelated_type)(__int64 a1, __int64 a2, __int64 a3, __int64 a4);
 typedef void(*updatePositionDeltas_type)(__int64 context, float* posDeltas);
 typedef void* (*somePxStuff_type)(__int64 a1);
 typedef __int64 (*getPxActorFromList_type)(__int64 list, int id);
@@ -355,6 +356,7 @@ extern std::unordered_map<int, Actor*> actors;
 extern PhysListArray* physList;
 extern std::atomic<uint32_t> maxObjects;
 extern uint64_t objectManager;
+extern uint64_t PxController;
 
 extern someGlobalGetterSetter_type or_someGlobalGetterSetter;
 extern getPhysClass_type getPhysClass;
