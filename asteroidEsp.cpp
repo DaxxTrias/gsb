@@ -61,8 +61,8 @@ using namespace physx;
 static std::vector<AsteroidSubData> asteroidsSubData;
 static std::vector<AsteroidCache> asteroidsCache;
 
-uintptr_t localEnt;
-uintptr_t localEnt_VelocityVec3;
+uintptr_t localPlayer;
+uintptr_t localPlayer_VelocityVec3;
 
 static float calculateDistance(const physx::PxVec3& pos1, const physx::PxVec3& pos2) {
 	physx::PxVec3 diff = pos1 - pos2;
@@ -108,17 +108,17 @@ void drawStats(const bodyData& ply) {
     uintptr_t initialOffset = 0xAF99568;
     uintptr_t nextOffset = 0xC4C;
 
-    localEnt = *reinterpret_cast<uintptr_t*>(baseAddress + initialOffset);
-    localEnt_VelocityVec3 = localEnt + 0xC4C;
+    localPlayer = *reinterpret_cast<uintptr_t*>(baseAddress + initialOffset);
+    localPlayer_VelocityVec3 = localPlayer + 0xC4C;
 
 	float localEnt_VelocityX = 0.0f;
 	float localEnt_VelocityY = 0.0f;
 	float localEnt_VelocityZ = 0.0f;
 
-    if (localEnt != 0 && localEnt_VelocityVec3 != 0) {
-        localEnt_VelocityX = *reinterpret_cast<float*>(localEnt_VelocityVec3);
-        localEnt_VelocityY = *reinterpret_cast<float*>(localEnt_VelocityVec3 + 0x4);
-        localEnt_VelocityZ = *reinterpret_cast<float*>(localEnt_VelocityVec3 + 0x8);
+    if (localPlayer != 0 && localPlayer_VelocityVec3 != 0) {
+        localEnt_VelocityX = *reinterpret_cast<float*>(localPlayer_VelocityVec3);
+        localEnt_VelocityY = *reinterpret_cast<float*>(localPlayer_VelocityVec3 + 0x4);
+        localEnt_VelocityZ = *reinterpret_cast<float*>(localPlayer_VelocityVec3 + 0x8);
     }
 
     physx::PxVec3 localEnt_VelocityVector3 = createPxVec3(localEnt_VelocityX, localEnt_VelocityY, localEnt_VelocityZ);
