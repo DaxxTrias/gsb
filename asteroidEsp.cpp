@@ -61,7 +61,7 @@ using namespace physx;
 static std::vector<AsteroidSubData> asteroidsSubData;
 static std::vector<AsteroidCache> asteroidsCache;
 
-int currentControllers;
+__int8 currentControllers;
 uintptr_t localPlayer;
 uintptr_t PxControllerObject_Context;
 uintptr_t localPlayer_VelocityVec3;
@@ -111,8 +111,8 @@ void drawStats(const bodyData& ply) {
 
 	if (PxControllerObject != 0)
 	{
-		PxControllerObject_Context = (PxControllerObject + 0x208);
-		currentControllers = (PxControllerObject_Context + 0x68);
+		PxControllerObject_Context = *reinterpret_cast<uintptr_t*>(PxControllerObject + 0x208);
+		currentControllers = *reinterpret_cast<__int8*>(PxControllerObject_Context + 0x68);
 	}
 
     localPlayer = *reinterpret_cast<uintptr_t*>(baseAddress + localPlayerinitialOffset);
@@ -162,7 +162,7 @@ void drawStats(const bodyData& ply) {
 	snprintf(buffer, sizeof(buffer), "Controllers: %d", currentControllers);
 	ImGui::GetWindowDrawList()->AddText(
 		ImGui::GetFont(), ImGui::GetFontSize(),
-		ImVec2(5, 60), settings.drawStatsColor, buffer);
+		ImVec2(5, 80), settings.drawStatsColor, buffer);
 }
 
 static void drawAsteroid(const physx::PxVec3& plyPos, const physx::PxVec3& asteroidPos, const char* type, float farDist, const AsteroidRenderingSettings& settings, const ImGuiIO& io) {
