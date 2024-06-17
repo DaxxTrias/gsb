@@ -63,6 +63,8 @@ static std::vector<AsteroidCache> asteroidsCache;
 
 uintptr_t localPlayer;
 uintptr_t localPlayer_VelocityVec3;
+uintptr_t localPlayerinitialOffset = 0xAF99568;
+uintptr_t localPlayerNextOffset = 0xC4C;
 
 static float calculateDistance(const physx::PxVec3& pos1, const physx::PxVec3& pos2) {
 	physx::PxVec3 diff = pos1 - pos2;
@@ -104,12 +106,9 @@ void drawStats(const bodyData& ply) {
 
 	ImGuiIO& io = ImGui::GetIO();
 	AsteroidRenderingSettings settings = loadRenderingSettings();
-	
-    uintptr_t initialOffset = 0xAF99568;
-    uintptr_t nextOffset = 0xC4C;
 
-    localPlayer = *reinterpret_cast<uintptr_t*>(baseAddress + initialOffset);
-    localPlayer_VelocityVec3 = localPlayer + 0xC4C;
+    localPlayer = *reinterpret_cast<uintptr_t*>(baseAddress + localPlayerinitialOffset);
+    localPlayer_VelocityVec3 = localPlayer + localPlayerNextOffset;
 
 	float localEnt_VelocityX = 0.0f;
 	float localEnt_VelocityY = 0.0f;
