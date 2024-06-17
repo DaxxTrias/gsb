@@ -61,7 +61,9 @@ using namespace physx;
 static std::vector<AsteroidSubData> asteroidsSubData;
 static std::vector<AsteroidCache> asteroidsCache;
 
+int currentControllers;
 uintptr_t localPlayer;
+uintptr_t PxControllerObject_Context;
 uintptr_t localPlayer_VelocityVec3;
 uintptr_t localPlayerinitialOffset = 0xAF99568;
 uintptr_t localPlayerNextOffset = 0xC4C;
@@ -107,6 +109,12 @@ void drawStats(const bodyData& ply) {
 	ImGuiIO& io = ImGui::GetIO();
 	AsteroidRenderingSettings settings = loadRenderingSettings();
 
+	if (PxControllerObject != 0)
+	{
+		PxControllerObject_Context = (PxControllerObject + 0x208);
+		currentControllers = (PxControllerObject_Context + 0x68);
+	}
+
     localPlayer = *reinterpret_cast<uintptr_t*>(baseAddress + localPlayerinitialOffset);
     localPlayer_VelocityVec3 = localPlayer + localPlayerNextOffset;
 
@@ -146,6 +154,12 @@ void drawStats(const bodyData& ply) {
 
 	// Draw velocity
 	snprintf(buffer, sizeof(buffer), "Velocity: [%.0f, %.0f, %.0f] %.0f m/s", localEnt_VelocityX, localEnt_VelocityY, localEnt_VelocityZ, speed);
+	ImGui::GetWindowDrawList()->AddText(
+		ImGui::GetFont(), ImGui::GetFontSize(),
+		ImVec2(5, 60), settings.drawStatsColor, buffer);
+
+	// Draw current controllers (players/actors)
+	snprintf(buffer, sizeof(buffer), "Controllers: %d", currentControllers);
 	ImGui::GetWindowDrawList()->AddText(
 		ImGui::GetFont(), ImGui::GetFontSize(),
 		ImVec2(5, 60), settings.drawStatsColor, buffer);

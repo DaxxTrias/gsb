@@ -429,7 +429,7 @@ extern std::unordered_map<int, Actor*> actors;
 extern PhysListArray* physList;
 extern std::atomic<uint32_t> maxObjects;
 extern uint64_t objectManager;
-extern uint64_t PxController;
+extern uint64_t PxControllerObject;
 
 extern someGlobalGetterSetter_type or_someGlobalGetterSetter;
 extern getPhysClass_type getPhysClass;

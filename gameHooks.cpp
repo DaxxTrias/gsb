@@ -58,7 +58,7 @@ std::unordered_map<int, Actor*> actors;
 PhysListArray* physList = 0;
 std::atomic<uint32_t> maxObjects{ 0 };
 uint64_t objectManager;
-uint64_t PxController = 0;
+uint64_t PxControllerObject = 0;
 
 //todo: maybe look into hooking the screenshot func in gameoverlayrenderer and then kill it, so we dont end up with ESP in ss
 //todo: bonus points if detect SS, hide ESP, then resume it.
@@ -70,11 +70,11 @@ void setDevConsoleState_hook(__int64 a1, unsigned __int8 a2) {
 __int64 PxControllerRelated_hook(__int64 a1, __int64 a2, __int64 a3, __int64 a4)
 {
 	// a1 is a pointer to localEnt (possibly aka PxController)
-	if (PxController == 0)
+	if (PxControllerObject == 0)
 	{
 		fprintf(Con::fpout, "PxControllerRelated: %p %llx %llx %llx\n", a1, a2, a3, a4);
 		fflush(Con::fpout);
-		PxController = a1;
+		PxControllerObject = a1;
 	}
 	
 	return FnCast("PxControllerRelated", or_PxControllerRelated)(a1, a2, a3, a4);
