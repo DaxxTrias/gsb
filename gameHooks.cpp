@@ -13,8 +13,9 @@
 #include "memHelper.h"
 
 // most of the previous patterns seemed (mostly) accurate on v582, but some of the functions were rewritten
-const char* updateActors_pattern = "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 33 FF"; // this is a precursor function to the one below
-const char* updatePositionDeltas_pattern = "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 33 FF";
+const char* PxControllerRelated_pattern = "48 8B C4 48 89 58 ? 55 56 57 48 8D A8";
+const char* updateActors_pattern = "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 33 FF"; // precursor function to updatePositionDeltas
+const char* updatePositionDeltas_pattern = "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 33 FF"; // update playerPOS on sectorCube change
 const char* setDevConsoleState_pattern = "4C 8B DC 55 41 54 41 57 49 8D AB ? ? ? ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 80 79 ? ? 44 0F B6 E2";
 const char* addFuncToLuaClass_pattern = "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC 20 48 8B EA 41 8B D9 41 8B D1 49 8B F8 48 8B F1 FF 15 ? ? ? ? 44 8B C3 48 8B D7 48 8B C8";
 const char* GetOptionFloat_pattern = "48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 41 56 48 83 EC 20 48 8B 31 4C 8B F2 48 8B F9 33 D2 49 8B C8 49 8B D8 E8 ? ? ? ? 4C 8B C3 0F";
@@ -32,6 +33,7 @@ const char* setupGameConfig_pattern = "48 8B C4 55 53 48 8D 68 A1 48 81 EC ? ? ?
 const char* createClassInstance_patter = "40 53 56 41 55 41 56 48 83 EC ? 8B DA"; // maybe (function appears to have been rewritten. only about 70% confidence)
 const char* someGetObjectOrAsteroid_pattern = "48 89 5C 24 ? 57 48 83 EC ? 48 8B F9 8B DA 3B 91 ? ? ? ? 72 ? 41 B8 ? ? ? ? 48 8D 15 ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 74 ? CC 3B 9F ? ? ? ? 72 ? 4C 8D 0D ? ? ? ? 41 B8 ? ? ? ? 48 8D 15 ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 74 ? CC 48 8B 8F ? ? ? ? 48 69 C3 ? ? ? ? 48 8B 5C 24 ? 48 83 E1 ? 48 03 C1 48 83 C4 ? 5F C3 CC CC CC CC CC CC CC CC CC CC CC CC CC CC 48 89 5C 24 ? 57 48 83 EC ? 41 8B D8"; // 50% chance this is right (there were 2 possibilities)
 
+PxControllerRelated_type or_PxControllerRelated;
 updatePositionDeltas_type or_updatePositionDeltas;
 setDevConsoleState_type or_setDevConsoleState;
 addFuncToLuaClass_type or_addFuncToLuaClass;
@@ -56,12 +58,26 @@ std::unordered_map<int, Actor*> actors;
 PhysListArray* physList = 0;
 std::atomic<uint32_t> maxObjects{ 0 };
 uint64_t objectManager;
+uint64_t PxController = 0;
 
 //todo: maybe look into hooking the screenshot func in gameoverlayrenderer and then kill it, so we dont end up with ESP in ss
 //todo: bonus points if detect SS, hide ESP, then resume it.
 
 void setDevConsoleState_hook(__int64 a1, unsigned __int8 a2) {
 	FnCast("setDevConsoleState", or_setDevConsoleState)(a1, true);
+}
+
+__int64 PxControllerRelated_hook(__int64 a1, __int64 a2, __int64 a3, __int64 a4)
+{
+	// a1 is a pointer to localEnt (possibly aka PxController)
+	if (PxController == 0)
+	{
+		fprintf(Con::fpout, "PxControllerRelated: %p %llx %llx %llx\n", a1, a2, a3, a4);
+		fflush(Con::fpout);
+		PxController = a1;
+	}
+	
+	return FnCast("PxControllerRelated", or_PxControllerRelated)(a1, a2, a3, a4);
 }
 
 void updatePositionDeltas_hook(__int64 context, float* posDeltas) {
@@ -77,7 +93,7 @@ __int64 addFuncToLuaClass_hook(__int64 L, const char* name, void* func, unsigned
 		strcmp(name, "postConsoleMessage") == 0 || strcmp(name, "setIsConsoleOpen") == 0 ||
 		strcmp(name, "getIsConsoleOpen") == 0)
 	{
-		fprintf(Con::fpout, "AddFuncToLua: Lua_State: %llx name: %s func: %llx type: %d callHandler: %llx luaClass: %llx\n",
+		fprintf(Con::fpout, "AddFuncToLua: L*: %llx name: %s func: %llx type: %d callHandler: %llx luaClass: %llx\n",
 			L, name, reinterpret_cast<unsigned long long>(func), type, reinterpret_cast<unsigned long long>(callHandler), reinterpret_cast<unsigned long long>(luaClass));
 	}
 	//typeManager/getObjectManagerHandler:     __int64 __fastcall sub_16069C0(__int64 a1)
@@ -228,6 +244,9 @@ uintptr_t baseAddress;
 void initGameHooks() {
 
 	baseAddress = reinterpret_cast<uintptr_t>(getStarbaseExe());
+
+	or_PxControllerRelated = findSignature<PxControllerRelated_type>(getPlayerKinematicsDll(), PxControllerRelated_pattern);
+	placeHook("PxControllerRelated", or_PxControllerRelated, PxControllerRelated_hook);
 
     or_updatePositionDeltas = findSignature<updatePositionDeltas_type>(getPlayerKinematicsDll(), updatePositionDeltas_pattern);
 	placeHook("updatePositionDeltas", or_updatePositionDeltas, updatePositionDeltas_hook);
