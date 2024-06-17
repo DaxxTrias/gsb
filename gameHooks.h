@@ -332,6 +332,79 @@ struct asteroidStruct
     __int64 field_148;  //0x148
 };
 
+class playerEnt
+{
+public: 
+    char pad_0000[19]; //0x0000
+    int8_t rotationVelocity2; //0x0013
+    float pitchRoll2_1; //0x0014
+    float pitchRoll2_2; //0x0018
+    float pitchRoll2_3; //0x001C
+    float pitchRoll2_4; //0x0020
+    float pitchRoll2_5; //0x0024
+    float pitchRoll2_6; //0x0028
+    char pad_002C[124]; //0x002C
+    double playerX2; //0x00A8
+    double playerY2; //0x00B0
+    double playerZ2; //0x00B8
+    double playerX3; //0x00C0
+    double playerY3; //0x00C8
+    double playerZ3; //0x00D0
+    char pad_00D8[92]; //0x00D8
+    float walkingVelocityX; //0x0134
+    float walkingVelocityY; //0x0138
+    float walkingVelocityZ; //0x013C
+    float groundedPlayerX; //0x0140
+    float groundedPlayerY; //0x0144
+    float groundedPlayerZ; //0x0148
+    char pad_014C[31]; //0x014C
+    int8_t rotationVelocity; //0x016B
+    float pitchRoll1; //0x016C
+    float pitchRoll2; //0x0170
+    float pitchRoll3; //0x0174
+    float pitchRoll4; //0x0178
+    float pitchRoll5; //0x017C
+    float pitchRoll6; //0x0180
+    char pad_0184[36]; //0x0184
+    float N000005B9; //0x01A8 something related to ships and XYZ coords?
+    char pad_01AC[8]; //0x01AC
+    int16_t N00002E73; //0x01B4
+    int8_t collisionDetection; //0x01B6
+    char pad_01B7[1]; //0x01B7
+    int16_t isMoving; //0x01B8
+    int16_t N00004528; //0x01BA
+    char pad_01BC[12]; //0x01BC
+    double playerX; //0x01C8
+    double playerY; //0x01D0
+    double playerZ; //0x01D8
+    char pad_01E0[40]; //0x01E0
+    class playerKinematicContext* kinematicContext; //0x0208
+    float spawnedDuration; //0x0210
+    char pad_0214[620]; //0x0214
+}; //Size: 0x0480
+static_assert(sizeof(playerEnt) == 0x480);
+
+class playerKinematicContext
+{
+public:
+    char pad_0000[8]; //0x0000
+    class playerKinematicContextMember* kinematicContextMember; //0x0008
+    char pad_0010[80]; //0x0010
+    class N0000166C* N0000165C; //0x0060
+    int32_t actorCount; //0x0068
+    char pad_006C[340]; //0x006C
+}; //Size: 0x01C0
+static_assert(sizeof(playerKinematicContext) == 0x1C0);
+
+class playerKinematicContextMember
+{
+public:
+    char pad_0000[92]; //0x0000
+    float FPS; //0x005C
+    char pad_0060[296]; //0x0060
+}; //Size: 0x0188
+static_assert(sizeof(playerKinematicContextMember) == 0x188);
+
 typedef void(*setDevConsoleState_type)(__int64 a1, unsigned __int8 a2);
 typedef __int64(*addFuncToLuaClass_type)(__int64 L, const char* name, void* func, unsigned int type, void* callHandler, void* luaClass);
 typedef char(*GetOptionFloat_type)(DWORD* a1, float* a2, char* a3);
