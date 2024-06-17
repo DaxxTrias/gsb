@@ -109,11 +109,16 @@ void drawStats(const bodyData& ply) {
 	ImGuiIO& io = ImGui::GetIO();
 	AsteroidRenderingSettings settings = loadRenderingSettings();
 
-	if (PxControllerObject != 0)
-	{
-		PxControllerObject_Context = *reinterpret_cast<uintptr_t*>(PxControllerObject + 0x208);
-		currentControllers = *reinterpret_cast<__int8*>(PxControllerObject_Context + 0x68);
-	}
+    if (PxControllerObject != 0)
+    {
+        PxControllerObject_Context = *reinterpret_cast<uintptr_t*>(PxControllerObject + 0x208);
+        if (PxControllerObject_Context != 0)
+        {
+            currentControllers = *reinterpret_cast<__int8*>(PxControllerObject_Context + 0x68);
+        }
+        else
+			currentControllers = 0;
+    }
 
     localPlayer = *reinterpret_cast<uintptr_t*>(baseAddress + localPlayerinitialOffset);
     localPlayer_VelocityVec3 = localPlayer + localPlayerNextOffset;
