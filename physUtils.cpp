@@ -19,7 +19,7 @@ std::vector<bodyData> generateBodyData() {
         return bodys;
 
     if (physList != nullptr) {
-        for (uint64_t i = 0; i < maxObjects; i++) {
+        for (uint64_t i = 0; i <= maxObjects*2; i++) {
             if (physList[i].entry != nullptr
                 && (physList[i].id & 0xFFFFFF) == i
                 && ((physList[i].entry->id & 0xFFFFFF) == (physList[i].id & 0xFFFFFF))) {
