@@ -18,8 +18,10 @@ std::vector<bodyData> generateBodyData() {
     if (killSwitch.load())
         return bodys;
 
+    uint32_t maxObj2x = maxObjects * 3;
+
     if (physList != nullptr) {
-        for (uint64_t i = 0; i <= maxObjects*2; i++) {
+        for (uint64_t i = 0; i <= maxObj2x; i++) {
             if (physList[i].entry != nullptr
                 && (physList[i].id & 0xFFFFFF) == i
                 && ((physList[i].entry->id & 0xFFFFFF) == (physList[i].id & 0xFFFFFF))) {
