@@ -74,7 +74,16 @@ __int64 PxControllerRelated_hook(__int64 a1, __int64 a2, __int64 a3, __int64 a4)
 	{
 		fprintf(Con::fpout, "PxControllerRelated: %p %llx %llx %llx\n", a1, a2, a3, a4);
 		fflush(Con::fpout);
+	}
+	try
+	{	
 		PxControllerObject = a1;
+	}
+	catch (const std::exception& e)
+	{
+		fprintf(Con::fpout, "PxControllerRelated error. Defaulting to zero");
+		fflush(Con::fpout);
+		//PxControllerObject = 0;
 	}
 	
 	return FnCast("PxControllerRelated", or_PxControllerRelated)(a1, a2, a3, a4);

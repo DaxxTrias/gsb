@@ -31,23 +31,24 @@ std::vector<bodyData> generateBodyData() {
                     return {};
                 }
 
-                PxRigidActor* rigid = actor->is<PxRigidActor>(); // crashes when opening SSC?
+                PxRigidActor* rigid = {};
+                PxVec3 pos = {};
                 if (rigid == nullptr || (uint64_t)rigid > 0xFFFF'FFFF'FFFF'0000) {
                     return {};
                 }
-                else
-                    rigid->getGlobalPose().isValid();
-
-                PxVec3 pos = {};
-
-                try
-                {
-                    pos = rigid->getGlobalPose().p;
-                }
-                catch (const std::exception& e)
-                {
-                    throw;
-                    return {};
+                else {
+                    try {
+                        actor->is<PxRigidActor>(); // crashes when opening SSC?
+                        if (rigid->getGlobalPose().isValid())
+                            pos = rigid->getGlobalPose().p;
+                        else
+                            return {};
+                    }
+                    catch (const std::exception& e)
+                    {
+                        throw;
+                        return {};
+                    }
                 }
 
                 bool isStatic = actor->is<PxRigidStatic>() != nullptr;
