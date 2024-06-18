@@ -18,7 +18,7 @@ std::vector<bodyData> generateBodyData() {
     if (killSwitch.load())
         return bodys;
 
-    uint32_t maxObj2x = maxObjects * 3;
+    uint32_t maxObj2x = maxObjects * 5;
 
     if (physList != nullptr) {
         for (uint64_t i = 0; i <= maxObj2x; i++) {
