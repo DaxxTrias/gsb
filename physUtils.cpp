@@ -18,38 +18,22 @@ std::vector<bodyData> generateBodyData() {
     if (killSwitch.load())
         return bodys;
 
-    uint32_t maxObj2x = maxObjects * 5;
+    uint32_t maxObjx = maxObjects * 5;
 
     if (physList != nullptr) {
-        for (uint64_t i = 0; i <= maxObj2x; i++) {
+        for (uint64_t i = 0; i <= maxObjx; i++) {
             if (physList[i].entry != nullptr
                 && (physList[i].id & 0xFFFFFF) == i
                 && ((physList[i].entry->id & 0xFFFFFF) == (physList[i].id & 0xFFFFFF))) {
-
-                PxActor* actor = (physList[i].entry != nullptr) ? physList[i].entry->actor : nullptr;
+                physx::PxActor* actor = physList[i].entry->actor;
                 if (actor == nullptr) {
-                    return {};
+                    continue;
                 }
-
-                PxRigidActor* rigid = {};
-                PxVec3 pos = {};
+                physx::PxRigidActor* rigid = actor->is<physx::PxRigidActor>();
                 if (rigid == nullptr || (uint64_t)rigid > 0xFFFF'FFFF'FFFF'0000) {
-                    return {};
+                    continue;
                 }
-                else {
-                    try {
-                        actor->is<PxRigidActor>(); // crashes when opening SSC?
-                        if (rigid->getGlobalPose().isValid())
-                            pos = rigid->getGlobalPose().p;
-                        else
-                            return {};
-                    }
-                    catch (const std::exception& e)
-                    {
-                        throw;
-                        return {};
-                    }
-                }
+                physx::PxVec3 pos = rigid->getGlobalPose().p;
 
                 bool isStatic = actor->is<PxRigidStatic>() != nullptr;
                 bool isBody = actor->is<PxRigidBody>() != nullptr;
