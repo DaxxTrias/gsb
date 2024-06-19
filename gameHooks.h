@@ -431,6 +431,7 @@ extern std::atomic<uint32_t> maxObjects;
 extern uint64_t objectManager;
 extern uint64_t PxControllerObject;
 extern uint64_t camObject;
+//extern uintptr_t camObjectOffset;
 
 extern someGlobalGetterSetter_type or_someGlobalGetterSetter;
 extern getPhysClass_type getPhysClass;

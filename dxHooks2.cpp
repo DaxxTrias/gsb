@@ -159,11 +159,15 @@ HRESULT __stdcall hookD3D11Present1(IDXGISwapChain* pSwapChain, UINT SyncInterva
 		{
 			std::vector<bodyData> bodys = {};
 			bodys = generateBodyData();
-			//bodyData ply = getPlyByMass(bodys);
-			bodyData ply = {};
-			ply.pos.x = *reinterpret_cast<float*>(camObject);
-			ply.pos.y = *reinterpret_cast<float*>(camObject)+0x4;
-			ply.pos.z = *reinterpret_cast<float*>(camObject)+0x8;
+			bodyData ply = getPlyByMass(bodys);
+			//bodyData ply = {};
+			// 
+			//camObject = *reinterpret_cast<uintptr_t*>(baseAddress + camObjectOffset);
+			//ply.pos.x = reinterpret_cast<float*>(camObject)[0];
+			//ply.pos.y = reinterpret_cast<float*>(camObject)[1];
+			//ply.pos.z = reinterpret_cast<float*>(camObject)[2];
+			//ply.pos.y = reinterpret_cast<float*>(camObject)+0x4;
+			//ply.pos.z = reinterpret_cast<float*>(camObject)+0x8;
 			setCamPos(ply.pos);
 			if (getOption<bool>("asteroidEspEnabled"))
 				drawAsteroidESP(ply);
