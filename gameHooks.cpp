@@ -250,9 +250,14 @@ asteroidStruct* __fastcall someGetObjectOrAsteroid_hook(__int64 a1, __int64 id) 
 
 uintptr_t baseAddress;
 
+uintptr_t camObjectOffset = 0xAEB46A8;
+uintptr_t camObject;
+
 void initGameHooks() {
 
 	baseAddress = reinterpret_cast<uintptr_t>(getStarbaseExe());
+
+	camObject = *reinterpret_cast<uintptr_t*>(baseAddress + camObjectOffset);
 
 	or_PxControllerRelated = findSignature<PxControllerRelated_type>(getPlayerKinematicsDll(), PxControllerRelated_pattern);
 	placeHook("PxControllerRelated", or_PxControllerRelated, PxControllerRelated_hook);
