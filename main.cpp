@@ -113,6 +113,7 @@ BOOL APIENTRY DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 		CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)updatePhysicsThread, NULL, 0, NULL);
 		break;
 	case DLL_PROCESS_DETACH:
+		//todo: verify the shutdown process so we can cleanly detach.
 		if (lpvReserved == NULL && !isShuttingDown.load()) { // Indicates a call to FreeLibrary or a DLL unload request
 			CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Shutdown, g_hModule, 0, NULL);
 		}
