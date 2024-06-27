@@ -110,19 +110,29 @@ void drawStats(const bodyData& ply) {
 	ImGuiIO& io = ImGui::GetIO();
 	AsteroidRenderingSettings settings = loadRenderingSettings();
 
-	try
-	{
-		PxControllerObject_Context = *reinterpret_cast<uintptr_t*>(PxControllerObject + 0x208);
-		currentControllers = *reinterpret_cast<__int8*>(PxControllerObject_Context + 0x68);
-	}
-	catch (const std::exception& e)
-	{
-		currentControllers = 0;
-	}
-	catch (...)
-	{
-		currentControllers = 0;
-	}
+    try
+    {
+        //todo: signature changed on STU, or struct has changed. most likely struct. 
+        //need to make this handle a crash gracefully for such cases in future)
+
+        if (PxControllerObject != 0)
+        {
+            PxControllerObject_Context = *reinterpret_cast<uintptr_t*>(PxControllerObject + 0x208);
+            currentControllers = *reinterpret_cast<__int8*>(PxControllerObject_Context + 0x68);
+        }
+        else
+        {
+            currentControllers = 0;
+        }
+    }
+    catch (const std::exception& e)
+    {
+        currentControllers = 0;
+    }
+    catch (...)
+    {
+        currentControllers = 0;
+    }
 
     localPlayer = *reinterpret_cast<uintptr_t*>(baseAddress + localPlayerInitialOffsetSTU);
     localPlayer_VelocityVec3 = localPlayer + localPlayerNextOffset;
@@ -250,6 +260,14 @@ static bool testObjectPtr(asteroidStruct* object) {
 	return skip;
 }
 
+static asteroidStruct* getObject(uintptr_t objectManager, uint64_t index) {
+	uintptr_t objectPtr = (*(uintptr_t*)(objectManager + 0x60060) & 0xFFFFFFFFFFFFFFFCui64) + (0x150 * index);
+	if (objectPtr == 0) {
+		throw new std::exception("Object pointer is null");
+	}
+	return reinterpret_cast<asteroidStruct*>(objectPtr);
+}
+
 void drawAsteroidESP(const bodyData& ply) {
 	//todo: when approaching a space station all results vanish temporarily?
 	//	todo: above behavior seems to also occur randomly even when no nearby stations. perhaps invalid data poisons the cache?
@@ -270,6 +288,7 @@ void drawAsteroidESP(const bodyData& ply) {
 		drawAsteroidsFromCache(ply);
 		return;
 	}
+
 	updateCounter = 0;
 	asteroidsCache.clear();
 
@@ -278,7 +297,11 @@ void drawAsteroidESP(const bodyData& ply) {
 	AsteroidRenderingSettings renderSettings = loadRenderingSettings();
 
 	for (uint64_t i = 0; i < maxObjects; i++) {
-		asteroidStruct* object = (asteroidStruct*)((*(uint64_t*)(objectManager + 0x60060) & 0xFFFFFFFFFFFFFFFCui64) + (0x150 * i));
+
+		asteroidStruct* object = getObject(objectManager, i);
+
+		//todo: appears busted on STU. probably throwing a nullref in the obj manager due to bad offset.
+		//asteroidStruct* object = (asteroidStruct*)((*(uint64_t*)(objectManager + 0x60060) & 0xFFFFFFFFFFFFFFFCui64) + (0x150 * i));
 		if (testObjectPtr(object)) {
 			continue;
 		}
