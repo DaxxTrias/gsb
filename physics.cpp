@@ -13,6 +13,7 @@
 #include <stdexcept>
 #include <Windows.h>
 #include "killSwitch.h"
+#include <mutex>
 
 struct CachedPoseData {
     physx::PxVec3 pos;
@@ -24,6 +25,7 @@ struct CachedPoseData {
 std::unordered_map<int, CachedPoseData> poseCache;
 std::shared_ptr<std::vector<bodyData>> bodys = std::make_shared<std::vector<bodyData>>();
 std::atomic<bool> keepRunning(true);
+std::mutex bodysMutex;
 
 CachedPoseData getCachedPose(physx::PxRigidActor* rigid, uint64_t indx) {
     int index = static_cast<int>(indx);
@@ -67,14 +69,20 @@ CachedPoseData getCachedPose(physx::PxRigidActor* rigid, uint64_t indx) {
 int updatePhysicsThread() {
     while (keepRunning && !killSwitch.load()) {
         if (physList == nullptr) {
-            Sleep(10);
+            //Sleep(10);
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
             continue;
         }
 
-        std::shared_ptr<std::vector<bodyData>> updating = std::make_shared<std::vector<bodyData>>();
+        auto updating = std::make_shared<std::vector<bodyData>>();
+        //std::shared_ptr<std::vector<bodyData>> updating = std::make_shared<std::vector<bodyData>>();
 
+        uint64_t tempMaxObjects = maxObjects;
+        // maybe we can check if maxobjects has increased significantly versus last time we checked and if yes sleep for a bit
+        // attempting to fix it by ensuring maxObjects doesnt update mid for loop
         //todo: is this the npScene->RigidActors array?
-        for (uint64_t i = 0; i < maxObjects; i++) {
+        for (uint64_t i = 0; i < tempMaxObjects; i++) {
+            //todo: we crash here during load into game (suspect because maxObj changes too fast
             if (physList[i].entry == nullptr)
                 continue;
             if (physList[i].entry != nullptr
@@ -92,17 +100,18 @@ int updatePhysicsThread() {
                 }
                 catch (const std::exception& e) {
                     std::cerr << "Exception caught while processing actor: " << e.what() << std::endl;
+                    //todo: perhaps we should nullout physList[i].entry & id?
                     continue; // Skip to the next iteration
                 }
 
                 try {
                     //todo: we should attempt to capture entity list size rather then use a hard limit
-                    physx::PxRigidActor* rigid = actor->is<physx::PxRigidActor>();
+                    auto rigid = actor->is<physx::PxRigidActor>();
                     if (rigid == nullptr || (uint64_t)rigid > 0xFFFF'FFFF'FFFF'0000) {
                         continue;
                     }
 
-                    CachedPoseData cachedPose = getCachedPose(rigid, i);
+                    auto cachedPose = getCachedPose(rigid, i);
                     if (!cachedPose.isValid) {
                         continue;
                     }
@@ -130,6 +139,8 @@ int updatePhysicsThread() {
             }
         }
         {
+            //lock bodys during
+            std::lock_guard<std::mutex> lock(bodysMutex);
             bodys = updating;
         }
 
