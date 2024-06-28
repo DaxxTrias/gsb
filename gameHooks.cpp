@@ -229,7 +229,7 @@ __int64 createClassInstance_hook(__int64 a1, unsigned int a2, char** a3, __int64
 asteroidStruct* __fastcall someGetObjectOrAsteroid_hook(__int64 a1, __int64 id) {
 	objectManager = a1;
 
-	maxObjects = *(uint32_t*)(objectManager + 0x60068);
+	maxObjects = *(uint32_t*)(objectManager + 0x60070);
 
 	asteroidStruct *asteroid = FnCast("getObject", someGetObjectOrAsteroid_or)(a1, id);
 

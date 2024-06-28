@@ -261,7 +261,7 @@ static bool testObjectPtr(asteroidStruct* object) {
 }
 
 static asteroidStruct* getObject(uintptr_t objectManager, uint64_t index) {
-	uintptr_t objectPtr = (*(uintptr_t*)(objectManager + 0x60060) & 0xFFFFFFFFFFFFFFFCui64) + (0x150 * index);
+	uintptr_t objectPtr = (*(uintptr_t*)(objectManager + 0x60068) & 0xFFFFFFFFFFFFFFFCui64) + (0x150 * index);
 	if (objectPtr == 0) {
 		throw new std::exception("Object pointer is null");
 	}
