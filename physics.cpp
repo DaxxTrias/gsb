@@ -92,7 +92,7 @@ int updatePhysicsThread() {
                 }
                 catch (const std::exception& e) {
                     std::cerr << "Exception caught while processing actor: " << e.what() << std::endl;
-                    break;
+                    continue; // Skip to the next iteration
                 }
 
                 try {
@@ -112,15 +112,15 @@ int updatePhysicsThread() {
                 }
                 catch (const physx::PxErrorCallback& e) {
                     std::cerr << "PhysX exception caught while processing actor: " << std::endl;
-                    break;
+                    continue; // Skip to the next iteration
                 }
                 catch (const std::exception& e) {
                     std::cerr << "Exception caught while processing actor: " << e.what() << std::endl;
-                    break;
+                    continue; // Skip to the next iteration
                 }
                 catch (...) {
                     std::cerr << "Unknown exception caught while processing actor." << std::endl;
-                    break;
+                    continue; // Skip to the next iteration
                 }
             }
             else {
