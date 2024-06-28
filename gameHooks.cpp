@@ -252,7 +252,7 @@ asteroidStruct* __fastcall someGetObjectOrAsteroid_hook(__int64 a1, __int64 id) 
 uintptr_t baseAddress;
 
 uintptr_t camObjectOffset = 0xAEB46A8; // v922: F2 0F 11 05 ? ? ? ? 41 8B 41
-uintptr_t camObjectOffsetSTU = 0xB26B5A0; // v1000040: F2 0F 11 05 ? ? ? ? 41 8B 41
+uintptr_t camObjectOffsetSTU = 0xB270760; // v1000042: F2 0F 11 05 ? ? ? ? 41 8B 41
 uintptr_t camObject;
 
 void initGameHooks() {
