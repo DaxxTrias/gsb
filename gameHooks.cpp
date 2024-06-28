@@ -13,7 +13,8 @@
 #include "memHelper.h"
 
 // most of the previous patterns seemed (mostly) accurate on v582, but some of the functions were rewritten
-const char* PxControllerRelated_pattern = "48 8B C4 48 89 58 ? 55 56 57 48 8D A8"; // pattern seems valid for STU, untested. should really make a better sig
+const char* PxControllerRelatedSTU_pattern = "48 8B C4 55 56 41 56"; // v1000042 pattern changed for STU (they significantly modified the player kinematics dll)
+const char* PxControllerRelated_pattern = "48 8B C4 48 89 58 ? 55 56 57 48 8D A8"; // v922
 const char* updateActors_pattern = "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 33 FF"; // precursor function to updatePositionDeltas
 const char* updatePositionDeltas_pattern = "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 33 FF"; // update playerPOS on sectorCube change (pattern still appears valid for STU, but lots of false positives need a better sig)
 const char* setDevConsoleState_pattern = "4C 8B DC 55 41 54 41 57 49 8D AB ? ? ? ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 80 79 ? ? 44 0F B6 E2";
@@ -262,7 +263,7 @@ void initGameHooks() {
 
 	camObject = *reinterpret_cast<uintptr_t*>(baseAddress + camObjectOffsetSTU);
 
-	or_PxControllerRelated = findSignature<PxControllerRelated_type>(getPlayerKinematicsDll(), PxControllerRelated_pattern);
+	or_PxControllerRelated = findSignature<PxControllerRelated_type>(getPlayerKinematicsDll(), PxControllerRelatedSTU_pattern);
 	placeHook("PxControllerRelated", or_PxControllerRelated, PxControllerRelated_hook);
 
     or_updatePositionDeltas = findSignature<updatePositionDeltas_type>(getPlayerKinematicsDll(), updatePositionDeltas_pattern);
