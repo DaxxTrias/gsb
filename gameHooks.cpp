@@ -26,13 +26,14 @@ const char* SetOptionBool_pattern = "48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 4
 const char* getSceneInstanceManagerFromInstanceRootBySceneUH_pattern = "48 89 5C 24 ? 89 54 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 81 EC ? ? ? ? 48 8B 05";
 const char* SceneInstanceManager__getActor_pattern = "40 53 48 83 EC 20 48 8B 41 40 4C 8B 40 78 8B C2 25 ? ? ? ? 41 3B 40 08 0F 83 ? ? ? ? 8B C8 49 8B 00 48 03 C9 48 83 E0 FC 39 54 C8 08 0F 85 ? ? ? ? 48 8B 1C C8 48 85 DB 0F 84 ? ? ? ? 48 83 7B";
 const char* someGlobalGetterSetter_pattern = "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 41 54 41 56 41 57 48 83 EC 40 49 8B F1 8B EA 45 0F B6 F0 48 8B F9 E8 ? ? ? ?";
-const char* iterOver_patter = "E8 ? ? ? ? 48 8B D0 48 8B CB E8 ? ? ? ? 84 C0 0F 84 ? ? ? ? 48 8B 8F ? ? ? ? 48 85 C9 0F 84 ? ? ? ? 48 8B 49 08 48 8B 9E ? ? ? ? E8 ? ? ? ? 48 8B F8 48 85 C0 74 7C 48 8B 4B 60 8B 73 68 48 83 E1 FC 4C 8D 04 F5 ? ? ? ? 49 8D 14 08 48 3B CA 74 0E";
+const char* iterOver_patternSTU = "E8 ? ? ? ? 48 8B D0 48 8B CB E8 ? ? ? ? 84 C0 0F 84 ? ? ? ? 4C 89 6C 24 ? 4C 8B AE"; //v1000042
+const char* iterOver_pattern = "E8 ? ? ? ? 48 8B D0 48 8B CB E8 ? ? ? ? 84 C0 0F 84 ? ? ? ? 48 8B 8F ? ? ? ? 48 85 C9 0F 84 ? ? ? ? 48 8B 49 08 48 8B 9E ? ? ? ? E8 ? ? ? ? 48 8B F8 48 85 C0 74 7C 48 8B 4B 60 8B 73 68 48 83 E1 FC 4C 8D 04 F5 ? ? ? ? 49 8D 14 08 48 3B CA 74 0E";
 const char* somePxStuff_pattern = "40 53 48 83 EC ? 48 8B 01 48 8D 15 ? ? ? ? 48 8B D9 FF 50 ? 33 D2 84 C0 48 0F 45 D3 48 8B C2 48 83 C4 ? 5B C3 CC CC CC CC CC CC CC CC CC 48 8D 05"; // original pattern was showing multiple, this should be better maybe?
 const char* maybeOpenDebug_pattern = "40 55 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? E8 ? ? ? ? 84 C0 0F 85 ? ? ? ?";
 //const char* getPxActorFromListSTU_pattern = "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 48 8B EA 41 8B D9"; // v922 pattern didnt work, but this one seems to be accurate
 const char* getPxActorFromList_pattern = "48 89 5C 24 ? 57 48 83 EC ? 8B DA 48 8B F9 83 FA ? 75 ? 41 B8 ? ? ? ? 48 8D 15 ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 74 ? CC 8B C3 25 ? ? ? ? 3B 87 ? ? ? ? 73 ? 8B C8 48 8B 87 ? ? ? ? 48 03 C9 48 83 E0 ? 39 5C C8 ? 75 ? 48 8B 04 C8 48 85 C0 74 ? 8B 40"; // original pattern had like 30 possibilities, seems valid for STU as well
 const char* setupGameConfig_pattern = "48 8B C4 55 53 48 8D 68 A1 48 81 EC ? ? ? ? 80 3D ? ? ? ? ? 48 8B D9 0F 85 ? ? ? ? 48 89 70 08 48 89 78 E8 4C 89 60 E0 4C 89 68 D8 4C 89 70 D0 4C 89 78 C8 0F 29 78 B8 44 0F 29 48 ?";
-const char* createClassInstance_patter = "40 53 56 41 55 41 56 48 83 EC ? 8B DA"; // maybe (function appears to have been rewritten. only about 70% confidence)
+const char* createClassInstance_pattern = "40 53 56 41 55 41 56 48 83 EC ? 8B DA"; // maybe (function appears to have been rewritten. only about 70% confidence)
 const char* someGetObjectOrAsteroid_pattern = "48 89 5C 24 ? 57 48 83 EC ? 48 8B F9 8B DA 3B 91 ? ? ? ? 72 ? 41 B8 ? ? ? ? 48 8D 15 ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 74 ? CC 3B 9F ? ? ? ? 72 ? 4C 8D 0D ? ? ? ? 41 B8 ? ? ? ? 48 8D 15 ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 74 ? CC 48 8B 8F ? ? ? ? 48 69 C3 ? ? ? ? 48 8B 5C 24 ? 48 83 E1 ? 48 03 C1 48 83 C4 ? 5F C3 CC CC CC CC CC CC CC CC CC CC CC CC CC CC 48 89 5C 24 ? 57 48 83 EC ? 41 8B D8"; // v922 pattern, still valid for STU. (the original pattern had 2 possibilities but this seems to have worked out fine)
 
 PxControllerRelated_type or_PxControllerRelated;
@@ -299,22 +300,19 @@ void initGameHooks() {
 	//or_someGlobalGetterSetter = findSignature<someGlobalGetterSetter_type>(getStarbaseExe(), someGlobalGetterSetter_pattern);
 	//placeHook("someGlobalGetterSetter", or_someGlobalGetterSetter, someGlobalGetterSetter_hook);
 
-	//pattern broken on STU
-	//char* ptr = findSignature<char*>(getStarbaseExe(), iterOver_patter);
-	//int32_t offset = *((int32_t*)(ptr + 1)) + 5;
-	//getPhysClass = (getPhysClass_type)(ptr + offset);
+	char* ptr = findSignature<char*>(getStarbaseExe(), iterOver_patternSTU);
+	int32_t offset = *((int32_t*)(ptr + 1)) + 5;
+	getPhysClass = (getPhysClass_type)(ptr + offset);
 
 	or_somePxStuff = findSignature<somePxStuff_type>(getStarbaseExe(), somePxStuff_pattern);
 	//placeHook("somePxStuff", or_somePxStuff, somePxStuff_hook);
 
-	//pattern broken on STU (pattern itself might be okay, but the precursor pattern is broken so this wont work
-	//maybeOpenDebug = findSignature<getPhysClass_type>(getStarbaseExe(), maybeOpenDebug_pattern);
+	maybeOpenDebug = findSignature<getPhysClass_type>(getStarbaseExe(), maybeOpenDebug_pattern);
 
-	//or_getPxActorFromList = findSignature<getPxActorFromList_type>(getStarbaseExe(), getPxActorFromList_pattern);
 	or_getPxActorFromList = findSignature<getPxActorFromList_type>(getStarbaseExe(), getPxActorFromList_pattern);
 	placeHook("getPxActorFromList", or_getPxActorFromList, getPxActorFromList_hook);
 
-	//or_createClassInstance = findSignature<createClassInstance_type>(getStarbaseExe(), createClassInstance_patter);
+	//or_createClassInstance = findSignature<createClassInstance_type>(getStarbaseExe(), createClassInstance_pattern);
 	//placeHook("createClassInstance", or_createClassInstance, createClassInstance_hook);
 
 	someGetObjectOrAsteroid_or = findSignature<someGetObjectOrAsteroid_type>(getStarbaseExe(), someGetObjectOrAsteroid_pattern);
