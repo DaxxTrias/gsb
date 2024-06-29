@@ -80,7 +80,7 @@ __int64 PxControllerRelated_hook(__int64 a1, __int64 a2, __int64 a3, __int64 a4)
 	try
 	{	
 		PxControllerObject = a1;
-		fprintf(Con::fpout, "PxControllerObject: %p\n", PxControllerObject);
+		//fprintf(Con::fpout, "PxControllerObject: %p\n", PxControllerObject);
 	}
 	catch (const std::exception& e)
 	{
