@@ -65,8 +65,11 @@ __int8 currentControllers;
 uintptr_t localPlayer;
 uintptr_t PxControllerObject_Context;
 uintptr_t localPlayer_VelocityVec3;
-uintptr_t localPlayerinitialOffset = 0xAF99568;
-uintptr_t localPlayerNextOffset = 0xC4C;
+uintptr_t localPlayerinitialOffset = 0xAF99568; // v922 (close by but not exact pattern) 48 89 05 ? ? ? ? 48 8D 15 ? ? ? ? 48 89 5C 24 ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 42 8B 04 37 48 8B F7 39 05 ? ? ? ? 0F 8E ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 44 39 3D ? ? ? ? 0F 85 ? ? ? ? B8 ? ? ? ? 48 8D 1D ? ? ? ? 66 89 05 ? ? ? ? 48 8D 0D ? ? ? ? 49 8B C7 48 FF C0
+//uintptr_t localPlayerInitialOffsetSTU = 0x2FBE1E38; // v100042 also nearby is a bunch of other interesting things like sendChatMessage
+//uintptr_t localPlayerPtrSTU = 0x2F8A0748; // v100043 they did a bunch of rewrites in this section. yay fun.
+uintptr_t localPlayerPtrSTU = 0x2F8A07A8; // v100044
+uintptr_t localPlayerVelocityOffset = 0xB68;
 
 static float calculateDistance(const physx::PxVec3& pos1, const physx::PxVec3& pos2) {
 	physx::PxVec3 diff = pos1 - pos2;
@@ -123,8 +126,8 @@ void drawStats(const bodyData& ply) {
 		currentControllers = 0;
 	}
 
-    localPlayer = *reinterpret_cast<uintptr_t*>(baseAddress + localPlayerinitialOffset);
-    localPlayer_VelocityVec3 = localPlayer + localPlayerNextOffset;
+    localPlayer = *reinterpret_cast<uintptr_t*>(baseAddress + localPlayerPtrSTU);
+    localPlayer_VelocityVec3 = localPlayer + localPlayerVelocityOffset;
 
 	float localEnt_VelocityX = 0.0f;
 	float localEnt_VelocityY = 0.0f;
@@ -247,6 +250,14 @@ static bool testObjectPtr(asteroidStruct* object) {
 		skip = true;
 	}
 	return skip;
+}
+
+static asteroidStruct* getObject(uintptr_t objectManager, uint64_t index) {
+	uintptr_t objectPtr = (*(uintptr_t*)(objectManager + 0x60068) & 0xFFFFFFFFFFFFFFFCui64) + (0x150 * index);
+	if (objectPtr == 0) {
+		throw new std::exception("Object pointer is null");
+	}
+	return reinterpret_cast<asteroidStruct*>(objectPtr);
 }
 
 void drawAsteroidESP(const bodyData& ply) {

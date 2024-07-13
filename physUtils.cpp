@@ -95,7 +95,7 @@ std::vector<bodyData> generateBodyData() {
 // im assuming it does, but if is more static maybe we can cache the data to not double loop the entity list
 // everytime we look for an entity and the player, every frame
 //followup: first position in ent table looks like player and doesnt appear to move.
-// 2nd entrat looks a lot like personal ship (pawnVehicle?)
+// 2nd entrant looks a lot like personal ship (pawnVehicle?)
 bodyData getPlyByMass(std::vector<bodyData>& bodys) {
     //todo: in instances of duo play, this method can result in thinking the other person is the main player.
     for (bodyData body : bodys) {
