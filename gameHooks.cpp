@@ -301,7 +301,8 @@ void initGameHooks() {
 	or_SceneInstanceManager__getActor = findSignature<SceneInstanceManager__getActor_type>(getStarbaseExe(), SceneInstanceManager__getActor_patternSTU);
 	//placeHook("SceneInstanceManager__getActor", or_SceneInstanceManager__getActor, SceneInstanceManager__getActor_hook);
 
-	or_someGlobalGetterSetter = findSignature<someGlobalGetterSetter_type>(getStarbaseExe(), someGlobalGetterSetter_patternSTU);
+	// broken in v1000047
+	//or_someGlobalGetterSetter = findSignature<someGlobalGetterSetter_type>(getStarbaseExe(), someGlobalGetterSetter_patternSTU);
 	//placeHook("someGlobalGetterSetter", or_someGlobalGetterSetter, someGlobalGetterSetter_hook);
 
 	char* ptr = findSignature<char*>(getStarbaseExe(), iterOver_patternSTU);
