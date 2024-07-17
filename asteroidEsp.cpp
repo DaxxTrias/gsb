@@ -69,7 +69,8 @@ uintptr_t localPlayerinitialOffset = 0xAF99568; // v922 (close by but not exact 
 //uintptr_t localPlayerInitialOffsetSTU = 0x2FBE1E38; // v100042 also nearby is a bunch of other interesting things like sendChatMessage
 //uintptr_t localPlayerPtrSTU = 0x2F8A0748; // v100043 they did a bunch of rewrites in this section. yay fun.
 //uintptr_t localPlayerPtrSTU = 0x2F8A07A8; // v100044
-uintptr_t localPlayerPtrSTU = 0x2F7930D8; // v100046
+//uintptr_t localPlayerPtrSTU = 0x2F7930D8; // v100046
+uintptr_t localPlayerPtrSTU = 0x2F7934D8; // v100047
 uintptr_t localPlayerVelocityOffset = 0xB68;
 
 static float calculateDistance(const physx::PxVec3& pos1, const physx::PxVec3& pos2) {
