@@ -37,7 +37,8 @@ const char* maybeOpenDebug_pattern = "40 55 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ?
 const char* getPxActorFromListSTU_pattern = "48 89 5C 24 ? 57 48 83 EC ? 8B DA 48 8B F9 83 FA ? 75 ? 41 B8 ? ? ? ? E8 ? ? ? ? 84 C0 74 ? CC 8B C3 25 ? ? ? ? 3B 87 ? ? ? ? 73 ? 8B C8 48 8B 87 ? ? ? ? 48 03 C9 48 83 E0 ? 39 5C C8 ? 75 ? 48 8B 04 C8 48 85 C0 74 ? 8B 40"; //v1000047 unconfirmed
 const char* setupGameConfig_pattern = "48 8B C4 55 53 48 8D 68 A1 48 81 EC ? ? ? ? 80 3D ? ? ? ? ? 48 8B D9 0F 85 ? ? ? ? 48 89 70 08 48 89 78 E8 4C 89 60 E0 4C 89 68 D8 4C 89 70 D0 4C 89 78 C8 0F 29 78 B8 44 0F 29 48 ?";
 const char* createClassInstance_pattern = "40 53 56 41 55 41 56 48 83 EC ? 8B DA"; // maybe (function appears to have been rewritten. only about 70% confidence)
-const char* someGetObjectOrAsteroid_pattern = "48 89 5C 24 ? 57 48 83 EC ? 48 8B F9 8B DA 3B 91 ? ? ? ? 72 ? 41 B8 ? ? ? ? 48 8D 15 ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 74 ? CC 3B 9F ? ? ? ? 72 ? 4C 8D 0D ? ? ? ? 41 B8 ? ? ? ? 48 8D 15 ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 74 ? CC 48 8B 8F ? ? ? ? 48 69 C3 ? ? ? ? 48 8B 5C 24 ? 48 83 E1 ? 48 03 C1 48 83 C4 ? 5F C3 CC CC CC CC CC CC CC CC CC CC CC CC CC CC 48 89 5C 24 ? 57 48 83 EC ? 41 8B D8"; // v922 pattern, still valid for STU. (the original pattern had 2 possibilities but this seems to have worked out fine)
+//const char* someGetObjectOrAsteroid_pattern = "48 89 5C 24 ? 57 48 83 EC ? 48 8B F9 8B DA 3B 91 ? ? ? ? 72 ? 41 B8 ? ? ? ? 48 8D 15 ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 74 ? CC 3B 9F ? ? ? ? 72 ? 4C 8D 0D ? ? ? ? 41 B8 ? ? ? ? 48 8D 15 ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 74 ? CC 48 8B 8F ? ? ? ? 48 69 C3 ? ? ? ? 48 8B 5C 24 ? 48 83 E1 ? 48 03 C1 48 83 C4 ? 5F C3 CC CC CC CC CC CC CC CC CC CC CC CC CC CC 48 89 5C 24 ? 57 48 83 EC ? 41 8B D8"; // v922-v1000044 pattern, still valid for STU. (the original pattern had 2 possibilities but this seems to have worked out fine)
+const char* someGetObjectOrAsteroid_patternSTU = "48 89 5C 24 ? 57 48 83 EC ? 48 8B F9 8B DA 3B 91 ? ? ? ? 72 ? 41 B8 ? ? ? ? E8 ? ? ? ? 84 C0 74 ? CC 3B 9F ? ? ? ? 72 ? 4C 8D 0D ? ? ? ? 41 B8 ? ? ? ? 48 8D 15 ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 74 ? CC 48 8B 8F ? ? ? ? 48 69 C3 ? ? ? ? 48 8B 5C 24 ? 48 83 E1 ? 48 03 C1 48 83 C4 ? 5F C3 CC CC CC CC CC CC CC CC CC CC CC CC 48 89 5C 24 ? 57 48 83 EC ? 41 8B D8"; // v1000047
 
 PxControllerRelated_type or_PxControllerRelated;
 updatePositionDeltas_type or_updatePositionDeltas;
@@ -321,7 +322,7 @@ void initGameHooks() {
 	//or_createClassInstance = findSignature<createClassInstance_type>(getStarbaseExe(), createClassInstance_pattern);
 	//placeHook("createClassInstance", or_createClassInstance, createClassInstance_hook);
 
-	someGetObjectOrAsteroid_or = findSignature<someGetObjectOrAsteroid_type>(getStarbaseExe(), someGetObjectOrAsteroid_pattern);
+	someGetObjectOrAsteroid_or = findSignature<someGetObjectOrAsteroid_type>(getStarbaseExe(), someGetObjectOrAsteroid_patternSTU);
 	placeHook("getObject", someGetObjectOrAsteroid_or, someGetObjectOrAsteroid_hook);
 
 	//uint64_t preSetupC = findSignature<uint64_t>(getStarbaseExe(), setupGameConfig_pattern) + 0x144;
