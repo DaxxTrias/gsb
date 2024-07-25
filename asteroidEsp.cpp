@@ -73,7 +73,8 @@ uintptr_t localPlayerinitialOffset = 0xAF99568; // v922 (close by but not exact 
 //uintptr_t localPlayerPtrSTU = 0x2F7934D8; // v100047
 //uintptr_t localPlayerPtrSTU = 0x2F794A98; // v100048
 //uintptr_t localPlayerPtrSTU = 0x2F796818; // v100050
-uintptr_t localPlayerPtrSTU = 0x2F7968E8; // v100052
+//uintptr_t localPlayerPtrSTU = 0x2F7968E8; // v100052
+uintptr_t localPlayerPtrSTU = 0x2F7978A8; // v100053
 uintptr_t localPlayerVelocityOffset = 0xB68;
 
 static float calculateDistance(const physx::PxVec3& pos1, const physx::PxVec3& pos2) {
