@@ -162,6 +162,17 @@ void drawStats(const bodyData& ply) {
 	uint32_t obj = maxObjects;
 	char buffer[256];
 
+	float posX = 0.f;
+	float posY = 0.f;
+	float posZ = 0.f;
+
+	if (currentControllers > 0)
+	{
+		posX = ply.pos.x;
+		posY = ply.pos.y;
+		posZ = ply.pos.z;
+	}
+
 	// Draw "Stats" header
 	snprintf(buffer, sizeof(buffer), "Stats");
 	ImGui::GetWindowDrawList()->AddText(
@@ -175,7 +186,7 @@ void drawStats(const bodyData& ply) {
 		ImVec2(5, 20), settings.drawStatsColor, buffer);
 
 	// Draw coordinates
-	snprintf(buffer, sizeof(buffer), "Coords: [%.0f, %.0f, %.0f]", ply.pos.x, ply.pos.y, ply.pos.z);
+	snprintf(buffer, sizeof(buffer), "Coords: [%.0f, %.0f, %.0f]", posX, posY, posZ);
 	ImGui::GetWindowDrawList()->AddText(
 		ImGui::GetFont(), ImGui::GetFontSize(),
 		ImVec2(5, 40), settings.drawStatsColor, buffer);
