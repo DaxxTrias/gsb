@@ -76,6 +76,7 @@ uintptr_t localPlayerinitialOffset = 0xAF99568; // v922 (close by but not exact 
 //uintptr_t localPlayerPtrSTU = 0x2F7968E8; // v100052
 //uintptr_t localPlayerPtrSTU = 0x2F7978A8; // v100053
 //uintptr_t localPlayerPtrSTU = 0x2F79A568; // v100055
+//uintptr_t localPlayerPtrSTU = 0x2F8110D8; // v100056
 //uintptr_t localPlayerPtrSTU = 0x2F8101C8; // v100057
 uintptr_t localPlayerPtrSTU = 0x2F81B918; // v100058
 uintptr_t localPlayerVelocityOffset = 0xB68;
