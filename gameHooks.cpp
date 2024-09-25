@@ -107,25 +107,26 @@ void updatePositionDeltas_hook(__int64 context, float* posDeltas) {
 	FnCast("updatePositionDeltas", or_updatePositionDeltas)(context, posDeltas);
 }
 
-__int64 addFuncToLuaClass_hook(__int64 L, const char* name, void* func, unsigned int type, void* callHandler, void* luaClass) {
-	if (strcmp(name, "addDebugBind") == 0 || strcmp(name, "getObjectManager") == 0 ||
-		strcmp(name, "postConsoleMessage") == 0 || strcmp(name, "setIsConsoleOpen") == 0 ||
-		strcmp(name, "getIsConsoleOpen") == 0)
+char* addFuncToLuaClass_hook(__int64 L, const char** name, __int64 a3, char** a4, void* func, size_t type, __int64 callHandler, __int64 luaClass) {
+	// Check for specific function names
+	if (strcmp(*name, "addDebugBind") == 0 || strcmp(*name, "getObjectManager") == 0 ||
+		strcmp(*name, "postConsoleMessage") == 0 || strcmp(*name, "setIsConsoleOpen") == 0 ||
+		strcmp(*name, "getIsConsoleOpen") == 0)
 	{
-		fprintf(Con::fpout, "AddFuncToLua: L*: %llx name: %s func: %llx type: %d callHandler: %llx luaClass: %llx\n",
-			L, name, reinterpret_cast<unsigned long long>(func), type, reinterpret_cast<unsigned long long>(callHandler), reinterpret_cast<unsigned long long>(luaClass));
+		// Log the function name and parameters
+		fprintf(Con::fpout,
+			"AddFuncToLua: L*: %llx name: %s func: %p type: %zu callHandler: %llx luaClass: %llx a3: %llx a4: %p\n",
+			L, *name, func, type,
+			callHandler, luaClass, a3, a4);
 	}
-	//typeManager/getObjectManagerHandler:     __int64 __fastcall sub_16069C0(__int64 a1)
-	//bindHandler/addDebugBind:                __int64 __fastcall sub_1E79480(__int64 a1)
-	/*else
-	{
-		fprintf(Con::fpout, "addFuncToLuaClass: %s\n", name);
-	}*/
 
+	// Flush the output to ensure the logs are saved immediately
 	fflush(Con::fpout);
 
-	return FnCast("addFuncToLuaClass", or_addFuncToLuaClass)(L, name, func, type, callHandler, luaClass);
+	// Call the original function with the updated signature
+	return FnCast("addFuncToLuaClass", or_addFuncToLuaClass)(L, name, a3, a4, func, type, callHandler, luaClass);
 }
+
 
 char GetOptionFloat_hook(DWORD* a1, float* a2, char* a3) {
 	char result = FnCast("GetOptionFloat", or_GetOptionFloat)(a1, a2, a3);
