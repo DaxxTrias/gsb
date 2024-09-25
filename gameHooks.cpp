@@ -292,8 +292,9 @@ void initGameHooks() {
 	//or_setDevConsoleState = findSignature<setDevConsoleState_type>(getStarbaseExe(), setDevConsoleState_pattern);
 	//placeHook("setDevConsoleState", or_setDevConsoleState, setDevConsoleState_hook);
 
-	or_addFuncToLuaClass = findSignature<addFuncToLuaClass_type>(getStarbaseExe(), addFuncToLuaClass_pattern);
-	placeHook("addFuncToLuaClass", or_addFuncToLuaClass, addFuncToLuaClass_hook);
+	// broken in 10000058
+	//or_addFuncToLuaClass = findSignature<addFuncToLuaClass_type>(getStarbaseExe(), addFuncToLuaClass_pattern);
+	//placeHook("addFuncToLuaClass", or_addFuncToLuaClass, addFuncToLuaClass_hook);
 
 	or_GetOptionFloat = findSignature<GetOptionFloat_type>(getStarbaseExe(), GetOptionFloat_pattern);
 	//placeHook("GetOptionFloat", or_GetOptionFloat, GetOptionFloat_hook);
