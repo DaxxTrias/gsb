@@ -148,7 +148,7 @@ void drawStats(const bodyData& ply) {
     }
 
     localPlayer = *reinterpret_cast<uintptr_t*>(baseAddress + localPlayerPtrSTU);
-    localPlayer_VelocityVec3 = localPlayer + localPlayerVelocityOffset;
+    localPlayer_VelocityVec3 = localPlayer + localPlayerVelocityOffset; // broken in v59, last confirmed working in v55
 
 	float localEnt_VelocityX = 0.0f;
 	float localEnt_VelocityY = 0.0f;
