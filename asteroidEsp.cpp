@@ -78,8 +78,9 @@ uintptr_t localPlayerinitialOffset = 0xAF99568; // v922 (close by but not exact 
 //uintptr_t localPlayerPtrSTU = 0x2F79A568; // v100055
 //uintptr_t localPlayerPtrSTU = 0x2F8110D8; // v100056
 //uintptr_t localPlayerPtrSTU = 0x2F8101C8; // v100057
-uintptr_t localPlayerPtrSTU = 0x2F81B918; // v100058
-uintptr_t localPlayerVelocityOffset = 0xB68;
+//uintptr_t localPlayerPtrSTU = 0x2F81B918; // v100058
+uintptr_t localPlayerPtrSTU = 0x2F822CC8; // v100059
+uintptr_t localPlayerVelocityOffset = 0xB70;
 
 static float calculateDistance(const physx::PxVec3& pos1, const physx::PxVec3& pos2) {
 	physx::PxVec3 diff = pos1 - pos2;
@@ -137,7 +138,7 @@ void drawStats(const bodyData& ply) {
 	}
 
     localPlayer = *reinterpret_cast<uintptr_t*>(baseAddress + localPlayerPtrSTU);
-    localPlayer_VelocityVec3 = localPlayer + localPlayerVelocityOffset;
+    localPlayer_VelocityVec3 = localPlayer + localPlayerVelocityOffset; // broken in v59, last confirmed working in v55
 
 	float localEnt_VelocityX = 0.0f;
 	float localEnt_VelocityY = 0.0f;

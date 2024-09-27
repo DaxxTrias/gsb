@@ -108,22 +108,26 @@ void updatePositionDeltas_hook(__int64 context, float* posDeltas) {
 }
 
 char* addFuncToLuaClass_hook(__int64 L, const char** name, __int64 a3, char** a4, void* func, size_t type, __int64 callHandler, __int64 luaClass) {
-	// Check for specific function names
+
 	if (strcmp(*name, "addDebugBind") == 0 || strcmp(*name, "getObjectManager") == 0 ||
 		strcmp(*name, "postConsoleMessage") == 0 || strcmp(*name, "setIsConsoleOpen") == 0 ||
 		strcmp(*name, "getIsConsoleOpen") == 0)
 	{
-		// Log the function name and parameters
 		fprintf(Con::fpout,
 			"AddFuncToLua: L*: %llx name: %s func: %p type: %zu callHandler: %llx luaClass: %llx a3: %llx a4: %p\n",
 			L, *name, func, type,
 			callHandler, luaClass, a3, a4);
 	}
 
-	// Flush the output to ensure the logs are saved immediately
+	//typeManager/getObjectManagerHandler:     __int64 __fastcall sub_16069C0(__int64 a1)
+	//bindHandler/addDebugBind:                __int64 __fastcall sub_1E79480(__int64 a1)
+	/*else
+	{
+		fprintf(Con::fpout, "addFuncToLuaClass: %s\n", name);
+	}*/
+
 	fflush(Con::fpout);
 
-	// Call the original function with the updated signature
 	return FnCast("addFuncToLuaClass", or_addFuncToLuaClass)(L, name, a3, a4, func, type, callHandler, luaClass);
 }
 
@@ -274,7 +278,8 @@ uintptr_t camObjectOffset = 0xAEB46A8; // v922: F2 0F 11 05 ? ? ? ? 41 8B 41
 //uintptr_t camObjectOffsetSTU = 0xAE33408; // v1000055
 //uintptr_t camObjectOffsetSTU = 0xAEA3350; // v1000056
 //uintptr_t camObjectOffsetSTU = 0xAEA22F8; // v1000057
-uintptr_t camObjectOffsetSTU = 0xAEAE360; // v1000058
+//uintptr_t camObjectOffsetSTU = 0xAEAE360; // v1000058
+uintptr_t camObjectOffsetSTU = 0xAEB5618; // v1000059
 
 uintptr_t camObject;
 
