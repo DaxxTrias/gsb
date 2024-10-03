@@ -65,8 +65,22 @@ __int8 currentControllers;
 uintptr_t localPlayer;
 uintptr_t PxControllerObject_Context;
 uintptr_t localPlayer_VelocityVec3;
-uintptr_t localPlayerinitialOffset = 0xAF99568;
-uintptr_t localPlayerNextOffset = 0xC4C;
+uintptr_t localPlayerinitialOffset = 0xAF99568; // v922 (close by but not exact pattern) 48 89 05 ? ? ? ? 48 8D 15 ? ? ? ? 48 89 5C 24 ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 42 8B 04 37 48 8B F7 39 05 ? ? ? ? 0F 8E ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 44 39 3D ? ? ? ? 0F 85 ? ? ? ? B8 ? ? ? ? 48 8D 1D ? ? ? ? 66 89 05 ? ? ? ? 48 8D 0D ? ? ? ? 49 8B C7 48 FF C0
+//uintptr_t localPlayerInitialOffsetSTU = 0x2FBE1E38; // v100042 also nearby is a bunch of other interesting things like sendChatMessage
+//uintptr_t localPlayerPtrSTU = 0x2F8A0748; // v100043 they did a bunch of rewrites in this section. yay fun.
+//uintptr_t localPlayerPtrSTU = 0x2F8A07A8; // v100044
+//uintptr_t localPlayerPtrSTU = 0x2F7930D8; // v100046
+//uintptr_t localPlayerPtrSTU = 0x2F7934D8; // v100047
+//uintptr_t localPlayerPtrSTU = 0x2F794A98; // v100048
+//uintptr_t localPlayerPtrSTU = 0x2F796818; // v100050
+//uintptr_t localPlayerPtrSTU = 0x2F7968E8; // v100052
+//uintptr_t localPlayerPtrSTU = 0x2F7978A8; // v100053
+//uintptr_t localPlayerPtrSTU = 0x2F79A568; // v100055
+//uintptr_t localPlayerPtrSTU = 0x2F8110D8; // v100056
+//uintptr_t localPlayerPtrSTU = 0x2F8101C8; // v100057
+//uintptr_t localPlayerPtrSTU = 0x2F81B918; // v100058
+uintptr_t localPlayerPtrSTU = 0x2F822CC8; // v100059
+uintptr_t localPlayerVelocityOffset = 0xB70;
 
 static float calculateDistance(const physx::PxVec3& pos1, const physx::PxVec3& pos2) {
 	physx::PxVec3 diff = pos1 - pos2;
@@ -123,8 +137,8 @@ void drawStats(const bodyData& ply) {
 		currentControllers = 0;
 	}
 
-    localPlayer = *reinterpret_cast<uintptr_t*>(baseAddress + localPlayerinitialOffset);
-    localPlayer_VelocityVec3 = localPlayer + localPlayerNextOffset;
+    localPlayer = *reinterpret_cast<uintptr_t*>(baseAddress + localPlayerPtrSTU);
+    localPlayer_VelocityVec3 = localPlayer + localPlayerVelocityOffset; // broken in v59, last confirmed working in v55
 
 	float localEnt_VelocityX = 0.0f;
 	float localEnt_VelocityY = 0.0f;
@@ -142,6 +156,17 @@ void drawStats(const bodyData& ply) {
 	uint32_t obj = maxObjects;
 	char buffer[256];
 
+	float posX = 0.f;
+	float posY = 0.f;
+	float posZ = 0.f;
+
+	if (currentControllers > 0)
+	{
+		posX = ply.pos.x;
+		posY = ply.pos.y;
+		posZ = ply.pos.z;
+	}
+
 	// Draw "Stats" header
 	snprintf(buffer, sizeof(buffer), "Stats");
 	ImGui::GetWindowDrawList()->AddText(
@@ -155,7 +180,7 @@ void drawStats(const bodyData& ply) {
 		ImVec2(5, 20), settings.drawStatsColor, buffer);
 
 	// Draw coordinates
-	snprintf(buffer, sizeof(buffer), "Coords: [%.0f, %.0f, %.0f]", ply.pos.x, ply.pos.y, ply.pos.z);
+	snprintf(buffer, sizeof(buffer), "Coords: [%.0f, %.0f, %.0f]", posX, posY, posZ);
 	ImGui::GetWindowDrawList()->AddText(
 		ImGui::GetFont(), ImGui::GetFontSize(),
 		ImVec2(5, 40), settings.drawStatsColor, buffer);
@@ -247,6 +272,14 @@ static bool testObjectPtr(asteroidStruct* object) {
 		skip = true;
 	}
 	return skip;
+}
+
+static asteroidStruct* getObject(uintptr_t objectManager, uint64_t index) {
+	uintptr_t objectPtr = (*(uintptr_t*)(objectManager + 0x60068) & 0xFFFFFFFFFFFFFFFCui64) + (0x150 * index);
+	if (objectPtr == 0) {
+		throw new std::exception("Object pointer is null");
+	}
+	return reinterpret_cast<asteroidStruct*>(objectPtr);
 }
 
 void drawAsteroidESP(const bodyData& ply) {
