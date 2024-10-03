@@ -61,6 +61,7 @@ using namespace physx;
 static std::vector<AsteroidSubData> asteroidsSubData;
 static std::vector<AsteroidCache> asteroidsCache;
 
+bool atMainMenu = false;
 __int8 currentControllers;
 uintptr_t localPlayer;
 uintptr_t PxControllerObject_Context;
@@ -123,29 +124,36 @@ void drawStats(const bodyData& ply) {
 	ImGuiIO& io = ImGui::GetIO();
 	AsteroidRenderingSettings settings = loadRenderingSettings();
 
-    try
-    {
-        //todo: signature changed on STU, or struct has changed. most likely struct. 
-        //need to make this handle a crash gracefully for such cases in future)
+	// Check if PxControllerObject is null
+	if (PxControllerObject == 0) {
+		currentControllers = 0;
+		atMainMenu = true;
+		//return;
+	}
+	else
+		atMainMenu = false;
 
-        if (PxControllerObject != 0)
-        {
-            PxControllerObject_Context = *reinterpret_cast<uintptr_t*>(PxControllerObject + 0x208);
-            currentControllers = *reinterpret_cast<__int8*>(PxControllerObject_Context + 0x68);
-        }
-        else
-        {
-            currentControllers = 0;
-        }
-    }
-    catch (const std::exception& e)
-    {
-        currentControllers = 0;
-    }
-    catch (...)
-    {
-        currentControllers = 0;
-    }
+	if (!atMainMenu)
+	{
+		try {
+			// Check if PxControllerObject_Context is valid before dereferencing
+			PxControllerObject_Context = *reinterpret_cast<uintptr_t*>(PxControllerObject + 0x208);
+
+			// Additional check for PxControllerObject_Context before dereferencing
+			if (PxControllerObject_Context != 0) {
+				currentControllers = *reinterpret_cast<__int8*>(PxControllerObject_Context + 0x68);
+			}
+			else {
+				currentControllers = 0;
+			}
+		}
+		catch (const std::exception& e) {
+			currentControllers = 0;
+		}
+		catch (...) {
+			currentControllers = 0;
+		}
+	}
 
     localPlayer = *reinterpret_cast<uintptr_t*>(baseAddress + localPlayerPtrSTU);
     localPlayer_VelocityVec3 = localPlayer + localPlayerVelocityOffset; // broken in v59, last confirmed working in v55
