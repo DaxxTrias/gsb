@@ -61,6 +61,7 @@ using namespace physx;
 static std::vector<AsteroidSubData> asteroidsSubData;
 static std::vector<AsteroidCache> asteroidsCache;
 
+bool atMainMenu = false;
 __int8 currentControllers;
 uintptr_t localPlayer;
 uintptr_t PxControllerObject_Context;
@@ -124,18 +125,35 @@ void drawStats(const bodyData& ply) {
 	ImGuiIO& io = ImGui::GetIO();
 	AsteroidRenderingSettings settings = loadRenderingSettings();
 
-	try
-	{
-		PxControllerObject_Context = *reinterpret_cast<uintptr_t*>(PxControllerObject + 0x208);
-		currentControllers = *reinterpret_cast<__int8*>(PxControllerObject_Context + 0x68);
-	}
-	catch (const std::exception& e)
-	{
+	// Check if PxControllerObject is null
+	if (PxControllerObject == 0) {
 		currentControllers = 0;
+		atMainMenu = true;
+		//return;
 	}
-	catch (...)
+	else
+		atMainMenu = false;
+
+	if (!atMainMenu)
 	{
-		currentControllers = 0;
+		try {
+			// Check if PxControllerObject_Context is valid before dereferencing
+			PxControllerObject_Context = *reinterpret_cast<uintptr_t*>(PxControllerObject + 0x208);
+
+			// Additional check for PxControllerObject_Context before dereferencing
+			if (PxControllerObject_Context != 0) {
+				currentControllers = *reinterpret_cast<__int8*>(PxControllerObject_Context + 0x68);
+			}
+			else {
+				currentControllers = 0;
+			}
+		}
+		catch (const std::exception& e) {
+			currentControllers = 0;
+		}
+		catch (...) {
+			currentControllers = 0;
+		}
 	}
 
     localPlayer = *reinterpret_cast<uintptr_t*>(baseAddress + localPlayerPtr);
