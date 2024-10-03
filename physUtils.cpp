@@ -33,6 +33,7 @@ std::vector<bodyData> generateBodyData() {
                 if (rigid == nullptr || (uint64_t)rigid > 0xFFFF'FFFF'FFFF'0000) {
                     continue;
                 }
+                // todo: this can cause a fatal crash when exiting from game to menu
                 physx::PxVec3 pos = rigid->getGlobalPose().p;
 
                 bool isStatic = actor->is<PxRigidStatic>() != nullptr;
