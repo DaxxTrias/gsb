@@ -406,7 +406,8 @@ public:
 static_assert(sizeof(playerKinematicContextMember) == 0x188);
 
 typedef void(*setDevConsoleState_type)(__int64 a1, unsigned __int8 a2);
-typedef char*(*addFuncToLuaClass_type)(__int64 L, const char** name, __int64 a3, char** a4, void* func, size_t type, __int64 callHandler, __int64 luaClass);
+typedef __int64(*addFuncToLuaClass_type)(__int64 L, const char* name, void* func, unsigned int type, void* callHandler, void* luaClass);
+//typedef char*(*addFuncToLuaClass_type)(__int64 L, const char** name, __int64 a3, char** a4, void* func, size_t type, __int64 callHandler, __int64 luaClass);
 typedef char(*GetOptionFloat_type)(DWORD* a1, float* a2, char* a3);
 typedef char(*SetOptionFloat_type)(DWORD* a1, float* a2, char* a3);
 typedef char(*GetOptionBool_type)(DWORD* a1, bool* a2, char* a3);

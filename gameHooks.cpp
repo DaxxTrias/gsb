@@ -24,7 +24,7 @@ const char* SetOptionFloat_pattern = "48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC 20
 const char* GetOptionBool_pattern = "48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 48 8B 39 48 8B DA 48 8B F1 BA ? ? ? ? 49 8B C8 E8 ? ? ? ? 44 8B C0 48 8B CE E8 ? ? ? ? 8B 47 ? 8B 1B"; // maybe (original pattern had other possibilities)
 const char* SetOptionBool_pattern = "48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 48 8B 39 48 8B DA 48 8B F1 33 D2"; // maybe (original pattern had several other possibilities)
 //const char* getSceneInstanceManagerFromInstanceRootBySceneUH_pattern = "48 89 5C 24 ? 89 54 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 81 EC ? ? ? ? 48 8B 05"; // v922 - v1000048
-const char* getSceneInstanceManagerFromInstanceRootBySceneUHPTU_pattern = "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 41 54 41 55 41 56 41 57 48 83 EC ? 48 8B 01 8B DA"; // rewritten in v1000050, found it by going to aSelected_1
+const char* getSceneInstanceManagerFromInstanceRootBySceneUHHTU_pattern = "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 41 54 41 55 41 56 41 57 48 83 EC ? 48 8B 01 8B DA"; // rewritten in v1000050, found it by going to aSelected_1
 const char* SceneInstanceManager__getActor_patternSTU = "40 53 48 83 EC ? 48 8B 41 ? 4C 8B 40";
 const char* SceneInstanceManager__getActor_pattern = "40 53 48 83 EC 20 48 8B 41 40 4C 8B 40 78 8B C2 25 ? ? ? ? 41 3B 40 08 0F 83 ? ? ? ? 8B C8 49 8B 00 48 03 C9 48 83 E0 FC 39 54 C8 08 0F 85 ? ? ? ? 48 8B 1C C8 48 85 DB 0F 84 ? ? ? ? 48 83 7B";
 const char* someGlobalGetterSetter_pattern = "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 41 54 41 56 41 57 48 83 EC 40 49 8B F1 8B EA 45 0F B6 F0 48 8B F9 E8 ? ? ? ?"; //v922
@@ -289,7 +289,8 @@ void initGameHooks() {
 
 	camObject = *reinterpret_cast<uintptr_t*>(baseAddress + camObjectOffset);
 
-	or_PxControllerRelated = findSignature<PxControllerRelated_type>(getPlayerKinematicsDll(), PxControllerRelatedSTU_pattern);
+	or_PxControllerRelated = findSignature<PxControllerRelated_type>(getPlayerKinematicsDll(), PxControllerRelated_pattern);
+	//or_PxControllerRelated = findSignature<PxControllerRelated_type>(getPlayerKinematicsDll(), PxControllerRelatedSTU_pattern);
 	placeHook("PxControllerRelated", or_PxControllerRelated, PxControllerRelated_hook);
 
     or_updatePositionDeltas = findSignature<updatePositionDeltas_type>(getPlayerKinematicsDll(), updatePositionDeltas_pattern);
@@ -313,16 +314,20 @@ void initGameHooks() {
 	or_SetOptionBool = findSignature<SetOptionBool_type>(getStarbaseExe(), SetOptionBool_pattern);
 	//placeHook("SetOptionBool", or_SetOptionBool, SetOptionBool_hook);
 
-	or_getSceneInstanceManagerFromInstanceRootBySceneUH = findSignature<getSceneInstanceManagerFromInstanceRootBySceneUH_type>(getStarbaseExe(), getSceneInstanceManagerFromInstanceRootBySceneUHPTU_pattern);
+	or_getSceneInstanceManagerFromInstanceRootBySceneUH = findSignature<getSceneInstanceManagerFromInstanceRootBySceneUH_type>(getStarbaseExe(), getSceneInstanceManagerFromInstanceRootBySceneUH_pattern);
+	//or_getSceneInstanceManagerFromInstanceRootBySceneUH = findSignature<getSceneInstanceManagerFromInstanceRootBySceneUH_type>(getStarbaseExe(), getSceneInstanceManagerFromInstanceRootBySceneUHSTU_pattern);
 	//placeHook("getSceneInstanceManagerFromInstanceRootBySceneUH", or_getSceneInstanceManagerFromInstanceRootBySceneUH, getSceneInstanceManagerFromInstanceRootBySceneUH_hook);
 
-	or_SceneInstanceManager__getActor = findSignature<SceneInstanceManager__getActor_type>(getStarbaseExe(), SceneInstanceManager__getActor_patternSTU);
+	or_SceneInstanceManager__getActor = findSignature<SceneInstanceManager__getActor_type>(getStarbaseExe(), SceneInstanceManager__getActor_pattern);
+	//or_SceneInstanceManager__getActor = findSignature<SceneInstanceManager__getActor_type>(getStarbaseExe(), SceneInstanceManager__getActor_patternSTU);
 	//placeHook("SceneInstanceManager__getActor", or_SceneInstanceManager__getActor, SceneInstanceManager__getActor_hook);
 
-	or_someGlobalGetterSetter = findSignature<someGlobalGetterSetter_type>(getStarbaseExe(), someGlobalGetterSetter_patternSTU);
+	//or_someGlobalGetterSetter = findSignature<someGlobalGetterSetter_type>(getStarbaseExe(), someGlobalGetterSetter_patternSTU);
+	or_someGlobalGetterSetter = findSignature<someGlobalGetterSetter_type>(getStarbaseExe(), someGlobalGetterSetter_pattern);
 	//placeHook("someGlobalGetterSetter", or_someGlobalGetterSetter, someGlobalGetterSetter_hook);
 
-	char* ptr = findSignature<char*>(getStarbaseExe(), iterOver_patternSTU);
+	char* ptr = findSignature<char*>(getStarbaseExe(), iterOver_pattern);
+	//char* ptr = findSignature<char*>(getStarbaseExe(), iterOver_patternSTU);
 	int32_t offset = *((int32_t*)(ptr + 1)) + 5;
 	getPhysClass = (getPhysClass_type)(ptr + offset);
 
@@ -331,13 +336,15 @@ void initGameHooks() {
 
 	maybeOpenDebug = findSignature<getPhysClass_type>(getStarbaseExe(), maybeOpenDebug_pattern);
 
-	or_getPxActorFromList = findSignature<getPxActorFromList_type>(getStarbaseExe(), getPxActorFromListSTU_pattern);
+	or_getPxActorFromList = findSignature<getPxActorFromList_type>(getStarbaseExe(), getPxActorFromList_pattern);
+	//or_getPxActorFromList = findSignature<getPxActorFromList_type>(getStarbaseExe(), getPxActorFromListSTU_pattern);
 	placeHook("getPxActorFromList", or_getPxActorFromList, getPxActorFromList_hook);
 
 	//or_createClassInstance = findSignature<createClassInstance_type>(getStarbaseExe(), createClassInstance_pattern);
 	//placeHook("createClassInstance", or_createClassInstance, createClassInstance_hook);
 
-	someGetObjectOrAsteroid_or = findSignature<someGetObjectOrAsteroid_type>(getStarbaseExe(), someGetObjectOrAsteroid_patternSTU);
+	someGetObjectOrAsteroid_or = findSignature<someGetObjectOrAsteroid_type>(getStarbaseExe(), someGetObjectOrAsteroid_pattern);
+	//someGetObjectOrAsteroid_or = findSignature<someGetObjectOrAsteroid_type>(getStarbaseExe(), someGetObjectOrAsteroid_patternSTU);
 	placeHook("getObject", someGetObjectOrAsteroid_or, someGetObjectOrAsteroid_hook);
 
 	//uint64_t preSetupC = findSignature<uint64_t>(getStarbaseExe(), setupGameConfig_pattern) + 0x144;
