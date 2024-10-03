@@ -18,13 +18,14 @@ const char* PxControllerRelated_pattern = "48 8B C4 48 89 58 ? 55 56 57 48 8D A8
 const char* updateActors_pattern = "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 33 FF"; // precursor function to updatePositionDeltas
 const char* updatePositionDeltas_pattern = "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 33 FF"; // update playerPOS on sectorCube change
 const char* setDevConsoleState_pattern = "4C 8B DC 55 41 54 41 57 49 8D AB ? ? ? ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 80 79 ? ? 44 0F B6 E2";
-const char* addFuncToLuaClass_pattern = "48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 55 41 54 41 55 41 56 41 57 48 8B EC 48 83 EC ? 8B 5D"; // pattern changed in STU 1000056
+const char* addFuncToLuaClass_pattern = "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC 20 48 8B EA 41 8B D9 41 8B D1 49 8B F8 48 8B F1 FF 15 ? ? ? ? 44 8B C3 48 8B D7 48 8B C8"; //v922
+const char* addFuncToLuaClass_patternSTU = "48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 55 41 54 41 55 41 56 41 57 48 8B EC 48 83 EC ? 8B 5D"; // pattern changed in STU 1000056
 const char* GetOptionFloat_pattern = "48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 41 56 48 83 EC 20 48 8B 31 4C 8B F2 48 8B F9 33 D2 49 8B C8 49 8B D8 E8 ? ? ? ? 4C 8B C3 0F";
 const char* SetOptionFloat_pattern = "48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC 20 48 8B 39 48 8B DA 48 8B F1 33 D2 49 8B C8 E8 ? ? ? ? 44 8B C0 48 8B CE E8";
 const char* GetOptionBool_pattern = "48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 48 8B 39 48 8B DA 48 8B F1 BA ? ? ? ? 49 8B C8 E8 ? ? ? ? 44 8B C0 48 8B CE E8 ? ? ? ? 8B 47 ? 8B 1B"; // maybe (original pattern had other possibilities)
 const char* SetOptionBool_pattern = "48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 48 8B 39 48 8B DA 48 8B F1 33 D2"; // maybe (original pattern had several other possibilities)
-//const char* getSceneInstanceManagerFromInstanceRootBySceneUH_pattern = "48 89 5C 24 ? 89 54 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 81 EC ? ? ? ? 48 8B 05"; // v922 - v1000048
-const char* getSceneInstanceManagerFromInstanceRootBySceneUHHTU_pattern = "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 41 54 41 55 41 56 41 57 48 83 EC ? 48 8B 01 8B DA"; // rewritten in v1000050, found it by going to aSelected_1
+const char* getSceneInstanceManagerFromInstanceRootBySceneUH_pattern = "48 89 5C 24 ? 89 54 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 81 EC ? ? ? ? 48 8B 05"; // v922 - v1000048
+const char* getSceneInstanceManagerFromInstanceRootBySceneUH_patternSTU = "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 41 54 41 55 41 56 41 57 48 83 EC ? 48 8B 01 8B DA"; // rewritten in v1000050, found it by going to aSelected_1
 const char* SceneInstanceManager__getActor_patternSTU = "40 53 48 83 EC ? 48 8B 41 ? 4C 8B 40";
 const char* SceneInstanceManager__getActor_pattern = "40 53 48 83 EC 20 48 8B 41 40 4C 8B 40 78 8B C2 25 ? ? ? ? 41 3B 40 08 0F 83 ? ? ? ? 8B C8 49 8B 00 48 03 C9 48 83 E0 FC 39 54 C8 08 0F 85 ? ? ? ? 48 8B 1C C8 48 85 DB 0F 84 ? ? ? ? 48 83 7B";
 const char* someGlobalGetterSetter_pattern = "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 41 54 41 56 41 57 48 83 EC 40 49 8B F1 8B EA 45 0F B6 F0 48 8B F9 E8 ? ? ? ?"; //v922
@@ -34,12 +35,12 @@ const char* iterOver_patternSTU = "E8 ? ? ? ? 48 8B D0 48 8B CB E8 ? ? ? ? 84 C0
 const char* iterOver_pattern = "E8 ? ? ? ? 48 8B D0 48 8B CB E8 ? ? ? ? 84 C0 0F 84 ? ? ? ? 48 8B 8F ? ? ? ? 48 85 C9 0F 84 ? ? ? ? 48 8B 49 08 48 8B 9E ? ? ? ? E8 ? ? ? ? 48 8B F8 48 85 C0 74 7C 48 8B 4B 60 8B 73 68 48 83 E1 FC 4C 8D 04 F5 ? ? ? ? 49 8D 14 08 48 3B CA 74 0E";
 const char* somePxStuff_pattern = "40 53 48 83 EC ? 48 8B 01 48 8D 15 ? ? ? ? 48 8B D9 FF 50 ? 33 D2 84 C0 48 0F 45 D3 48 8B C2 48 83 C4 ? 5B C3 CC CC CC CC CC CC CC CC CC 48 8D 05"; // original pattern was showing multiple, this should be better maybe?
 const char* maybeOpenDebug_pattern = "40 55 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? E8 ? ? ? ? 84 C0 0F 85 ? ? ? ?";
-//const char* getPxActorFromList_pattern = "48 89 5C 24 ? 57 48 83 EC ? 8B DA 48 8B F9 83 FA ? 75 ? 41 B8 ? ? ? ? 48 8D 15 ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 74 ? CC 8B C3 25 ? ? ? ? 3B 87 ? ? ? ? 73 ? 8B C8 48 8B 87 ? ? ? ? 48 03 C9 48 83 E0 ? 39 5C C8 ? 75 ? 48 8B 04 C8 48 85 C0 74 ? 8B 40"; // v922; original pattern had like 30 possibilities
-//const char* getPxActorFromListSTU_pattern = "48 89 5C 24 ? 57 48 83 EC ? 8B DA 48 8B F9 83 FA ? 75 ? 41 B8 ? ? ? ? 48 8D 15 ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 74 ? CC 8B C3 25 ? ? ? ? 3B 87 ? ? ? ? 73 ? 8B C8 48 8B 87 ? ? ? ? 48 03 C9 48 83 E0 ? 39 5C C8 ? 75 ? 48 8B 04 C8 48 85 C0 74 ? 8B 40"; //v1000044 
-const char* getPxActorFromListSTU_pattern = "48 89 5C 24 ? 57 48 83 EC ? 8B DA 48 8B F9 83 FA ? 75 ? 41 B8 ? ? ? ? E8 ? ? ? ? 84 C0 74 ? CC 8B C3 25 ? ? ? ? 3B 87 ? ? ? ? 73 ? 8B C8 48 8B 87 ? ? ? ? 48 03 C9 48 83 E0 ? 39 5C C8 ? 75 ? 48 8B 04 C8 48 85 C0 74 ? 8B 40"; //v1000047 unconfirmed
+const char* getPxActorFromList_pattern = "48 89 5C 24 ? 57 48 83 EC ? 8B DA 48 8B F9 83 FA ? 75 ? 41 B8 ? ? ? ? 48 8D 15 ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 74 ? CC 8B C3 25 ? ? ? ? 3B 87 ? ? ? ? 73 ? 8B C8 48 8B 87 ? ? ? ? 48 03 C9 48 83 E0 ? 39 5C C8 ? 75 ? 48 8B 04 C8 48 85 C0 74 ? 8B 40"; // v922; original pattern had like 30 possibilities
+//const char* getPxActorFromList_OldSTU_pattern = "48 89 5C 24 ? 57 48 83 EC ? 8B DA 48 8B F9 83 FA ? 75 ? 41 B8 ? ? ? ? 48 8D 15 ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 74 ? CC 8B C3 25 ? ? ? ? 3B 87 ? ? ? ? 73 ? 8B C8 48 8B 87 ? ? ? ? 48 03 C9 48 83 E0 ? 39 5C C8 ? 75 ? 48 8B 04 C8 48 85 C0 74 ? 8B 40"; //v1000044 
+const char* getPxActorFromListSTU_pattern = "48 89 5C 24 ? 57 48 83 EC ? 8B DA 48 8B F9 83 FA ? 75 ? 41 B8 ? ? ? ? E8 ? ? ? ? 84 C0 74 ? CC 8B C3 25 ? ? ? ? 3B 87 ? ? ? ? 73 ? 8B C8 48 8B 87 ? ? ? ? 48 03 C9 48 83 E0 ? 39 5C C8 ? 75 ? 48 8B 04 C8 48 85 C0 74 ? 8B 40"; //v1000047
 const char* setupGameConfig_pattern = "48 8B C4 55 53 48 8D 68 A1 48 81 EC ? ? ? ? 80 3D ? ? ? ? ? 48 8B D9 0F 85 ? ? ? ? 48 89 70 08 48 89 78 E8 4C 89 60 E0 4C 89 68 D8 4C 89 70 D0 4C 89 78 C8 0F 29 78 B8 44 0F 29 48 ?";
 const char* createClassInstance_pattern = "40 53 56 41 55 41 56 48 83 EC ? 8B DA"; // maybe (function appears to have been rewritten. only about 70% confidence)
-//const char* someGetObjectOrAsteroid_pattern = "48 89 5C 24 ? 57 48 83 EC ? 48 8B F9 8B DA 3B 91 ? ? ? ? 72 ? 41 B8 ? ? ? ? 48 8D 15 ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 74 ? CC 3B 9F ? ? ? ? 72 ? 4C 8D 0D ? ? ? ? 41 B8 ? ? ? ? 48 8D 15 ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 74 ? CC 48 8B 8F ? ? ? ? 48 69 C3 ? ? ? ? 48 8B 5C 24 ? 48 83 E1 ? 48 03 C1 48 83 C4 ? 5F C3 CC CC CC CC CC CC CC CC CC CC CC CC CC CC 48 89 5C 24 ? 57 48 83 EC ? 41 8B D8"; // v922-v1000044 pattern, still valid for STU. (the original pattern had 2 possibilities but this seems to have worked out fine)
+const char* someGetObjectOrAsteroid_pattern = "48 89 5C 24 ? 57 48 83 EC ? 48 8B F9 8B DA 3B 91 ? ? ? ? 72 ? 41 B8 ? ? ? ? 48 8D 15 ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 74 ? CC 3B 9F ? ? ? ? 72 ? 4C 8D 0D ? ? ? ? 41 B8 ? ? ? ? 48 8D 15 ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 74 ? CC 48 8B 8F ? ? ? ? 48 69 C3 ? ? ? ? 48 8B 5C 24 ? 48 83 E1 ? 48 03 C1 48 83 C4 ? 5F C3 CC CC CC CC CC CC CC CC CC CC CC CC CC CC 48 89 5C 24 ? 57 48 83 EC ? 41 8B D8"; // v922-v1000044 pattern, still valid for STU. (the original pattern had 2 possibilities but this seems to have worked out fine)
 const char* someGetObjectOrAsteroid_patternSTU = "48 89 5C 24 ? 57 48 83 EC ? 48 8B F9 8B DA 3B 91 ? ? ? ? 72 ? 41 B8 ? ? ? ? E8 ? ? ? ? 84 C0 74 ? CC 3B 9F ? ? ? ? 72 ? 4C 8D 0D ? ? ? ? 41 B8 ? ? ? ? 48 8D 15 ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 74 ? CC 48 8B 8F ? ? ? ? 48 69 C3 ? ? ? ? 48 8B 5C 24 ? 48 83 E1 ? 48 03 C1 48 83 C4 ? 5F C3 CC CC CC CC CC CC CC CC CC CC CC CC 48 89 5C 24 ? 57 48 83 EC ? 41 8B D8"; // v1000047
 
 PxControllerRelated_type or_PxControllerRelated;
@@ -107,18 +108,14 @@ void updatePositionDeltas_hook(__int64 context, float* posDeltas) {
 	FnCast("updatePositionDeltas", or_updatePositionDeltas)(context, posDeltas);
 }
 
-char* addFuncToLuaClass_hook(__int64 L, const char** name, __int64 a3, char** a4, void* func, size_t type, __int64 callHandler, __int64 luaClass) {
-
-	if (strcmp(*name, "addDebugBind") == 0 || strcmp(*name, "getObjectManager") == 0 ||
-		strcmp(*name, "postConsoleMessage") == 0 || strcmp(*name, "setIsConsoleOpen") == 0 ||
-		strcmp(*name, "getIsConsoleOpen") == 0)
+__int64 addFuncToLuaClass_hook(__int64 L, const char* name, void* func, unsigned int type, void* callHandler, void* luaClass) {
+	if (strcmp(name, "addDebugBind") == 0 || strcmp(name, "getObjectManager") == 0 ||
+		strcmp(name, "postConsoleMessage") == 0 || strcmp(name, "setIsConsoleOpen") == 0 ||
+		strcmp(name, "getIsConsoleOpen") == 0)
 	{
-		fprintf(Con::fpout,
-			"AddFuncToLua: L*: %llx name: %s func: %p type: %zu callHandler: %llx luaClass: %llx a3: %llx a4: %p\n",
-			L, *name, func, type,
-			callHandler, luaClass, a3, a4);
+		fprintf(Con::fpout, "AddFuncToLua: L*: %llx name: %s func: %llx type: %d callHandler: %llx luaClass: %llx\n",
+			L, name, reinterpret_cast<unsigned long long>(func), type, reinterpret_cast<unsigned long long>(callHandler), reinterpret_cast<unsigned long long>(luaClass));
 	}
-
 	//typeManager/getObjectManagerHandler:     __int64 __fastcall sub_16069C0(__int64 a1)
 	//bindHandler/addDebugBind:                __int64 __fastcall sub_1E79480(__int64 a1)
 	/*else
@@ -128,8 +125,33 @@ char* addFuncToLuaClass_hook(__int64 L, const char** name, __int64 a3, char** a4
 
 	fflush(Con::fpout);
 
-	return FnCast("addFuncToLuaClass", or_addFuncToLuaClass)(L, name, a3, a4, func, type, callHandler, luaClass);
+	return FnCast("addFuncToLuaClass", or_addFuncToLuaClass)(L, name, func, type, callHandler, luaClass);
 }
+
+// STU
+//char* addFuncToLuaClass_hook(__int64 L, const char** name, __int64 a3, char** a4, void* func, size_t type, __int64 callHandler, __int64 luaClass) {
+//
+//	if (strcmp(*name, "addDebugBind") == 0 || strcmp(*name, "getObjectManager") == 0 ||
+//		strcmp(*name, "postConsoleMessage") == 0 || strcmp(*name, "setIsConsoleOpen") == 0 ||
+//		strcmp(*name, "getIsConsoleOpen") == 0)
+//	{
+//		fprintf(Con::fpout,
+//			"AddFuncToLua: L*: %llx name: %s func: %p type: %zu callHandler: %llx luaClass: %llx a3: %llx a4: %p\n",
+//			L, *name, func, type,
+//			callHandler, luaClass, a3, a4);
+//	}
+//
+//	//typeManager/getObjectManagerHandler:     __int64 __fastcall sub_16069C0(__int64 a1)
+//	//bindHandler/addDebugBind:                __int64 __fastcall sub_1E79480(__int64 a1)
+//	/*else
+//	{
+//		fprintf(Con::fpout, "addFuncToLuaClass: %s\n", name);
+//	}*/
+//
+//	fflush(Con::fpout);
+//
+//	return FnCast("addFuncToLuaClass", or_addFuncToLuaClass)(L, name, a3, a4, func, type, callHandler, luaClass);
+//}
 
 
 char GetOptionFloat_hook(DWORD* a1, float* a2, char* a3) {
@@ -243,7 +265,8 @@ __int64 createClassInstance_hook(__int64 a1, unsigned int a2, char** a3, __int64
 asteroidStruct* __fastcall someGetObjectOrAsteroid_hook(__int64 a1, __int64 id) {
 	objectManager = a1;
 
-	maxObjects = *(uint32_t*)(objectManager + 0x60070);
+	//maxObjects = *(uint32_t*)(objectManager + 0x60070); // STU
+	maxObjects = *(uint32_t*)(objectManager + 0x60068);
 
 	asteroidStruct *asteroid = FnCast("getObject", someGetObjectOrAsteroid_or)(a1, id);
 
@@ -300,6 +323,7 @@ void initGameHooks() {
 	//placeHook("setDevConsoleState", or_setDevConsoleState, setDevConsoleState_hook);
 
 	or_addFuncToLuaClass = findSignature<addFuncToLuaClass_type>(getStarbaseExe(), addFuncToLuaClass_pattern);
+	//or_addFuncToLuaClass = findSignature<addFuncToLuaClass_type>(getStarbaseExe(), addFuncToLuaClass_patternSTU);
 	placeHook("addFuncToLuaClass", or_addFuncToLuaClass, addFuncToLuaClass_hook);
 
 	or_GetOptionFloat = findSignature<GetOptionFloat_type>(getStarbaseExe(), GetOptionFloat_pattern);
@@ -315,7 +339,7 @@ void initGameHooks() {
 	//placeHook("SetOptionBool", or_SetOptionBool, SetOptionBool_hook);
 
 	or_getSceneInstanceManagerFromInstanceRootBySceneUH = findSignature<getSceneInstanceManagerFromInstanceRootBySceneUH_type>(getStarbaseExe(), getSceneInstanceManagerFromInstanceRootBySceneUH_pattern);
-	//or_getSceneInstanceManagerFromInstanceRootBySceneUH = findSignature<getSceneInstanceManagerFromInstanceRootBySceneUH_type>(getStarbaseExe(), getSceneInstanceManagerFromInstanceRootBySceneUHSTU_pattern);
+	//or_getSceneInstanceManagerFromInstanceRootBySceneUH = findSignature<getSceneInstanceManagerFromInstanceRootBySceneUH_type>(getStarbaseExe(), getSceneInstanceManagerFromInstanceRootBySceneUH_patternSTU);
 	//placeHook("getSceneInstanceManagerFromInstanceRootBySceneUH", or_getSceneInstanceManagerFromInstanceRootBySceneUH, getSceneInstanceManagerFromInstanceRootBySceneUH_hook);
 
 	or_SceneInstanceManager__getActor = findSignature<SceneInstanceManager__getActor_type>(getStarbaseExe(), SceneInstanceManager__getActor_pattern);
