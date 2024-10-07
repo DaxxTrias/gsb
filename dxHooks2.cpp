@@ -155,6 +155,7 @@ HRESULT __stdcall hookD3D11Present1(IDXGISwapChain* pSwapChain, UINT SyncInterva
 		//todo: buying a ship in the creator might be able to 'break' the data loc's we hook. playerCoords seem to get toasted for sure.
 		//reloading to main menu fixes the core esp, but physics esp still broken even after relog from above event/issue
 
+		//todo: should probably check for PxControllers here, and if 0 just skip the whole loop. 0 means at main menu or inside SSC
 		if (!killSwitch.load())
 		{
 			std::vector<bodyData> bodys = {};

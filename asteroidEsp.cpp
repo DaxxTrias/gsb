@@ -1,4 +1,4 @@
-﻿#include "asteroidEsp.h"
+#include "asteroidEsp.h"
 #include "gameHooks.h"
 #include "render.h"
 #include <foundation/PxVec2.h>
@@ -61,6 +61,7 @@ using namespace physx;
 static std::vector<AsteroidSubData> asteroidsSubData;
 static std::vector<AsteroidCache> asteroidsCache;
 
+bool atMainMenu = false;
 __int8 currentControllers;
 uintptr_t localPlayer;
 uintptr_t PxControllerObject_Context;
@@ -79,8 +80,10 @@ uintptr_t localPlayerinitialOffset = 0xAF99568; // v922 (close by but not exact 
 //uintptr_t localPlayerPtrSTU = 0x2F8110D8; // v100056
 //uintptr_t localPlayerPtrSTU = 0x2F8101C8; // v100057
 //uintptr_t localPlayerPtrSTU = 0x2F81B918; // v100058
-uintptr_t localPlayerPtrSTU = 0x2F822CC8; // v100059
-uintptr_t localPlayerVelocityOffset = 0xB70;
+//uintptr_t localPlayerPtrSTU = 0x2F822CC8; // v100059
+uintptr_t localPlayerPtrSTU = 0x2F825EF8; // v100060
+uintptr_t localPlayerVelocityOffsetSTU = 0xB70;
+uintptr_t localPlayerVelocityOffset = 0xC4C;
 
 static float calculateDistance(const physx::PxVec3& pos1, const physx::PxVec3& pos2) {
 	physx::PxVec3 diff = pos1 - pos2;
@@ -123,18 +126,35 @@ void drawStats(const bodyData& ply) {
 	ImGuiIO& io = ImGui::GetIO();
 	AsteroidRenderingSettings settings = loadRenderingSettings();
 
-	try
-	{
-		PxControllerObject_Context = *reinterpret_cast<uintptr_t*>(PxControllerObject + 0x208);
-		currentControllers = *reinterpret_cast<__int8*>(PxControllerObject_Context + 0x68);
-	}
-	catch (const std::exception& e)
-	{
+	// Check if PxControllerObject is null
+	if (PxControllerObject == 0) {
 		currentControllers = 0;
+		atMainMenu = true;
+		//return;
 	}
-	catch (...)
+	else
+		atMainMenu = false;
+
+	if (!atMainMenu)
 	{
-		currentControllers = 0;
+		try {
+			// Check if PxControllerObject_Context is valid before dereferencing
+			PxControllerObject_Context = *reinterpret_cast<uintptr_t*>(PxControllerObject + 0x208);
+
+			// Additional check for PxControllerObject_Context before dereferencing
+			if (PxControllerObject_Context != 0) {
+				currentControllers = *reinterpret_cast<__int8*>(PxControllerObject_Context + 0x68);
+			}
+			else {
+				currentControllers = 0;
+			}
+		}
+		catch (const std::exception& e) {
+			currentControllers = 0;
+		}
+		catch (...) {
+			currentControllers = 0;
+		}
 	}
 
     localPlayer = *reinterpret_cast<uintptr_t*>(baseAddress + localPlayerPtrSTU);
@@ -302,6 +322,7 @@ void drawAsteroidESP(const bodyData& ply) {
 		drawAsteroidsFromCache(ply);
 		return;
 	}
+
 	updateCounter = 0;
 	asteroidsCache.clear();
 
@@ -310,7 +331,11 @@ void drawAsteroidESP(const bodyData& ply) {
 	AsteroidRenderingSettings renderSettings = loadRenderingSettings();
 
 	for (uint64_t i = 0; i < maxObjects; i++) {
-		asteroidStruct* object = (asteroidStruct*)((*(uint64_t*)(objectManager + 0x60060) & 0xFFFFFFFFFFFFFFFCui64) + (0x150 * i));
+
+		asteroidStruct* object = getObject(objectManager, i);
+
+		//todo: appears busted on STU. probably throwing a nullref in the obj manager due to bad offset.
+		//asteroidStruct* object = (asteroidStruct*)((*(uint64_t*)(objectManager + 0x60060) & 0xFFFFFFFFFFFFFFFCui64) + (0x150 * i));
 		if (testObjectPtr(object)) {
 			continue;
 		}
