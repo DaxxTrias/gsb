@@ -70,8 +70,8 @@ std::atomic<uint32_t> maxObjects{ 0 };
 uint64_t objectManager;
 uint64_t PxControllerObject = 0;
 
-//todo: maybe look into hooking the screenshot func in gameoverlayrenderer and then kill it, so we dont end up with ESP in ss
-//todo: bonus points if detect SS, hide ESP, then resume it.
+//todo: maybe look into hooking the screenshot func in gameoverlayrenderer and then kill it, so we dont end up with ESP in ss'
+//todo: bonus if detect screenshot func -> hide ESP -> then resume it.
 
 void setDevConsoleState_hook(__int64 a1, unsigned __int8 a2) {
 	FnCast("setDevConsoleState", or_setDevConsoleState)(a1, true);
@@ -103,6 +103,7 @@ __int64 PxControllerRelated_hook(__int64 a1, __int64 a2, __int64 a3, __int64 a4)
 void updatePositionDeltas_hook(__int64 context, float* posDeltas) {
 	//might be giving us the PxCharacterController context 
 	//todo: can probably get the pxActor here, instead of itering thru entity list and sometimes hosting W2S from another players PoV
+	//todo: would probably save something stupid like 20% cpu cycles too.
 	fprintf(Con::fpout, "updatePositionDeltas: Context: %llx   Deltas: %.2f %.2f %.2f\n", context, posDeltas[0], posDeltas[1],posDeltas[2]);
 	fflush(Con::fpout);
 	FnCast("updatePositionDeltas", or_updatePositionDeltas)(context, posDeltas);
