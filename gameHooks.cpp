@@ -47,6 +47,7 @@ PxControllerRelated_type or_PxControllerRelated;
 updatePositionDeltas_type or_updatePositionDeltas;
 setDevConsoleState_type or_setDevConsoleState;
 addFuncToLuaClass_type or_addFuncToLuaClass;
+addFuncToLuaClass_typeSTU or_addFuncToLuaClassSTU;
 GetOptionFloat_type or_GetOptionFloat;
 SetOptionFloat_type or_SetOptionFloat;
 GetOptionBool_type or_GetOptionBool;
@@ -130,29 +131,29 @@ __int64 addFuncToLuaClass_hook(__int64 L, const char* name, void* func, unsigned
 }
 
 // STU
-//char* addFuncToLuaClass_hook(__int64 L, const char** name, __int64 a3, char** a4, void* func, size_t type, __int64 callHandler, __int64 luaClass) {
-//
-//	if (strcmp(*name, "addDebugBind") == 0 || strcmp(*name, "getObjectManager") == 0 ||
-//		strcmp(*name, "postConsoleMessage") == 0 || strcmp(*name, "setIsConsoleOpen") == 0 ||
-//		strcmp(*name, "getIsConsoleOpen") == 0)
-//	{
-//		fprintf(Con::fpout,
-//			"AddFuncToLua: L*: %llx name: %s func: %p type: %zu callHandler: %llx luaClass: %llx a3: %llx a4: %p\n",
-//			L, *name, func, type,
-//			callHandler, luaClass, a3, a4);
-//	}
-//
-//	//typeManager/getObjectManagerHandler:     __int64 __fastcall sub_16069C0(__int64 a1)
-//	//bindHandler/addDebugBind:                __int64 __fastcall sub_1E79480(__int64 a1)
-//	/*else
-//	{
-//		fprintf(Con::fpout, "addFuncToLuaClass: %s\n", name);
-//	}*/
-//
-//	fflush(Con::fpout);
-//
-//	return FnCast("addFuncToLuaClass", or_addFuncToLuaClass)(L, name, a3, a4, func, type, callHandler, luaClass);
-//}
+char* addFuncToLuaClass_hookSTU(__int64 L, const char** name, __int64 a3, char** a4, void* func, size_t type, __int64 callHandler, __int64 luaClass) {
+
+	if (strcmp(*name, "addDebugBind") == 0 || strcmp(*name, "getObjectManager") == 0 ||
+		strcmp(*name, "postConsoleMessage") == 0 || strcmp(*name, "setIsConsoleOpen") == 0 ||
+		strcmp(*name, "getIsConsoleOpen") == 0)
+	{
+		fprintf(Con::fpout,
+			"AddFuncToLua: L*: %llx name: %s func: %p type: %zu callHandler: %llx luaClass: %llx a3: %llx a4: %p\n",
+			L, *name, func, type,
+			callHandler, luaClass, a3, a4);
+	}
+
+	//typeManager/getObjectManagerHandler:     __int64 __fastcall sub_16069C0(__int64 a1)
+	//bindHandler/addDebugBind:                __int64 __fastcall sub_1E79480(__int64 a1)
+	/*else
+	{
+		fprintf(Con::fpout, "addFuncToLuaClass: %s\n", name);
+	}*/
+
+	fflush(Con::fpout);
+
+	return FnCast("addFuncToLuaClass", or_addFuncToLuaClassSTU)(L, name, a3, a4, func, type, callHandler, luaClass);
+}
 
 
 char GetOptionFloat_hook(DWORD* a1, float* a2, char* a3) {
@@ -325,7 +326,7 @@ void initGameHooks() {
 	//placeHook("setDevConsoleState", or_setDevConsoleState, setDevConsoleState_hook);
 
 	or_addFuncToLuaClass = findSignature<addFuncToLuaClass_type>(getStarbaseExe(), addFuncToLuaClass_pattern);
-	//or_addFuncToLuaClass = findSignature<addFuncToLuaClass_type>(getStarbaseExe(), addFuncToLuaClass_patternSTU);
+	//or_addFuncToLuaClassSTU = findSignature<addFuncToLuaClass_typeSTU>(getStarbaseExe(), addFuncToLuaClass_patternSTU);
 	placeHook("addFuncToLuaClass", or_addFuncToLuaClass, addFuncToLuaClass_hook);
 
 	or_GetOptionFloat = findSignature<GetOptionFloat_type>(getStarbaseExe(), GetOptionFloat_pattern);
