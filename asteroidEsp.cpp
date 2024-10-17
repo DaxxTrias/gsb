@@ -81,7 +81,8 @@ uintptr_t localPlayerPtr = 0xAF99568; // v922 (close by but not exact pattern) 4
 //uintptr_t localPlayerPtrSTU = 0x2F8101C8; // v100057
 //uintptr_t localPlayerPtrSTU = 0x2F81B918; // v100058
 //uintptr_t localPlayerPtrSTU = 0x2F822CC8; // v100059
-uintptr_t localPlayerPtrSTU = 0x2F825EF8; // v100060
+//uintptr_t localPlayerPtrSTU = 0x2F825EF8; // v100060
+uintptr_t localPlayerPtrSTU = 0x2F83CCE8; // v100063
 uintptr_t localPlayerVelocityOffsetSTU = 0xB70;
 uintptr_t localPlayerVelocityOffset = 0xC4C;
 
