@@ -298,7 +298,8 @@ void initGameHooks() {
     or_updatePositionDeltas = findSignature<updatePositionDeltas_type>(getPlayerKinematicsDll(), updatePositionDeltas_pattern);
 	placeHook("updatePositionDeltas", or_updatePositionDeltas, updatePositionDeltas_hook);
 	
-	or_setDevConsoleState = findSignature<setDevConsoleState_type>(getStarbaseExe(), setDevConsoleState_pattern);
+	// Function seems to have been removed in the STU (even as far back as v1000041)
+	//or_setDevConsoleState = findSignature<setDevConsoleState_type>(getStarbaseExe(), setDevConsoleState_pattern);
 	//placeHook("setDevConsoleState", or_setDevConsoleState, setDevConsoleState_hook);
 
 	or_addFuncToLuaClass = findSignature<addFuncToLuaClass_type>(getStarbaseExe(), addFuncToLuaClass_pattern);
