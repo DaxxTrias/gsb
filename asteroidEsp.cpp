@@ -374,7 +374,19 @@ void drawAsteroidESP(const bodyData& ply) {
 				Con::fpout, "ObjAdd: %p Dist: %f idx: %ild\n", 
 					object, dist, reinterpret_cast<uintptr_t>(object));*/
 
-			fprintf(Con::fpout, "ObjAdd: %p Dist: %f idx: %i\n", object, dist, i);
+			if (object)
+			{
+				if (object->type)
+				{
+					uint32_t typeValue = *reinterpret_cast<uint32_t*>(object->type);
+					fprintf(Con::fpout, "ObjAdd: %p Dist: %f idx: %i type: %u\n", object, dist, i, typeValue);
+				}
+				else
+				{
+					fprintf(Con::fpout, "ObjAdd: %p Dist: %f idx: %i\n", object, dist, i);
+				}
+
+			}
 		}
 
 		AsteroidSubData& subData = asteroidsSubData[i];
