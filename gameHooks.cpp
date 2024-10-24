@@ -282,7 +282,8 @@ uintptr_t camObjectOffset = 0xAEB46A8; // v922: F2 0F 11 05 ? ? ? ? 41 8B 41
 //uintptr_t camObjectOffsetSTU = 0xAEAE360; // v1000058
 //uintptr_t camObjectOffsetSTU = 0xAEB5618; // v1000059
 //uintptr_t camObjectOffsetSTU = 0xAEB8378; // v1000060
-uintptr_t camObjectOffsetSTU = 0xAECF530; // v1000063
+//uintptr_t camObjectOffsetSTU = 0xAECF530; // v1000063
+uintptr_t camObjectOffsetSTU = 0xAECE5A8; // v1000066
 
 uintptr_t camObject;
 
