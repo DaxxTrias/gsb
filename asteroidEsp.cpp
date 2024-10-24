@@ -262,13 +262,16 @@ static void drawAsteroid(const physx::PxVec3& plyPos, const physx::PxVec3& aster
 				ImGui::GetFont(), ImGui::GetFontSize(), ImVec2(screenPos.x, screenPos.y), settings.nearColor, buff.c_str());
 		}
 	}
-	/*else if (settings.debugMode) {
-		physx::PxVec2 screenPos = worldToScreen(asteroidPos);
-		if (screenPos.x > 0 && screenPos.y > 0) {
-			ImGui::GetWindowDrawList()->AddText(
-				ImGui::GetFont(), ImGui::GetFontSize(), ImVec2(screenPos.x, screenPos.y), settings.nearColor, buff.c_str());
+	if (settings.debugMode ) {
+		if (dist < 1000.0f)
+		{
+			physx::PxVec2 screenPos = worldToScreen(asteroidPos);
+			if (screenPos.x > 0 && screenPos.y > 0) {
+				ImGui::GetWindowDrawList()->AddText(
+					ImGui::GetFont(), ImGui::GetFontSize(), ImVec2(screenPos.x, screenPos.y), settings.nearColor, buff.c_str());
+			}
 		}
-	}*/
+	}
 	else
 		return;
 }
