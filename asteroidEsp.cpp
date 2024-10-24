@@ -365,9 +365,13 @@ void drawAsteroidESP(const bodyData& ply) {
 
 		if (dist < 15.0f && dist > 1.2f && renderSettings.debugMode)
 		{
-			fprintf(
+			//todo: not sure why i wrote this? why reference the pointer two different ways? 
+			// and not even output 2nd correctly?
+			/*fprintf(
 				Con::fpout, "ObjAdd: %p Dist: %f idx: %ild\n", 
-					object, dist, reinterpret_cast<uintptr_t>(object));
+					object, dist, reinterpret_cast<uintptr_t>(object));*/
+
+			fprintf(Con::fpout, "ObjAdd: %p Dist: %f idx: %i\n", object, dist, i);
 		}
 
 		AsteroidSubData& subData = asteroidsSubData[i];
