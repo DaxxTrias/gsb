@@ -337,8 +337,13 @@ void drawAsteroidESP(const bodyData& ply) {
 		}
 
 		if (!renderSettings.drawNear && !renderSettings.drawFar)
+		{
+			if (renderSettings.debugMode)
+				goto skip1;
 			continue;
+		}
 
+		skip1:
 		if (checkOre && !strstr(object->type, "ore")) {
 			continue;
 		}
