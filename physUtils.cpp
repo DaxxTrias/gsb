@@ -48,16 +48,16 @@ std::vector<bodyData> generateBodyData() {
                         int actorType = actor->getType();
                         if (actorType == PxActorType::eRIGID_DYNAMIC)
 						{
-                            fprintf(stdout, "Rigid Dynamic Body Mass: %f\n", mass);
+                            //fprintf(stdout, "Rigid Dynamic Body Mass: %f\n", mass);
                             //uint32_t nbShapes = body->getNbShapes();
                             //const char* name = actor->getName();
                             //fprintf(stdout, "Dynamic actor: %s\n", name);
                             //fprintf(stdout, "Dynamic actor\n");
-                            PxScene *scene = actor->getScene();
-                            fprintf(stdout, "Scene: %p\n", scene);
+                            //PxScene *scene = actor->getScene();
+                            //fprintf(stdout, "Scene: %p\n", scene);
 
-                            PxVec3 sceneGravity = scene->getGravity();
-                            fprintf(stdout, "Scene Gravity: %f, %f, %f\n", sceneGravity.x, sceneGravity.y, sceneGravity.z);
+                            //PxVec3 sceneGravity = scene->getGravity();
+                            //fprintf(stdout, "Scene Gravity: %f, %f, %f\n", sceneGravity.x, sceneGravity.y, sceneGravity.z);
 
                             //PxU32 NbActors = scene->getNbActors(PxActorTypeFlag::eRIGID_DYNAMIC);
                             //PxU32 NbActors = scene->getNbActors(PxActorTypeFlag::eRIGID_STATIC);
