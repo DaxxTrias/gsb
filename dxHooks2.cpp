@@ -166,9 +166,10 @@ HRESULT __stdcall hookD3D11Present1(IDXGISwapChain* pSwapChain, UINT SyncInterva
 		{
 			//std::vector<bodyData> bodys = {};
 			//bodys = generateBodyData();
-			bodyGen();
 
+			bodyGen();
 			bodyData ply = getPlyByMass(bodys);
+
 			//bodyData ply = {};
 			// 
 			//camObject = *reinterpret_cast<uintptr_t*>(baseAddress + camObjectOffset);
