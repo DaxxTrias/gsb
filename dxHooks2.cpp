@@ -72,6 +72,12 @@ static LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPAR
 	return CallWindowProc(oWndProc, hWnd, uMsg, wParam, lParam);
 }
 
+static std::vector<bodyData> bodys; // Declare the vector outside the function
+
+void bodyGen() {
+	bodys.clear(); // Clear the vector to reuse it
+	bodys = generateBodyData(); // Populate the vector with new data
+}
 
 HRESULT __stdcall hookD3D11Present1(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT Flags, 
 	const DXGI_PRESENT_PARAMETERS* pPresentParameters) {
@@ -158,8 +164,10 @@ HRESULT __stdcall hookD3D11Present1(IDXGISwapChain* pSwapChain, UINT SyncInterva
 		//todo: should probably check for PxControllers here, and if 0 just skip the whole loop. 0 means at main menu or inside SSC
 		if (!killSwitch.load())
 		{
-			std::vector<bodyData> bodys = {};
-			bodys = generateBodyData();
+			//std::vector<bodyData> bodys = {};
+			//bodys = generateBodyData();
+			bodyGen();
+
 			bodyData ply = getPlyByMass(bodys);
 			//bodyData ply = {};
 			// 
