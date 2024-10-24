@@ -405,6 +405,9 @@
     <ClInclude Include="memHelper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="libs\PhysX\PhysX_3.4\Include\PxScene.h">
+      <Filter>Header Files\PhysX</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">

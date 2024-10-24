@@ -298,6 +298,7 @@
     <ClInclude Include="libs\Minhook\src\HDE\table32.h" />
     <ClInclude Include="libs\Minhook\src\HDE\table64.h" />
     <ClInclude Include="libs\Minhook\src\trampoline.h" />
+    <ClInclude Include="libs\PhysX\PhysX_3.4\Include\PxScene.h" />
     <ClInclude Include="libs\PhysX\PxShared\include\foundation\PxVec3.h" />
     <ClInclude Include="luaExecutor.h" />
     <ClInclude Include="luaHooks.h" />
