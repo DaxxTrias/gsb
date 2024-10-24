@@ -6,6 +6,7 @@
 #include <PxRigidStatic.h>
 #include "killSwitch.h"
 
+
 using namespace physx;
 
 inline bool cmpf(float A, float B, float epsilon = 0.005f) {
@@ -43,19 +44,25 @@ std::vector<bodyData> generateBodyData() {
                     PxRigidBody* body = actor->is<PxRigidBody>();
                     float mass = (body != nullptr) ? body->getMass() : -1;
                     PxVec3 vel = (body != nullptr) ? body->getLinearVelocity() : physx::PxVec3(0, 0, 0);
-                    if (mass > 1.0f)
+                    if (mass > 1.0f && mass < 5.0f)
                     {
                         int actorType = actor->getType();
                         if (actorType == PxActorType::eRIGID_DYNAMIC)
 						{
+                            fprintf(stdout, "Rigid Dynamic Body Mass: %f\n", mass);
                             //uint32_t nbShapes = body->getNbShapes();
-                            /*const char* name = actor->getName();
-                            fprintf(stdout, "Dynamic actor: %s\n", name);*/
+                            //const char* name = actor->getName();
+                            //fprintf(stdout, "Dynamic actor: %s\n", name);
                             //fprintf(stdout, "Dynamic actor\n");
-                            //PxScene *scene = actor->getScene();
-                            //fprintf(stdout, "Scene: %p\n", scene);
+                            PxScene *scene = actor->getScene();
+                            fprintf(stdout, "Scene: %p\n", scene);
 
-                            //uint32_t nbActors = scene->getNbActors(PxActorTypeSelectionFlag::eRIGID_DYNAMIC);
+                            PxVec3 sceneGravity = scene->getGravity();
+                            fprintf(stdout, "Scene Gravity: %f, %f, %f\n", sceneGravity.x, sceneGravity.y, sceneGravity.z);
+
+                            //PxU32 NbActors = scene->getNbActors(PxActorTypeFlag::eRIGID_DYNAMIC);
+                            //PxU32 NbActors = scene->getNbActors(PxActorTypeFlag::eRIGID_STATIC);
+                            //fprintf(stdout, "nBActors: %u\n", NbActors);
 						}
 						else if (actorType == PxActorType::eRIGID_STATIC)
 						{
