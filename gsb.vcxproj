@@ -233,6 +233,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="threadPool.cpp" />
     <ClCompile Include="threads.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -298,6 +299,7 @@
     <ClInclude Include="libs\Minhook\src\HDE\table32.h" />
     <ClInclude Include="libs\Minhook\src\HDE\table64.h" />
     <ClInclude Include="libs\Minhook\src\trampoline.h" />
+    <ClInclude Include="libs\PhysX\APEX_1.4\framework\include\ThreadPool.h" />
     <ClInclude Include="libs\PhysX\PhysX_3.4\Include\PxScene.h" />
     <ClInclude Include="libs\PhysX\PxShared\include\foundation\PxVec3.h" />
     <ClInclude Include="luaExecutor.h" />
@@ -316,6 +318,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="threads.h" />
+    <ClInclude Include="threadPool.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

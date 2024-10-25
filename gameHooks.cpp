@@ -11,6 +11,9 @@
 #include <PxRigidBody.h>
 #include "menu.h"
 #include "memHelper.h"
+#include <thread>
+#include <future>
+#include <mutex>
 
 // most of the previous patterns seemed (mostly) accurate on v582, but some of the functions were rewritten
 const char* PxControllerRelatedSTU_pattern = "48 8B C4 55 56 41 56"; // v1000042 pattern changed for STU (they significantly modified the player kinematics dll)
@@ -107,6 +110,28 @@ void updatePositionDeltas_hook(__int64 context, float* posDeltas) {
 	//todo: would probably save something stupid like 20% cpu cycles too.
 	fprintf(Con::fpout, "updatePositionDeltas: Context: %llx   Deltas: %.2f %.2f %.2f\n", context, posDeltas[0], posDeltas[1],posDeltas[2]);
 	fflush(Con::fpout);
+
+	// Create a thread pool with a specified number of threads
+	const int numThreads = std::thread::hardware_concurrency();
+	std::vector<std::future<void>> futures;
+	std::mutex posDeltasMutex;
+
+	for (int i = 0; i < numThreads; ++i) {
+		futures.push_back(std::async(std::launch::async, [&, i]() {
+			// Perform parallel processing on posDeltas
+			std::lock_guard<std::mutex> lock(posDeltasMutex);
+			// Example: Modify posDeltas based on thread index
+			posDeltas[0] += i * 0.1f;
+			posDeltas[1] += i * 0.1f;
+			posDeltas[2] += i * 0.1f;
+		}));
+	}
+
+	// Wait for all threads to complete
+	for (auto& future : futures) {
+		future.wait();
+	}
+
 	FnCast("updatePositionDeltas", or_updatePositionDeltas)(context, posDeltas);
 }
 
