@@ -183,6 +183,9 @@ void drawStats(const bodyData& ply) {
 
 	if (currentControllers > 0)
 	{
+		//todo we should try and find another way to secure player xyz for here that doesnt require us firing the getplybymass func
+		//todo or better yet get rid of getplybymass entirely. iterating the whole loop to find us by our mass is iffy at best
+		//todo since we can end up registering as other people
 		posX = ply.pos.x;
 		posY = ply.pos.y;
 		posZ = ply.pos.z;
