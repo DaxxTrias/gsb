@@ -43,6 +43,7 @@ static bool initonce = false;
 uintptr_t renderingModule;
 uintptr_t playerFOV;
 float pFOV = 90;
+bodyData ply;
 
 static void InitImGuiD3D11()
 {
@@ -84,6 +85,7 @@ HRESULT __stdcall hookD3D11Present1(IDXGISwapChain* pSwapChain, UINT SyncInterva
 	const DXGI_PRESENT_PARAMETERS* pPresentParameters) {
 	if (!initonce)
 	{
+		ply = {};
 		if (SUCCEEDED(pSwapChain->GetDevice(__uuidof(ID3D11Device), (void**)&pDevice)))
 		{
 			pDevice->GetImmediateContext(&pContext);
@@ -165,8 +167,6 @@ HRESULT __stdcall hookD3D11Present1(IDXGISwapChain* pSwapChain, UINT SyncInterva
 		//todo: should probably check for PxControllers here, and if 0 just skip the whole loop. 0 means at main menu or inside SSC
 		if (!killSwitch.load())
 		{
-			//todo: ply can be moved out of scope and made into a static container we just update periodically.
-			bodyData ply = {};
 			if (getOption<bool>("asteroidEspEnabled") || getOption<bool>("drawPhysMass"))
 			{
 				std::future<void> bodyGenFuture = std::async(std::launch::async, bodyGen);
