@@ -5,6 +5,7 @@
 #include <PxScene.h>
 #include <PxAggregate.h>
 #include <PxRigidBody.h>
+#include <PxRigidStatic.h>
 #include <thread>
 #include <atomic>
 #include <iostream>

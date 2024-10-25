@@ -4,7 +4,6 @@
 #include <stdint.h>
 #include "console.h"
 #include <future>
-#include <deque>
 
 using std::string;
 
