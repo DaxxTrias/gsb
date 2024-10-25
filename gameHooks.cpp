@@ -11,6 +11,9 @@
 #include <PxRigidBody.h>
 #include "menu.h"
 #include "memHelper.h"
+#include <thread>
+#include <future>
+#include <mutex>
 
 // most of the previous patterns seemed (mostly) accurate on v582, but some of the functions were rewritten
 const char* PxControllerRelatedSTU_pattern = "48 8B C4 55 56 41 56"; // v1000042 pattern changed for STU (they significantly modified the player kinematics dll)
@@ -33,7 +36,7 @@ const char* someGlobalGetterSetter_pattern = "48 89 5C 24 ? 48 89 6C 24 ? 48 89 
 const char* someGlobalGetterSetter_patternSTU = "48 89 4C 24 ? 53 55 56 57 41 54 41 55 41 56 48 83 EC ? 49 8B F9"; //v1000047
 const char* iterOver_patternSTU = "E8 ? ? ? ? 48 8B D0 48 8B CB E8 ? ? ? ? 84 C0 0F 84 ? ? ? ? 4C 89 6C 24 ? 4C 8B AE"; //v1000042
 const char* iterOver_pattern = "E8 ? ? ? ? 48 8B D0 48 8B CB E8 ? ? ? ? 84 C0 0F 84 ? ? ? ? 48 8B 8F ? ? ? ? 48 85 C9 0F 84 ? ? ? ? 48 8B 49 08 48 8B 9E ? ? ? ? E8 ? ? ? ? 48 8B F8 48 85 C0 74 7C 48 8B 4B 60 8B 73 68 48 83 E1 FC 4C 8D 04 F5 ? ? ? ? 49 8D 14 08 48 3B CA 74 0E";
-const char* somePxStuff_pattern = "40 53 48 83 EC ? 48 8B 01 48 8D 15 ? ? ? ? 48 8B D9 FF 50 ? 33 D2 84 C0 48 0F 45 D3 48 8B C2 48 83 C4 ? 5B C3 CC CC CC CC CC CC CC CC CC 48 8D 05"; // original pattern was showing multiple, this should be better maybe?
+const char* somePxStuff_pattern = "40 53 48 83 EC ? 48 8B 01 48 8D 15 ? ? ? ? 48 8B D9 FF 50 ? 33 D2 84 C0 48 0F 45 D3 48 8B C2 48 83 C4 ? 5B C3 CC CC CC CC CC CC CC CC CC CC 48 8D 05"; // original pattern was showing multiple, this should be better maybe?
 const char* maybeOpenDebug_pattern = "40 55 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? E8 ? ? ? ? 84 C0 0F 85 ? ? ? ?";
 const char* getPxActorFromList_pattern = "48 89 5C 24 ? 57 48 83 EC ? 8B DA 48 8B F9 83 FA ? 75 ? 41 B8 ? ? ? ? 48 8D 15 ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 74 ? CC 8B C3 25 ? ? ? ? 3B 87 ? ? ? ? 73 ? 8B C8 48 8B 87 ? ? ? ? 48 03 C9 48 83 E0 ? 39 5C C8 ? 75 ? 48 8B 04 C8 48 85 C0 74 ? 8B 40"; // v922; original pattern had like 30 possibilities
 //const char* getPxActorFromList_patternOldSTU = "48 89 5C 24 ? 57 48 83 EC ? 8B DA 48 8B F9 83 FA ? 75 ? 41 B8 ? ? ? ? 48 8D 15 ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 84 C0 74 ? CC 8B C3 25 ? ? ? ? 3B 87 ? ? ? ? 73 ? 8B C8 48 8B 87 ? ? ? ? 48 03 C9 48 83 E0 ? 39 5C C8 ? 75 ? 48 8B 04 C8 48 85 C0 74 ? 8B 40"; //v1000044 
@@ -107,6 +110,28 @@ void updatePositionDeltas_hook(__int64 context, float* posDeltas) {
 	//todo: would probably save something stupid like 20% cpu cycles too.
 	fprintf(Con::fpout, "updatePositionDeltas: Context: %llx   Deltas: %.2f %.2f %.2f\n", context, posDeltas[0], posDeltas[1],posDeltas[2]);
 	fflush(Con::fpout);
+
+	// Create a thread pool with a specified number of threads
+	const int numThreads = std::thread::hardware_concurrency();
+	std::vector<std::future<void>> futures;
+	std::mutex posDeltasMutex;
+
+	for (int i = 0; i < numThreads; ++i) {
+		futures.push_back(std::async(std::launch::async, [&, i]() {
+			// Perform parallel processing on posDeltas
+			std::lock_guard<std::mutex> lock(posDeltasMutex);
+			// Example: Modify posDeltas based on thread index
+			posDeltas[0] += i * 0.1f;
+			posDeltas[1] += i * 0.1f;
+			posDeltas[2] += i * 0.1f;
+		}));
+	}
+
+	// Wait for all threads to complete
+	for (auto& future : futures) {
+		future.wait();
+	}
+
 	FnCast("updatePositionDeltas", or_updatePositionDeltas)(context, posDeltas);
 }
 

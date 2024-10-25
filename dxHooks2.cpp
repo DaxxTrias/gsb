@@ -16,6 +16,10 @@
 #include "KillSwitch.h"
 #include <iostream>
 #include "gameHooks.h"
+#include <thread>
+#include <mutex>
+#include <vector>
+#include <future>
 
 typedef HRESULT(__stdcall* D3D11Present1Hook) (IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT Flags, 
 	const DXGI_PRESENT_PARAMETERS* pPresentParameters);
@@ -73,8 +77,10 @@ static LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPAR
 }
 
 static std::vector<bodyData> bodys; // Declare the vector outside the function
+std::mutex bodysMutex; // Mutex for thread safety
 
 void bodyGen() {
+	std::lock_guard<std::mutex> lock(bodysMutex); // Ensure thread safety
 	bodys.clear(); // Clear the vector to reuse it
 	bodys = generateBodyData(); // Populate the vector with new data
 }
@@ -167,7 +173,8 @@ HRESULT __stdcall hookD3D11Present1(IDXGISwapChain* pSwapChain, UINT SyncInterva
 			//std::vector<bodyData> bodys = {};
 			//bodys = generateBodyData();
 
-			bodyGen();
+			std::future<void> bodyGenFuture = std::async(std::launch::async, bodyGen);
+			bodyGenFuture.wait();
 			bodyData ply = getPlyByMass(bodys);
 
 			//bodyData ply = {};

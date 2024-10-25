@@ -14,6 +14,8 @@
 #include <Windows.h>
 #include "killSwitch.h"
 #include <mutex>
+#include <future>
+#include "hookUtils.h"
 
 struct CachedPoseData {
     physx::PxVec3 pos;
@@ -81,63 +83,73 @@ int updatePhysicsThread() {
         // maybe we can check if maxobjects has increased significantly versus last time we checked and if yes sleep for a bit
         // attempting to fix it by ensuring maxObjects doesnt update mid for loop
         //todo: is this the npScene->RigidActors array?
+        std::vector<std::future<void>> futures;
+        std::mutex poseCacheMutex;
+
         for (uint64_t i = 0; i < tempMaxObjects; i++) {
-            //todo: we crash here during load into game (suspect because maxObj changes too fast
-            if (physList[i].entry == nullptr)
-                continue;
-            if (physList[i].entry != nullptr
-                && (physList[i].id & 0xFFFFFF) == i
-                && ((physList[i].entry->id & 0xFFFFFF) == (physList[i].id & 0xFFFFFF))) {
+            futures.push_back(threadPool.enqueue([&, i]() {
+                if (physList[i].entry == nullptr)
+                    return;
 
-                // access violation here as well not handled properly
-                if (physList[i].entry == nullptr || physList[i].entry->actor == nullptr) {
-                    continue;
-                }
-                physx::PxActor* actor = {};
+                if (physList[i].entry != nullptr
+                    && (physList[i].id & 0xFFFFFF) == i
+                    && ((physList[i].entry->id & 0xFFFFFF) == (physList[i].id & 0xFFFFFF))) {
 
-                try {
-                    actor = physList[i].entry->actor;
-                }
-                catch (const std::exception& e) {
-                    std::cerr << "Exception caught while processing actor: " << e.what() << std::endl;
-                    //todo: perhaps we should nullout physList[i].entry & id?
-                    continue; // Skip to the next iteration
-                }
+                    // access violation here as well not handled properly
+                    if (physList[i].entry == nullptr || physList[i].entry->actor == nullptr) {
+                        return;
+                    }
+                    physx::PxActor* actor = {};
 
-                try {
-                    //todo: we should attempt to capture entity list size rather then use a hard limit
-                    auto rigid = actor->is<physx::PxRigidActor>();
-                    if (rigid == nullptr || (uint64_t)rigid > 0xFFFF'FFFF'FFFF'0000) {
-                        continue;
+                    try {
+                        actor = physList[i].entry->actor;
+                    }
+                    catch (const std::exception& e) {
+                        std::cerr << "Exception caught while processing actor: " << e.what() << std::endl;
+                        //todo: perhaps we should nullout physList[i].entry & id?
+                        return; // Skip to the next iteration
                     }
 
-                    auto cachedPose = getCachedPose(rigid, i);
-                    if (!cachedPose.isValid) {
-                        continue;
-                    }
+                    try {
+                        //todo: we should attempt to capture entity list size rather then use a hard limit
+                        auto rigid = actor->is<physx::PxRigidActor>();
+                        if (rigid == nullptr || (uint64_t)rigid > 0xFFFF'FFFF'FFFF'0000) {
+                            return;
+                        }
 
-                    //updating->push_back({ cachedPose.pos, cachedPose.mass, cachedPose.vel });
-                    updating->push_back(bodyData{ cachedPose.pos, cachedPose.vel, cachedPose.mass });
+                        auto cachedPose = getCachedPose(rigid, i);
+                        if (!cachedPose.isValid) {
+                            return;
+                        }
+
+                        std::lock_guard<std::mutex> lock(poseCacheMutex);
+                        updating->push_back(bodyData{ cachedPose.pos, cachedPose.vel, cachedPose.mass });
+                    }
+                    catch (const physx::PxErrorCallback& e) {
+                        std::cerr << "PhysX exception caught while processing actor: " << std::endl;
+                        return; // Skip to the next iteration
+                    }
+                    catch (const std::exception& e) {
+                        std::cerr << "Exception caught while processing actor: " << e.what() << std::endl;
+                        return; // Skip to the next iteration
+                    }
+                    catch (...) {
+                        std::cerr << "Unknown exception caught while processing actor." << std::endl;
+                        return; // Skip to the next iteration
+                    }
                 }
-                catch (const physx::PxErrorCallback& e) {
-                    std::cerr << "PhysX exception caught while processing actor: " << std::endl;
-                    continue; // Skip to the next iteration
+                else {
+                    if ((physList[i].id & 0xFFFFFF) != (i & 0xFFFFFF)) {
+                        return;
+                    }
                 }
-                catch (const std::exception& e) {
-                    std::cerr << "Exception caught while processing actor: " << e.what() << std::endl;
-                    continue; // Skip to the next iteration
-                }
-                catch (...) {
-                    std::cerr << "Unknown exception caught while processing actor." << std::endl;
-                    continue; // Skip to the next iteration
-                }
-            }
-            else {
-                if ((physList[i].id & 0xFFFFFF) != (i & 0xFFFFFF)) {
-                    break;
-                }
-            }
+            }));
         }
+
+        for (auto& future : futures) {
+            future.wait();
+        }
+
         {
             //lock bodys during
             std::lock_guard<std::mutex> lock(bodysMutex);
