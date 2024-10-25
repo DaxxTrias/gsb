@@ -4,14 +4,7 @@
 #include <unordered_map>
 #include <MinHook.h>
 #include "console.h"
-#include <thread>
-#include <vector>
-#include <future>
-#include <mutex>
-#include <deque>
-#include <functional>
-#include <type_traits>
-#include <typeinfo>
+#include "threadPool.h"
 
 using std::string;
 using std::unordered_map;
@@ -134,77 +127,3 @@ unsigned char* getPlayerKinematicsDll() {
 unsigned char* getLuaDll() {
 	return (unsigned char*)GetModuleHandle("lua_x64.dll");
 }
-
-// Thread pool implementation
-class ThreadPool {
-public:
-	ThreadPool(size_t numThreads);
-	~ThreadPool();
-
-	template<class F>
-	auto enqueue(F&& f) -> std::future<typename std::invoke_result<F>::type>;
-
-private:
-	std::vector<std::thread> workers;
-	std::deque<std::function<void()>> tasks;
-
-	std::mutex queueMutex;
-	std::condition_variable condition;
-	bool stop;
-};
-
-inline ThreadPool::ThreadPool(size_t numThreads) : stop(false) {
-	for (size_t i = 0; i < numThreads; ++i) {
-		workers.emplace_back([this] {
-			for (;;) {
-				std::function<void()> task;
-
-				{
-					std::unique_lock<std::mutex> lock(this->queueMutex);
-					this->condition.wait(lock, [this] { return this->stop || !this->tasks.empty(); });
-					if (this->stop && this->tasks.empty()) {
-						return;
-					}
-					task = std::move(this->tasks.front());
-					this->tasks.pop_front();
-				}
-
-				task();
-			}
-		});
-	}
-}
-
-inline ThreadPool::~ThreadPool() {
-	{
-		std::unique_lock<std::mutex> lock(queueMutex);
-		stop = true;
-	}
-	condition.notify_all();
-	for (std::thread& worker : workers) {
-		worker.join();
-	}
-}
-
-template<class F>
-auto ThreadPool::enqueue(F&& f) -> std::future<typename std::invoke_result<F>::type> {
-	using returnType = typename std::invoke_result<F>::type;
-
-	auto task = std::make_shared<std::packaged_task<returnType()>>(std::forward<F>(f));
-
-	std::future<returnType> res = task->get_future();
-	{
-		std::unique_lock<std::mutex> lock(queueMutex);
-
-		if (stop) {
-			throw std::runtime_error("enqueue on stopped ThreadPool");
-		}
-
-		tasks.emplace_back([task]() { (*task)(); });
-	}
-	condition.notify_one();
-	return res;
-}
-
-// Global thread pool instance
-ThreadPool threadPool(std::thread::hardware_concurrency());

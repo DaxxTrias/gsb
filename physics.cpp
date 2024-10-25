@@ -15,6 +15,7 @@
 #include "killSwitch.h"
 #include <mutex>
 #include <future>
+#include "threadPool.h"
 
 struct CachedPoseData {
     physx::PxVec3 pos;
