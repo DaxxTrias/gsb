@@ -29,6 +29,8 @@ std::unordered_map<int, CachedPoseData> poseCache;
 std::shared_ptr<std::vector<bodyData>> bodys = std::make_shared<std::vector<bodyData>>();
 std::atomic<bool> keepRunning(true);
 std::mutex bodysMutexPhysics;
+std::vector<std::future<void>> futures;
+std::mutex poseCacheMutex;
 
 CachedPoseData getCachedPose(physx::PxRigidActor* rigid, uint64_t indx) {
     int index = static_cast<int>(indx);
@@ -84,8 +86,7 @@ int updatePhysicsThread() {
         // maybe we can check if maxobjects has increased significantly versus last time we checked and if yes sleep for a bit
         // attempting to fix it by ensuring maxObjects doesnt update mid for loop
         //todo: is this the npScene->RigidActors array?
-        std::vector<std::future<void>> futures;
-        std::mutex poseCacheMutex;
+        
 
         for (uint64_t i = 0; i < tempMaxObjects; i++) {
             futures.push_back(threadPool.enqueue([&, i]() {
