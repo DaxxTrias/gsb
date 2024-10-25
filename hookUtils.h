@@ -34,24 +34,3 @@ T findSignatureFull(unsigned char* data, unsigned char* sig, char* pattern) {
 unsigned char* getStarbaseExe();
 unsigned char* getLuaDll();
 unsigned char* getPlayerKinematicsDll();
-
-// Declaration of the ThreadPool class
-class ThreadPool {
-public:
-	ThreadPool(size_t numThreads);
-	~ThreadPool();
-
-	template<class F>
-	auto enqueue(F&& f) -> std::future<typename std::invoke_result<F>::type>;
-
-private:
-	std::vector<std::thread> workers;
-	std::deque<std::function<void()>> tasks;
-
-	std::mutex queueMutex;
-	std::condition_variable condition;
-	bool stop;
-};
-
-// Declaration of the global threadPool instance
-extern ThreadPool threadPool;

@@ -4,7 +4,6 @@
 #include <unordered_map>
 #include <MinHook.h>
 #include "console.h"
-#include "threadPool.h"
 
 using std::string;
 using std::unordered_map;
