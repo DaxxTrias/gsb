@@ -168,9 +168,14 @@ HRESULT __stdcall hookD3D11Present1(IDXGISwapChain* pSwapChain, UINT SyncInterva
 			//std::vector<bodyData> bodys = {};
 			//bodys = generateBodyData();
 
-			std::future<void> bodyGenFuture = std::async(std::launch::async, bodyGen);
-			bodyGenFuture.wait();
-			bodyData ply = getPlyByMass(bodys);
+			bodyData ply = {};
+			if (getOption<bool>("asteroidEspEnabled") || getOption<bool>("drawPhysMass"))
+			{
+				std::future<void> bodyGenFuture = std::async(std::launch::async, bodyGen);
+				bodyGenFuture.wait();
+				ply = getPlyByMass(bodys);
+			}
+			
 
 			//bodyData ply = {};
 			// 
