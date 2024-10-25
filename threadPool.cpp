@@ -1,4 +1,6 @@
 #include "threadPool.h"
+#include <stdexcept>
+#include <utility>
 
 ThreadPool::ThreadPool(size_t numThreads) : stop(false) {
     for (size_t i = 0; i < numThreads; ++i) {
