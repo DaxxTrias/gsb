@@ -1,10 +1,10 @@
+#include "hookUtils.h"
 #include "physics.h"
 #include "gameHooks.h"
 #include <PxRigidActor.h>
 #include <PxScene.h>
 #include <PxAggregate.h>
 #include <PxRigidBody.h>
-#include <PxRigidStatic.h>
 #include <thread>
 #include <atomic>
 #include <iostream>
@@ -15,7 +15,6 @@
 #include "killSwitch.h"
 #include <mutex>
 #include <future>
-#include "hookUtils.h"
 
 struct CachedPoseData {
     physx::PxVec3 pos;
@@ -27,7 +26,7 @@ struct CachedPoseData {
 std::unordered_map<int, CachedPoseData> poseCache;
 std::shared_ptr<std::vector<bodyData>> bodys = std::make_shared<std::vector<bodyData>>();
 std::atomic<bool> keepRunning(true);
-std::mutex bodysMutex;
+std::mutex bodysMutexPhysics;
 
 CachedPoseData getCachedPose(physx::PxRigidActor* rigid, uint64_t indx) {
     int index = static_cast<int>(indx);
@@ -152,7 +151,7 @@ int updatePhysicsThread() {
 
         {
             //lock bodys during
-            std::lock_guard<std::mutex> lock(bodysMutex);
+            std::lock_guard<std::mutex> lock(bodysMutexPhysics);
             bodys = updating;
         }
 
