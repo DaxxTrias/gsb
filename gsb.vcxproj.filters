@@ -211,6 +211,9 @@
     <ClCompile Include="memHelper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="threadPool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\lua-5.3.5\lualib.h">
@@ -410,6 +413,9 @@
     </ClInclude>
     <ClInclude Include="libs\PhysX\APEX_1.4\framework\include\ThreadPool.h">
       <Filter>Header Files\PhysX</Filter>
+    </ClInclude>
+    <ClInclude Include="threadPool.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

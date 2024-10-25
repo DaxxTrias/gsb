@@ -14,7 +14,6 @@
 #include <thread>
 #include <future>
 #include <mutex>
-#include "threadPool.h"
 
 // most of the previous patterns seemed (mostly) accurate on v582, but some of the functions were rewritten
 const char* PxControllerRelatedSTU_pattern = "48 8B C4 55 56 41 56"; // v1000042 pattern changed for STU (they significantly modified the player kinematics dll)

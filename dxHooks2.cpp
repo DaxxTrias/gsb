@@ -15,11 +15,6 @@
 #include "physicEsp.h"
 #include "KillSwitch.h"
 #include <iostream>
-#include "gameHooks.h"
-#include <thread>
-#include <mutex>
-#include <vector>
-#include <future>
 
 typedef HRESULT(__stdcall* D3D11Present1Hook) (IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT Flags, 
 	const DXGI_PRESENT_PARAMETERS* pPresentParameters);
