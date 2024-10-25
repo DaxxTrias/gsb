@@ -4,7 +4,7 @@
 #include <memory>
 #include <vector>
 #include <mutex>
-#include "ThreadPool.h"
+#include <ThreadPool.h>
 
 struct bodyData {
 	physx::PxVec3 pos;

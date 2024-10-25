@@ -408,6 +408,9 @@
     <ClInclude Include="libs\PhysX\PhysX_3.4\Include\PxScene.h">
       <Filter>Header Files\PhysX</Filter>
     </ClInclude>
+    <ClInclude Include="libs\PhysX\APEX_1.4\framework\include\ThreadPool.h">
+      <Filter>Header Files\PhysX</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
