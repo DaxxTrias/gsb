@@ -165,9 +165,7 @@ HRESULT __stdcall hookD3D11Present1(IDXGISwapChain* pSwapChain, UINT SyncInterva
 		//todo: should probably check for PxControllers here, and if 0 just skip the whole loop. 0 means at main menu or inside SSC
 		if (!killSwitch.load())
 		{
-			//std::vector<bodyData> bodys = {};
-			//bodys = generateBodyData();
-
+			//todo: ply can be moved out of scope and made into a static container we just update periodically.
 			bodyData ply = {};
 			if (getOption<bool>("asteroidEspEnabled") || getOption<bool>("drawPhysMass"))
 			{
@@ -175,10 +173,7 @@ HRESULT __stdcall hookD3D11Present1(IDXGISwapChain* pSwapChain, UINT SyncInterva
 				bodyGenFuture.wait();
 				ply = getPlyByMass(bodys);
 			}
-			
 
-			//bodyData ply = {};
-			// 
 			//camObject = *reinterpret_cast<uintptr_t*>(baseAddress + camObjectOffset);
 			//ply.pos.x = reinterpret_cast<float*>(camObject)[0];
 			//ply.pos.y = reinterpret_cast<float*>(camObject)[1];
