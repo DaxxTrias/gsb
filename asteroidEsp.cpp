@@ -62,7 +62,6 @@ static std::vector<AsteroidSubData> asteroidsSubData;
 static std::vector<AsteroidCache> asteroidsCache;
 
 bool atMainMenu = false;
-bool atMainMenu = false;
 __int8 currentControllers;
 uintptr_t localPlayer;
 uintptr_t PxControllerObject_Context;
