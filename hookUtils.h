@@ -3,6 +3,7 @@
 #include <Windows.h>
 #include <stdint.h>
 #include "console.h"
+#include <future>
 
 using std::string;
 

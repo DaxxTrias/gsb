@@ -62,11 +62,12 @@ static std::vector<AsteroidSubData> asteroidsSubData;
 static std::vector<AsteroidCache> asteroidsCache;
 
 bool atMainMenu = false;
+bool atMainMenu = false;
 __int8 currentControllers;
 uintptr_t localPlayer;
 uintptr_t PxControllerObject_Context;
 uintptr_t localPlayer_VelocityVec3;
-uintptr_t localPlayerinitialOffset = 0xAF99568; // v922 (close by but not exact pattern) 48 89 05 ? ? ? ? 48 8D 15 ? ? ? ? 48 89 5C 24 ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 42 8B 04 37 48 8B F7 39 05 ? ? ? ? 0F 8E ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 44 39 3D ? ? ? ? 0F 85 ? ? ? ? B8 ? ? ? ? 48 8D 1D ? ? ? ? 66 89 05 ? ? ? ? 48 8D 0D ? ? ? ? 49 8B C7 48 FF C0
+uintptr_t localPlayerPtr = 0xAF99568; // v922 (close by but not exact pattern) 48 89 05 ? ? ? ? 48 8D 15 ? ? ? ? 48 89 5C 24 ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 42 8B 04 37 48 8B F7 39 05 ? ? ? ? 0F 8E ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 44 39 3D ? ? ? ? 0F 85 ? ? ? ? B8 ? ? ? ? 48 8D 1D ? ? ? ? 66 89 05 ? ? ? ? 48 8D 0D ? ? ? ? 49 8B C7 48 FF C0
 //uintptr_t localPlayerInitialOffsetSTU = 0x2FBE1E38; // v100042 also nearby is a bunch of other interesting things like sendChatMessage
 //uintptr_t localPlayerPtrSTU = 0x2F8A0748; // v100043 they did a bunch of rewrites in this section. yay fun.
 //uintptr_t localPlayerPtrSTU = 0x2F8A07A8; // v100044
@@ -184,6 +185,9 @@ void drawStats(const bodyData& ply) {
 
 	if (currentControllers > 0)
 	{
+		//todo we should try and find another way to secure player xyz for here that doesnt require us firing the getplybymass func
+		//todo or better yet get rid of getplybymass entirely. iterating the whole loop to find us by our mass is iffy at best
+		//todo since we can end up registering as other people
 		posX = ply.pos.x;
 		posY = ply.pos.y;
 		posZ = ply.pos.z;

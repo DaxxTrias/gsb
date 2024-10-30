@@ -15,7 +15,6 @@
 #include "physicEsp.h"
 #include "KillSwitch.h"
 #include <iostream>
-#include "gameHooks.h"
 
 typedef HRESULT(__stdcall* D3D11Present1Hook) (IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT Flags, 
 	const DXGI_PRESENT_PARAMETERS* pPresentParameters);
@@ -44,6 +43,7 @@ static bool initonce = false;
 uintptr_t renderingModule;
 uintptr_t playerFOV;
 float pFOV = 90;
+bodyData ply;
 
 static void InitImGuiD3D11()
 {
@@ -73,8 +73,10 @@ static LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPAR
 }
 
 static std::vector<bodyData> bodys; // Declare the vector outside the function
+std::mutex bodysMutex; // Mutex for thread safety
 
 void bodyGen() {
+	std::lock_guard<std::mutex> lock(bodysMutex); // Ensure thread safety
 	bodys.clear(); // Clear the vector to reuse it
 	bodys = generateBodyData(); // Populate the vector with new data
 }
@@ -83,6 +85,7 @@ HRESULT __stdcall hookD3D11Present1(IDXGISwapChain* pSwapChain, UINT SyncInterva
 	const DXGI_PRESENT_PARAMETERS* pPresentParameters) {
 	if (!initonce)
 	{
+		ply = {};
 		if (SUCCEEDED(pSwapChain->GetDevice(__uuidof(ID3D11Device), (void**)&pDevice)))
 		{
 			pDevice->GetImmediateContext(&pContext);
@@ -164,14 +167,13 @@ HRESULT __stdcall hookD3D11Present1(IDXGISwapChain* pSwapChain, UINT SyncInterva
 		//todo: should probably check for PxControllers here, and if 0 just skip the whole loop. 0 means at main menu or inside SSC
 		if (!killSwitch.load())
 		{
-			//std::vector<bodyData> bodys = {};
-			//bodys = generateBodyData();
+			if (getOption<bool>("asteroidEspEnabled") || getOption<bool>("drawPhysMass"))
+			{
+				std::future<void> bodyGenFuture = std::async(std::launch::async, bodyGen);
+				bodyGenFuture.wait();
+				ply = getPlyByMass(bodys);
+			}
 
-			bodyGen();
-			bodyData ply = getPlyByMass(bodys);
-
-			//bodyData ply = {};
-			// 
 			//camObject = *reinterpret_cast<uintptr_t*>(baseAddress + camObjectOffset);
 			//ply.pos.x = reinterpret_cast<float*>(camObject)[0];
 			//ply.pos.y = reinterpret_cast<float*>(camObject)[1];
