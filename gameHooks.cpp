@@ -289,8 +289,8 @@ __int64 createClassInstance_hook(__int64 a1, unsigned int a2, char** a3, __int64
 asteroidStruct* __fastcall someGetObjectOrAsteroid_hook(__int64 a1, __int64 id) {
 	objectManager = a1;
 
-	//maxObjects = *(uint32_t*)(objectManager + 0x60070); // STU
-	maxObjects = *(uint32_t*)(objectManager + 0x60068);
+	maxObjects = *(uint32_t*)(objectManager + 0x60070); // STU
+	//maxObjects = *(uint32_t*)(objectManager + 0x60068); // Live
 
 	asteroidStruct *asteroid = FnCast("getObject", someGetObjectOrAsteroid_or)(a1, id);
 
@@ -339,8 +339,8 @@ void initGameHooks() {
 
 	camObject = *reinterpret_cast<uintptr_t*>(baseAddress + camObjectOffset);
 
-	or_PxControllerRelated = findSignature<PxControllerRelated_type>(getPlayerKinematicsDll(), PxControllerRelated_pattern);
-	//or_PxControllerRelated = findSignature<PxControllerRelated_type>(getPlayerKinematicsDll(), PxControllerRelatedSTU_pattern);
+	//or_PxControllerRelated = findSignature<PxControllerRelated_type>(getPlayerKinematicsDll(), PxControllerRelated_pattern);
+	or_PxControllerRelated = findSignature<PxControllerRelated_type>(getPlayerKinematicsDll(), PxControllerRelatedSTU_pattern);
 	placeHook("PxControllerRelated", or_PxControllerRelated, PxControllerRelated_hook);
 
     or_updatePositionDeltas = findSignature<updatePositionDeltas_type>(getPlayerKinematicsDll(), updatePositionDeltas_pattern);
@@ -350,9 +350,10 @@ void initGameHooks() {
 	//or_setDevConsoleState = findSignature<setDevConsoleState_type>(getStarbaseExe(), setDevConsoleState_pattern);
 	//placeHook("setDevConsoleState", or_setDevConsoleState, setDevConsoleState_hook);
 
-	or_addFuncToLuaClass = findSignature<addFuncToLuaClass_type>(getStarbaseExe(), addFuncToLuaClass_pattern);
-	//or_addFuncToLuaClassSTU = findSignature<addFuncToLuaClass_typeSTU>(getStarbaseExe(), addFuncToLuaClass_patternSTU);
-	placeHook("addFuncToLuaClass", or_addFuncToLuaClass, addFuncToLuaClass_hook);
+	//or_addFuncToLuaClass = findSignature<addFuncToLuaClass_type>(getStarbaseExe(), addFuncToLuaClass_pattern);
+	//placeHook("addFuncToLuaClass", or_addFuncToLuaClass, addFuncToLuaClass_hook);
+	or_addFuncToLuaClassSTU = findSignature<addFuncToLuaClass_typeSTU>(getStarbaseExe(), addFuncToLuaClass_patternSTU);
+	placeHook("addFuncToLuaClass", or_addFuncToLuaClass, addFuncToLuaClass_hookSTU);
 
 	or_GetOptionFloat = findSignature<GetOptionFloat_type>(getStarbaseExe(), GetOptionFloat_pattern);
 	//placeHook("GetOptionFloat", or_GetOptionFloat, GetOptionFloat_hook);
@@ -366,20 +367,20 @@ void initGameHooks() {
 	or_SetOptionBool = findSignature<SetOptionBool_type>(getStarbaseExe(), SetOptionBool_pattern);
 	//placeHook("SetOptionBool", or_SetOptionBool, SetOptionBool_hook);
 
-	or_getSceneInstanceManagerFromInstanceRootBySceneUH = findSignature<getSceneInstanceManagerFromInstanceRootBySceneUH_type>(getStarbaseExe(), getSceneInstanceManagerFromInstanceRootBySceneUH_pattern);
-	//or_getSceneInstanceManagerFromInstanceRootBySceneUH = findSignature<getSceneInstanceManagerFromInstanceRootBySceneUH_type>(getStarbaseExe(), getSceneInstanceManagerFromInstanceRootBySceneUH_patternSTU);
+	//or_getSceneInstanceManagerFromInstanceRootBySceneUH = findSignature<getSceneInstanceManagerFromInstanceRootBySceneUH_type>(getStarbaseExe(), getSceneInstanceManagerFromInstanceRootBySceneUH_pattern);
+	or_getSceneInstanceManagerFromInstanceRootBySceneUH = findSignature<getSceneInstanceManagerFromInstanceRootBySceneUH_type>(getStarbaseExe(), getSceneInstanceManagerFromInstanceRootBySceneUH_patternSTU);
 	//placeHook("getSceneInstanceManagerFromInstanceRootBySceneUH", or_getSceneInstanceManagerFromInstanceRootBySceneUH, getSceneInstanceManagerFromInstanceRootBySceneUH_hook);
 
-	or_SceneInstanceManager__getActor = findSignature<SceneInstanceManager__getActor_type>(getStarbaseExe(), SceneInstanceManager__getActor_pattern);
-	//or_SceneInstanceManager__getActor = findSignature<SceneInstanceManager__getActor_type>(getStarbaseExe(), SceneInstanceManager__getActor_patternSTU);
+	//or_SceneInstanceManager__getActor = findSignature<SceneInstanceManager__getActor_type>(getStarbaseExe(), SceneInstanceManager__getActor_pattern);
+	or_SceneInstanceManager__getActor = findSignature<SceneInstanceManager__getActor_type>(getStarbaseExe(), SceneInstanceManager__getActor_patternSTU);
 	//placeHook("SceneInstanceManager__getActor", or_SceneInstanceManager__getActor, SceneInstanceManager__getActor_hook);
 
-	//or_someGlobalGetterSetter = findSignature<someGlobalGetterSetter_type>(getStarbaseExe(), someGlobalGetterSetter_patternSTU);
-	or_someGlobalGetterSetter = findSignature<someGlobalGetterSetter_type>(getStarbaseExe(), someGlobalGetterSetter_pattern);
+	or_someGlobalGetterSetter = findSignature<someGlobalGetterSetter_type>(getStarbaseExe(), someGlobalGetterSetter_patternSTU);
+	//or_someGlobalGetterSetter = findSignature<someGlobalGetterSetter_type>(getStarbaseExe(), someGlobalGetterSetter_pattern);
 	//placeHook("someGlobalGetterSetter", or_someGlobalGetterSetter, someGlobalGetterSetter_hook);
 
-	char* ptr = findSignature<char*>(getStarbaseExe(), iterOver_pattern);
-	//char* ptr = findSignature<char*>(getStarbaseExe(), iterOver_patternSTU);
+	//char* ptr = findSignature<char*>(getStarbaseExe(), iterOver_pattern);
+	char* ptr = findSignature<char*>(getStarbaseExe(), iterOver_patternSTU);
 	int32_t offset = *((int32_t*)(ptr + 1)) + 5;
 	getPhysClass = (getPhysClass_type)(ptr + offset);
 
@@ -388,15 +389,15 @@ void initGameHooks() {
 
 	maybeOpenDebug = findSignature<getPhysClass_type>(getStarbaseExe(), maybeOpenDebug_pattern);
 
-	or_getPxActorFromList = findSignature<getPxActorFromList_type>(getStarbaseExe(), getPxActorFromList_pattern);
-	//or_getPxActorFromList = findSignature<getPxActorFromList_type>(getStarbaseExe(), getPxActorFromList_patternSTU);
+	//or_getPxActorFromList = findSignature<getPxActorFromList_type>(getStarbaseExe(), getPxActorFromList_pattern);
+	or_getPxActorFromList = findSignature<getPxActorFromList_type>(getStarbaseExe(), getPxActorFromList_patternSTU);
 	placeHook("getPxActorFromList", or_getPxActorFromList, getPxActorFromList_hook);
 
 	//or_createClassInstance = findSignature<createClassInstance_type>(getStarbaseExe(), createClassInstance_pattern);
 	//placeHook("createClassInstance", or_createClassInstance, createClassInstance_hook);
 
-	someGetObjectOrAsteroid_or = findSignature<someGetObjectOrAsteroid_type>(getStarbaseExe(), someGetObjectOrAsteroid_pattern);
-	//someGetObjectOrAsteroid_or = findSignature<someGetObjectOrAsteroid_type>(getStarbaseExe(), someGetObjectOrAsteroid_patternSTU);
+	//someGetObjectOrAsteroid_or = findSignature<someGetObjectOrAsteroid_type>(getStarbaseExe(), someGetObjectOrAsteroid_pattern);
+	someGetObjectOrAsteroid_or = findSignature<someGetObjectOrAsteroid_type>(getStarbaseExe(), someGetObjectOrAsteroid_patternSTU);
 	placeHook("getObject", someGetObjectOrAsteroid_or, someGetObjectOrAsteroid_hook);
 
 	//uint64_t preSetupC = findSignature<uint64_t>(getStarbaseExe(), setupGameConfig_pattern) + 0x144;
